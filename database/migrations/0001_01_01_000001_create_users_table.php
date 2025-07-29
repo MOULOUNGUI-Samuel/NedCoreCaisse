@@ -23,6 +23,9 @@ return new class extends Migration
             $table->string('identifiant')->unique()->nullable();
             $table->string('google_id')->unique()->nullable();
             $table->string('password')->nullable();
+            // CHANGÉ : La clé étrangère pointe maintenant vers la colonne 'id' (UUID) de la table 'societes'.
+            $table->foreignUuid('societe_id')->constrained('societes')->onDelete('restrict');
+
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

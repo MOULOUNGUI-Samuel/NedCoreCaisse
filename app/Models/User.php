@@ -8,6 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids; // Votre trait pour les UUIDs
 use Laravel\Sanctum\HasApiTokens; // Le trait essentiel pour Sanctum
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 class User extends Authenticatable
 {
@@ -58,5 +61,19 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed', // 'hashed' est la bonne pratique, Laravel s'occupe de tout.
         ];
+    }
+     public function societe(): BelongsTo
+    {
+        // CHANGÉ : La relation est maintenant standard
+        return $this->belongsTo(Societe::class);
+    }
+     public function mouvements_operes(): HasMany
+    {
+        return $this->hasMany(Mouvement::class, 'operateur_id');
+    }
+
+    public function mouvements_annules(): HasMany
+    {
+        return $this->hasMany(Mouvement::class, 'annulateur_id');
     }
 }
