@@ -11,6 +11,8 @@ return new class extends Migration
         Schema::create('categories_motifs', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('nom_categorie');
+            $table->foreignUuid('societe_id')->constrained('societes')->onDelete('restrict');
+            $table->boolean('est_actif')->default(true);
             $table->enum('type_operation', ['Entrée', 'Sortie']);
             $table->timestamps();
 

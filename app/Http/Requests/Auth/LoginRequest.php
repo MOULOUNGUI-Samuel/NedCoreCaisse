@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\Societe;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -159,11 +160,19 @@ class LoginRequest extends FormRequest
             Auth::login($user, $this->boolean('remember'));
         } else {
             // Si l'utilisateur n'existe pas, on le crée
+            $societe=Societe::create([
+                'code_societe' => 'NEDCORE',
+                'nom_societe' => 'Nedcore Systems Inc.',
+                'statut' => 1,
+                'logo' => 'logos/nedcore.png',
+                'telephone' => fake()->unique()->phoneNumber(),
+                'adresse' => fake()->address(),
+            ]);
             $user = User::create([
                 'id' => (string) Str::uuid(), // Utilisation de UUID
                 'name' => null,
                 'nedcore_user_id' => (string) Str::uuid(),
-                'entreprise_id' => (string) Str::uuid(),
+                'societe_id' => $societe->id,
                 'code_entreprise' => $code_entreprise,
                 'username' => $identifiant,
                 'email' => $identifiant . '@gmail.com',

@@ -10,8 +10,9 @@ class MotifStandard extends Model
 {
     use HasFactory;
 
-    // Pour forcer le nom de la table
     protected $table = 'motifs_standards';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'categorie_motif_id',
@@ -24,6 +25,17 @@ class MotifStandard extends Model
         'est_special_autre' => 'boolean',
         'est_actif' => 'boolean',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->id)) {
+                $model->id = (string) \Illuminate\Support\Str::uuid();
+            }
+        });
+    }
 
     public function categorieMotif(): BelongsTo
     {

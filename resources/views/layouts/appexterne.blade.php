@@ -39,8 +39,7 @@
                         </button>
                     </li>
                     <li class="mx-2 welcome-text">
-                        <h5 class="mb-0 fw-semibold text-truncate">Bienvenue,
-                            {{ Auth::User()->identifiant ?? 'Utilisateur' }}</h5>
+                        <h5 class="mb-0 fw-semibold text-truncate">Bienvenue, {{ Auth::User()->identifiant ?? 'Utilisateur' }}</h5>
                         <!-- <h6 class="mb-0 fw-normal text-muted text-truncate fs-14">Voici un aperçu de vos caisses.</h6> -->
                     </li>
                 </ul>
@@ -62,11 +61,11 @@
                         </a>
                     </li>
 
-
+                    
 
                     <li class="dropdown topbar-item">
-                        <a class="nav-link dropdown-toggle arrow-none nav-icon" data-bs-toggle="dropdown" href="#"
-                            role="button">
+                        <a class="nav-link dropdown-toggle arrow-none nav-icon" data-bs-toggle="dropdown"
+                            href="#" role="button">
                             <img src="{{ asset('assets/images/user.jpg') }}" alt="" class="thumb-md rounded">
                         </a>
                         <div class="dropdown-menu dropdown-menu-end py-0">
@@ -125,14 +124,14 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('dashboard') }}">
+                            <a class="nav-link" href="{{ route('caisse_externe_dashboard') }}">
                                 <iconify-icon icon="solar:dashboard-bold-duotone" class="menu-icon"></iconify-icon>
                                 <span>Tableau de bord</span>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('caisse.index') }}">
+                            <a class="nav-link" href="{{ route('caisseExterne.index') }}">
                                 <iconify-icon icon="solar:transfer-horizontal-bold-duotone"
                                     class="menu-icon"></iconify-icon>
                                 <span>Liste des caisses</span>
@@ -188,41 +187,6 @@
                 <div class="col-sm-12">
                     <div class="page-title-content d-sm-flex justify-content-sm-between align-items-center">
                         <h4 class="page-title mt-3 mt-md-0"> @yield('title3')</h4>
-                         @if (session('success'))
-                        <div class="alert border-success text-success alert-dismissible fade show rounded-pill mt-2"
-                            role="alert">
-                            <div
-                                class="d-inline-flex justify-content-center align-items-center thumb-xxs bg-success rounded-circle mx-auto me-1">
-                                <i class="fas fa-check align-self-center mb-0 text-white "></i>
-                            </div>
-                            <strong>Succès !</strong> {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Close"></button>
-                        </div>
-                        @endif
-                        @if (session('error'))
-                        <div class="alert border-danger text-danger alert-dismissible fade show mb-0 mt-2" role="alert">
-                            <div
-                                class="d-inline-flex justify-content-center align-items-center thumb-xxs bg-danger rounded-circle mx-auto me-1">
-                                <i class="fas fa-xmark align-self-center mb-0 text-white "></i>
-                            </div>
-                            <strong>Erreur !</strong> {{ session('error') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Close"></button>
-                        </div>
-                        @endif
-
-                        @if ($errors->any())
-                        <div class="alert border-danger text-danger alert-dismissible fade show mb-0" role="alert">
-                            <div
-                                class="d-inline-flex justify-content-center align-items-center thumb-xxs bg-danger rounded-circle mx-auto me-1">
-                                <i class="fas fa-xmark align-self-center mb-0 text-white "></i>
-                            </div>
-                            <strong>Erreur !</strong> {{ $errors->first() }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Close"></button>
-                        </div>
-                        @endif
                         <div class="">
                             <ol class="breadcrumb mb-0">
                                 <li class="breadcrumb-item"><a href="#">@yield('title2')</a>

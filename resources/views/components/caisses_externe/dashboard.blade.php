@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.appexterne')
 
 @section('title', 'Mon Tableau de bord')
 
@@ -199,7 +199,7 @@
 
     <!--Start Rightbar-->
     <!--Start Endbar-->
-    @include('layouts.lateralContent')
+    @include('layouts.lateralContentExterne')
 
 
     <!--end Endbar-->

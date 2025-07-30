@@ -28,7 +28,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'nedcore_user_id',
-        'entreprise_id',
+        'societe_id',
         'code_entreprise', 
         'username',
         'email',

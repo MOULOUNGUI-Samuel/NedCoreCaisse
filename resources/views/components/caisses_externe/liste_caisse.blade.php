@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.appexterne')
 
 @section('title3', 'Gestion des caisses')
 @section('title2', 'Caisses')
@@ -549,14 +549,14 @@
                 {{-- Conteneur qui sera mis à jour dynamiquement par le JavaScript --}}
                 <div id="mouvements-container" class="mt-4">
                     {{-- On inclut le tableau pour l'affichage initial --}}
-                    @include('components.caisses._mouvements_table')
+                    @include('components.caisses_externe._mouvements_table')
                 </div>
             </div>
 
 
             <!--Start Rightbar-->
             <!--Start Endbar-->
-            @include('layouts.lateralContent')
+            @include('layouts.lateralContentExterne')
 
             <!--end Endbar-->
             <div class="endbar-overlay d-print-none"></div>
@@ -621,7 +621,7 @@
                         `<div class="text-center p-5"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>`;
 
                     // URL de la nouvelle route
-                    const url = `/caisses/${caisseId}/mouvements`;
+                    const url = `/caisses/${caisseId}/mouvementsExterne`;
 
                     // Appel Fetch (AJAX) pour récupérer le HTML du tableau
                     fetch(url)

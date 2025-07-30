@@ -12,7 +12,9 @@ class Caisse extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $fillable = ['libelle_caisse', 'user_id', 'societe_id', 'seuil_encaissement', 'decouvert_autorise', 'est_supprime']; // CHANGÉ
+    protected $fillable = ['libelle_caisse', 'user_id', 'societe_id', 'seuil_encaissement',
+        'seuil_maximum', 
+     'decouvert_autorise', 'est_supprime']; // CHANGÉ
 
     protected $casts = ['decouvert_autorise' => 'boolean', 'est_supprime' => 'boolean'];
 

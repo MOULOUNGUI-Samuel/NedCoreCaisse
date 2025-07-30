@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('nedcore_user_id');
-            $table->uuid('entreprise_id');
             $table->uuid('code_entreprise');
             $table->string('name')->nullable();
             // J'ai ajouté l'index unique sur username, c'est important

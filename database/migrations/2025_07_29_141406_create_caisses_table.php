@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignUuid('societe_id')->constrained('societes')->onDelete('restrict');
 
             $table->decimal('seuil_encaissement', 15, 2)->default(0.00);
+            $table->decimal('seuil_maximum', 15, 2)->default(0.00);
             $table->boolean('decouvert_autorise')->default(false);
             $table->boolean('est_supprime')->default(false); // Pour le soft delete manuel
             $table->timestamps();
