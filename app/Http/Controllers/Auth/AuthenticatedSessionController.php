@@ -44,7 +44,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->route('caisse_externe_dashboard');
+        return redirect()->route('dashboard');
     }
     // public function store(LoginRequest $request)
     // {

@@ -133,34 +133,45 @@ class LoginRequest extends FormRequest
 
         // Cas 1 : L'utilisateur existe, mais l'authentification externe échoue.
         // On utilise le mot de passe en clair fourni par l'utilisateur.
-        if (!$this->verifierLogin($code_entreprise, $identifiant, $password)) {
-            RateLimiter::hit($this->throttleKey());
+        // if (!$this->verifierLogin($code_entreprise, $identifiant, $password)) {
+        //     RateLimiter::hit($this->throttleKey());
 
-            throw ValidationException::withMessages([
-                'password' => 'Informations de connexion incorrectes. Merci de vérifier vos informations',
-            ]);
-        }
+        //     throw ValidationException::withMessages([
+        //         'password' => 'Informations de connexion incorrectes. Merci de vérifier vos informations',
+        //     ]);
+        // }
 
         // On cherche l'utilisateur dans la base de données locale
         $user = User::where('identifiant', $identifiant)
             ->where('code_entreprise', $code_entreprise)
             ->first();
 
+        if (! $user || ! Hash::check($password, $user->password)) {
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'identifiant' => trans('auth.failed'),
+            ]);
+            throw ValidationException::withMessages([
+              'password' => 'Informations de connexion incorrectes. Merci de vérifier vos informations',
+            ]);
+        }
+        
         if ($user) {
-            $user = User::findOrFail($user->id);
-            $user->username = $identifiant;
-            $user->identifiant = $identifiant;
-            $user->email = $identifiant . '@gmail.com';
-            if (!empty($password)) {
-                $user->password = Hash::make($password);
-            } 
-            // 4. Sauvegardez les modifications dans la base de données.
-            $user->save();
+            // $user = User::findOrFail($user->id);
+            // $user->username = $identifiant;
+            // $user->identifiant = $identifiant;
+            // $user->email = $identifiant . '@gmail.com';
+            // if (!empty($password)) {
+            //     $user->password = Hash::make($password);
+            // } 
+            // // 4. Sauvegardez les modifications dans la base de données.
+            // $user->save();
 
             Auth::login($user, $this->boolean('remember'));
         } else {
             // Si l'utilisateur n'existe pas, on le crée
-            $societe=Societe::create([
+            $societe = Societe::create([
                 'code_societe' => 'NEDCORE',
                 'nom_societe' => 'Nedcore Systems Inc.',
                 'statut' => 1,
