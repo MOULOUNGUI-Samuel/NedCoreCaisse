@@ -11,6 +11,7 @@ use App\Models\Caisse; // Assurez-vous d'importer le modèle Caisse
 use App\Models\CategorieMotif;
 use Illuminate\Support\Facades\Validator;
 use App\Models\MotifStandard; // Assurez-vous d'importer le modèle MotifStandard
+use App\Models\Mouvement;
 
 class CaisseController extends Controller
 {
@@ -74,6 +75,51 @@ class CaisseController extends Controller
 
 
         return view('components.content_application.liste_caisse', compact('users', 'caisses', 'categorieMotifs'));
+    }
+    public function operations($id)
+    {
+        $users = User::where('societe_id', Auth::user()->societe_id)
+            ->get();
+        $caisse = Caisse::with('user')->where('id', $id)
+            ->first();
+            $autreCaisses = Caisse::with('user')
+            ->where('id', '!=', $id)
+            ->get();
+        $categorieMotifsEntrer = CategorieMotif::with('motifsStandards')
+            ->where('societe_id', Auth::user()->societe_id)
+            ->where('type_operation', 'Entrée')
+            ->get();
+        $categorieMotifsSorties = CategorieMotif::with('motifsStandards')
+            ->where('societe_id', Auth::user()->societe_id)
+            ->where('type_operation', 'Sortie')
+            ->get();
+
+             $encaissementsJour = Mouvement::whereDate('date_mouvement', today())
+                                  ->sum('montant_credit');
+
+    $decaissementsJour = Mouvement::whereDate('date_mouvement', today())
+                                  ->sum('montant_debit');
+
+    $operationsPassees = Mouvement::count();
+    $operationsAnnulees = Mouvement::where('est_annule', true)->count();
+
+    $mouvementsRecents = Mouvement::with(['operateur', 'motifStandard'])
+                                  ->latest()
+                                  ->take(5)
+                                  ->get();
+
+        return view('components.content_application.create_operations', 
+        compact('users', 
+        'caisse', 
+        'categorieMotifsEntrer', 
+        'categorieMotifsSorties',
+         'autreCaisses',
+         'encaissementsJour',
+        'decaissementsJour',
+        'operationsPassees',
+        'operationsAnnulees',
+        'mouvementsRecents'
+        ));
     }
     public function getMotifs($id)
 {

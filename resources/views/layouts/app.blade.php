@@ -188,40 +188,42 @@
                 <div class="col-sm-12">
                     <div class="page-title-content d-sm-flex justify-content-sm-between align-items-center">
                         <h4 class="page-title mt-3 mt-md-0"> @yield('title3')</h4>
-                         @if (session('success'))
-                        <div class="alert border-success text-success alert-dismissible fade show rounded-pill mt-2"
-                            role="alert">
-                            <div
-                                class="d-inline-flex justify-content-center align-items-center thumb-xxs bg-success rounded-circle mx-auto me-1">
-                                <i class="fas fa-check align-self-center mb-0 text-white "></i>
+                        @if (session('success'))
+                            <div class="alert border-success text-success alert-dismissible fade show rounded-pill mt-2"
+                                role="alert">
+                                <div
+                                    class="d-inline-flex justify-content-center align-items-center thumb-xxs bg-success rounded-circle mx-auto me-1">
+                                    <i class="fas fa-check align-self-center mb-0 text-white "></i>
+                                </div>
+                                <strong>Succès !</strong> {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
                             </div>
-                            <strong>Succès !</strong> {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Close"></button>
-                        </div>
                         @endif
                         @if (session('error'))
-                        <div class="alert border-danger text-danger alert-dismissible fade show mb-0 mt-2" role="alert">
-                            <div
-                                class="d-inline-flex justify-content-center align-items-center thumb-xxs bg-danger rounded-circle mx-auto me-1">
-                                <i class="fas fa-xmark align-self-center mb-0 text-white "></i>
+                            <div class="alert border-danger text-danger alert-dismissible fade show mb-0 mt-2"
+                                role="alert">
+                                <div
+                                    class="d-inline-flex justify-content-center align-items-center thumb-xxs bg-danger rounded-circle mx-auto me-1">
+                                    <i class="fas fa-xmark align-self-center mb-0 text-white "></i>
+                                </div>
+                                <strong>Erreur !</strong> {{ session('error') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
                             </div>
-                            <strong>Erreur !</strong> {{ session('error') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Close"></button>
-                        </div>
                         @endif
 
                         @if ($errors->any())
-                        <div class="alert border-danger text-danger alert-dismissible fade show mb-0" role="alert">
-                            <div
-                                class="d-inline-flex justify-content-center align-items-center thumb-xxs bg-danger rounded-circle mx-auto me-1">
-                                <i class="fas fa-xmark align-self-center mb-0 text-white "></i>
+                            <div class="alert border-danger text-danger alert-dismissible fade show mb-0"
+                                role="alert">
+                                <div
+                                    class="d-inline-flex justify-content-center align-items-center thumb-xxs bg-danger rounded-circle mx-auto me-1">
+                                    <i class="fas fa-xmark align-self-center mb-0 text-white "></i>
+                                </div>
+                                <strong>Erreur !</strong> {{ $errors->first() }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
                             </div>
-                            <strong>Erreur !</strong> {{ $errors->first() }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Close"></button>
-                        </div>
                         @endif
                         <div class="">
                             <ol class="breadcrumb mb-0">
@@ -237,13 +239,14 @@
     </div><!--end page title-->
 
     @yield('content')
-
+    @include('components.content_application.create_categorie_offcanvas')
 
     <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
     <script src="{{ asset('assets/libs/iconify-icon/iconify-icon.min.js') }}"></script>
     <script src="{{ asset('assets/libs/apexcharts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('assets/js/pages/finance.init.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/form-validation.js') }}"></script>
     <script src="{{ asset('assets/js/app.js') }}"></script>
 </body>
 

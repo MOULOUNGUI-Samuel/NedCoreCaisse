@@ -41,44 +41,21 @@
                     <div class="col-md-12 mb-3">
                         <nav class="navbar navbar-expand-lg navbar-light">
                             <div class="container-fluid">
-                                <ul class="navbar-nav " style="margin-right:10px">
-                                    <li class="nav-item dropdown">
-                                        <button type="button" class="btn rounded-pill btn-light" id="navbarDropdown"
-                                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            Créer
-                                            <i class="fas fa-plus-circle fs-25"></i>
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                            <li>
-                                                <a class="dropdown-item text-primary" href="#"
-                                                    data-bs-toggle="offcanvas" data-bs-target="#myOffcanvas"
-                                                    aria-controls="myOffcanvas">
-                                                    <i class="las la-plus-circle fs-18 me-2 text-primary"></i>
-                                                    Créer une caisse
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item text-success" href="#" data-bs-toggle="offcanvas" data-bs-target="#myOffcanvasC"
-                                                    aria-controls="myOffcanvas">
-                                                    <i class="las la-plus-circle fs-18 me-2 text-success"></i>
-                                                    Créer une catégorie
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item text-danger" href="#">
-                                                    <i class="las la-plus-circle fs-18 me-2 text-danger"></i>
-                                                    Créer un motif de caisse
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
+                                <button type="button" class="btn rounded-pill btn-light me-3" data-bs-toggle="offcanvas"
+                                    data-bs-target="#myOffcanvas" aria-controls="myOffcanvas">Créer une caisse <i
+                                        class="fas fa-plus-circle"></i></button>
+                                <button type="button" class="btn rounded-pill btn-light me-3 text-dark" data-bs-toggle="offcanvas"
+                                    data-bs-target="#myOffcanvasC" aria-controls="myOffcanvas">
+                                    Créer une catégorie
+                                    <i
+                                        class="fas fa-plus-circle"></i>
+                                </button>
+                                <button type="button" class="btn rounded-pill btn-light me-3 text-info" data-bs-toggle="offcanvas"
+                                    data-bs-target="#myOffcanvasM" aria-controls="myOffcanvas">
+                                    Créer un libellé de mouvement
+                                    <i
+                                        class="fas fa-plus-circle"></i>
+                                </button>
                                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                                         <li class="nav-item dropdown">
@@ -105,15 +82,13 @@
                                             </ul>
                                         </li>
                                     </ul>
-
-
                                 </div>
                             </div><!--end container-->
                         </nav> <!--end nav-->
                     </div> <!--end col-->
                 </div><!--end row-->
                 @include('components.content_application.create_caisse_offcanvas', ['users' => $users])
-                @include('components.content_application.create_categorie_offcanvas')
+                
 
                 {{-- Conteneur pour les cartes de caisse --}}
 
@@ -139,10 +114,9 @@
                                                 </a>
                                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                     <li>
-                                                        <a class="dropdown-item" href="#" data-bs-toggle="offcanvas"
-                                                            data-bs-target="#myOffcanvasmouvement{{ $caisse->id }}">
-                                                            <i class="fas fa-plus-circle me-2"></i>Créer un mouvement de
-                                                            caisse
+                                                        <a class="dropdown-item"
+                                                            href="{{ route('operations', $caisse->id) }}">
+                                                            <i class="fas fa-plus-circle me-2"></i>Nouvelle opération
                                                         </a>
                                                     </li>
                                                     <li><a class="dropdown-item" href="#"><i
@@ -233,9 +207,9 @@
                                 </div>
                             </div>
                         </div>
-                        @include('components.content_application.create_mouvement_offcanvas', [
+                        {{-- @include('components.content_application.create_mouvement_offcanvas', [
                             'caisse' => $caisse,
-                        ])
+                        ]) --}}
                     @empty
                         <div class="alert alert-info">Aucune caisse n'a été trouvée pour votre compte.</div>
                     @endforelse
@@ -248,14 +222,16 @@
                 {{-- Conteneur qui sera mis à jour dynamiquement par le JavaScript --}}
                 <div id="mouvements-container" class="mt-4">
                     {{-- On inclut le tableau pour l'affichage initial --}}
-                    @include('components.content_application._mouvements_table',['categorieMotifs' => $categorieMotifs])
+                    @include('components.content_application._mouvements_table', [
+                        'categorieMotifs' => $categorieMotifs,
+                    ])
                 </div>
             </div>
 
 
             <!--Start Rightbar-->
             <!--Start Endbar-->
-            @include('layouts.lateralContentExterne')
+            @include('layouts.lateralContent')
 
             <!--end Endbar-->
             <div class="endbar-overlay d-print-none"></div>

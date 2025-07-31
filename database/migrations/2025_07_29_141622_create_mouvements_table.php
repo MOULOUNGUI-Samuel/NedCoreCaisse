@@ -10,12 +10,12 @@ return new class extends Migration
     {
         Schema::create('mouvements', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->bigInteger('num_mouvement')->unique();
+            $table->string('num_mouvement');
             
             $table->foreignUuid('caisse_id')->constrained('caisses')->onDelete('restrict');
             
             // CHANGÉ : La clé étrangère est maintenant de type UUID.
-            $table->foreignUuid('motif_standard_id')->constrained('motifs_standards')->onDelete('restrict');
+            $table->foreignUuid('motif_standard_id')->constrained('motifs_standards')->onDelete('cascade')->nullable();
             
             $table->foreignUuid('operateur_id')->constrained('users', 'id')->onDelete('restrict');
             $table->foreignUuid('annulateur_id')->nullable()->constrained('users', 'id')->onDelete('set null');
@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('libelle_personnalise')->nullable();
             $table->decimal('montant_debit', 15, 2)->default(0.00);
             $table->decimal('montant_credit', 15, 2)->default(0.00);
+            $table->decimal('solde_avant_mouvement', 15, 2);
             $table->decimal('solde_apres_mouvement', 15, 2);
             $table->string('mode_reglement')->nullable();
             $table->string('reference_externe')->nullable();

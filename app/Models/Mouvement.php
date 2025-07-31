@@ -22,6 +22,7 @@ class Mouvement extends Model
         'montant_debit',
         'montant_credit',
         'solde_apres_mouvement',
+        'solde_avant_mouvement',
         'mode_reglement',
         'reference_externe',
         'observations',
