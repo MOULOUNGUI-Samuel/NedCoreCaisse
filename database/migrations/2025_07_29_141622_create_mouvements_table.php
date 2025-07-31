@@ -15,7 +15,7 @@ return new class extends Migration
             $table->foreignUuid('caisse_id')->constrained('caisses')->onDelete('restrict');
             
             // CHANGÉ : La clé étrangère est maintenant de type UUID.
-            $table->foreignUuid('motif_standard_id')->constrained('motifs_standards')->onDelete('cascade')->nullable();
+            $table->foreignUuid('motif_standard_id')->nullable()->constrained('motifs_standards')->onDelete('cascade');
             
             $table->foreignUuid('operateur_id')->constrained('users', 'id')->onDelete('restrict');
             $table->foreignUuid('annulateur_id')->nullable()->constrained('users', 'id')->onDelete('set null');
