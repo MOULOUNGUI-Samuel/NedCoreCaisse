@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Mouvement extends Model
 {
     use HasFactory, HasUuids;
+    protected $table = 'mouvements';
 
     protected $fillable = [
         'num_mouvement',
