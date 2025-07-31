@@ -82,7 +82,7 @@ class CaisseController extends Controller
             ->get();
         $caisse = Caisse::with('user')->where('id', $id)
             ->first();
-            $autreCaisses = Caisse::with('user')
+        $autreCaisses = Caisse::with('user')
             ->where('id', '!=', $id)
             ->get();
         $categorieMotifsEntrer = CategorieMotif::with('motifsStandards')
@@ -94,39 +94,47 @@ class CaisseController extends Controller
             ->where('type_operation', 'Sortie')
             ->get();
 
-             $encaissementsJour = Mouvement::whereDate('date_mouvement', today())
-                                  ->sum('montant_credit');
+        $encaissementsJour = Mouvement::whereDate('date_mouvement', today())
+            ->where('caisse_id', $id)
+            ->sum('montant_credit');
 
-    $decaissementsJour = Mouvement::whereDate('date_mouvement', today())
-                                  ->sum('montant_debit');
+        $decaissementsJour = Mouvement::whereDate('date_mouvement', today())
+            ->where('caisse_id', $id)
+            ->sum('montant_debit');
 
-    $operationsPassees = Mouvement::count();
-    $operationsAnnulees = Mouvement::where('est_annule', true)->count();
+        $operationsPassees = Mouvement::where('caisse_id', $id)->count();
+        $operationsAnnulees = Mouvement::where('est_annule', true)
+            ->where('caisse_id', $id)
+            ->count();
 
-    $mouvementsRecents = Mouvement::with(['operateur', 'motifStandard'])
-                                  ->latest()
-                                  ->take(5)
-                                  ->get();
+        $mouvementsRecents = Mouvement::with(['operateur', 'motifStandard'])
+            ->where('caisse_id', $id)
+            ->latest()
+            ->take(5)
+            ->get();
 
-        return view('components.content_application.create_operations', 
-        compact('users', 
-        'caisse', 
-        'categorieMotifsEntrer', 
-        'categorieMotifsSorties',
-         'autreCaisses',
-         'encaissementsJour',
-        'decaissementsJour',
-        'operationsPassees',
-        'operationsAnnulees',
-        'mouvementsRecents'
-        ));
+        return view(
+            'components.content_application.create_operations',
+            compact(
+                'users',
+                'caisse',
+                'categorieMotifsEntrer',
+                'categorieMotifsSorties',
+                'autreCaisses',
+                'encaissementsJour',
+                'decaissementsJour',
+                'operationsPassees',
+                'operationsAnnulees',
+                'mouvementsRecents'
+            )
+        );
     }
     public function getMotifs($id)
-{
-    $motifs = MotifStandard::where('categorie_motif_id', $id)->get();
+    {
+        $motifs = MotifStandard::where('categorie_motif_id', $id)->get();
 
-    return response()->json($motifs);
-}
+        return response()->json($motifs);
+    }
 
     public function store(Request $request)
     {
