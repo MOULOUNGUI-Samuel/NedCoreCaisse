@@ -160,8 +160,8 @@ class CaisseController extends Controller
             'user_id' => $data['user_id'],
             'societe_id' => Auth::user()->societe_id,
             'seuil_maximum' => $request->input('limiter_solde') === 'oui'
-                ? $data['seuil_maximum'] ?? null
-                : null,
+                ? $data['seuil_maximum'] ?? 0.00
+                : 0.00,
             'decouvert_autorise' => 0,
             'est_supprime' => false,
             'description_caisse' => $data['description_caisse'] ?? null,
