@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController; // Ensure this controller exists in the
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController; // Ensure this controller exists in the specified namespace
 use App\Http\Controllers\MouvementController;
+use App\Http\Controllers\Api\AuthController; // Ensure this controller exists in the specified namespace
 
 Route::get('/', function () {
     return redirect('/login');
@@ -16,7 +17,7 @@ Route::get('/caisse_externe_dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('caisse_externe_dashboard');
 
-
+Route::post('/authenticate_externe', [AuthController::class, 'authenticate'])->name('authenticate_externe');
 Route::middleware('auth')->group(function () {
 
     Route::prefix('caisses_externe')->group(function () {

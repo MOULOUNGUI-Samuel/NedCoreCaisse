@@ -1,10 +1,10 @@
 <?php
-
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CaisseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Api\AuthController;
+
 
 
 /*
@@ -20,7 +20,7 @@ use App\Http\Controllers\UserController;
 
 Route::get('/UserInfo', [CaisseController::class, 'UserInfo'])->name('api.users.UserInfo');
 // Route publique pour se connecter et obtenir un token
-Route::post('/login', [AuthController::class, 'authenticate']);
+
 
 // Groupe de routes protégées par Sanctum
 Route::middleware('auth:sanctum')->group(function () {
