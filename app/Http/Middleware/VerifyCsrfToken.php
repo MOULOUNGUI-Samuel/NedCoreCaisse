@@ -11,8 +11,8 @@ class VerifyCsrfToken extends Middleware
      *
      * @var array<int, string>
      */
+
     protected $except = [
-        // Ajoutez l'URI de votre route ici
-        'connexionNedcore',
+        '/authenticate_externe', // Désactive CSRF pour cette route
     ];
 }
