@@ -43,64 +43,7 @@ class LoginRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    // public function authenticate(): void
-    // {
-
-    //     // 
-
-    //     $this->ensureIsNotRateLimited();
-
-    //     $identifiant = $this->input('email');
-    //     $code_entreprise = $this->input('code_entreprise');
-    //     $password = $this->input('password');
-
-    //     // Vérification de l'existence des champs requis
-    //     if (empty($identifiant)) {
-    //         throw ValidationException::withMessages([
-    //         'email' => 'Le champ identifiant est requis. Veuillez fournir votre email, numéro de téléphone ou nom d’utilisateur.',
-    //         ]);
-    //     }
-
-    //     if (empty($password)) {
-    //         throw ValidationException::withMessages([
-    //         'password' => 'Le champ mot de passe est requis. Veuillez fournir votre mot de passe.',
-    //         ]);
-    //     }
-
-    //     // On cherche l'utilisateur en vérifiant dans les 3 colonnes possibles.
-    //     $user = User::where('identifiant', $identifiant)
-    //         ->where('code_entreprise', $code_entreprise)
-    //         ->first();
-
-    //     // ----------------------------------------------------
-    //     //        NOUVELLE LOGIQUE DE GESTION D'ERREUR
-    //     // ----------------------------------------------------
-
-    //     // Cas 1 : L'identifiant n'existe pas du tout.
-    //     if (! $user) {
-    //         RateLimiter::hit($this->throttleKey());
-
-    //         throw ValidationException::withMessages([
-    //             'identifiant' => "Aucun compte n'est associé à cet identifiant ! Veuillez vérifier votre numéro de téléphone, email ou nom d'utilisateur.",
-    //         ]);
-    //     }
-
-    //     // Cas 2 : L'identifiant existe, mais le mot de passe est incorrect.
-    //     if (! Hash::check($password, $user->password)) {
-    //         RateLimiter::hit($this->throttleKey());
-
-    //         throw ValidationException::withMessages([
-    //             // On met l'erreur sur le champ 'password' pour une meilleure UX.
-    //             // L'utilisateur saura que c'est le mot de passe qu'il doit corriger.
-    //             'password' => 'Le mot de passe que vous avez saisi est incorrect.',
-    //         ]);
-    //     }
-
-    //     // Si tout est correct, on connecte l'utilisateur.
-    //     Auth::login($user, $this->boolean('remember'));
-
-    //     RateLimiter::clear($this->throttleKey());
-    // }
+   
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();

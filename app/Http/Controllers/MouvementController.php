@@ -212,34 +212,64 @@ class MouvementController extends Controller
             'motif_annulation.string'   => "Le motif d'annulation doit être une chaîne de caractères.",
             'motif_annulation.max'      => "Le motif d'annulation ne peut pas dépasser 255 caractères.",
         ]);
+
         $num_mouvement = $request->num_mouvement;
         $mouvementsLies = Mouvement::where('num_mouvement', $num_mouvement)->get();
 
-        // ✅ Vérifier AVANT la transaction
         if ($mouvementsLies->isEmpty()) {
             return back()->with('error', 'Aucun mouvement trouvé pour ce numéro.');
         }
         if ($mouvementsLies->every(fn($m) => $m->est_annule)) {
             return back()->with('error', 'Ces mouvements ont déjà été annulés.');
         }
-
-        // ✅ Transaction seulement pour la mise à jour
-        DB::transaction(function () use ($request, $mouvementsLies) {
-            foreach ($mouvementsLies as $mvt) {
+// 🔹 3. Générer un numéro unique de transfert
+DB::transaction(function () use ($request, $mouvementsLies) {
+    foreach ($mouvementsLies as $mvt) {
+                $lastMouvement = Mouvement::orderByDesc('created_at')->first();
+    
+                if ($lastMouvement) {
+                    // 🔹 Extraire la partie numérique après le dernier tiret
+                    $parts = explode('-', $lastMouvement->num_mouvement);
+                    $lastNumber = intval(end($parts));
+                } else {
+                    $lastNumber = 0;
+                }
+    
+                $numMouvement = Auth::user()->code_entreprise . '-' . date('Y') . '-' . ($lastNumber + 1);
                 if ($mvt->est_annule) continue;
 
                 $caisse = $mvt->caisse;
 
-                $nouveauSolde = $mvt->montant_debit > 0
-                    ? $caisse->seuil_encaissement + $mvt->montant_debit
-                    : $caisse->seuil_encaissement - $mvt->montant_credit;
-
+                // ✅ Marquer le mouvement original comme annulé
                 $mvt->update([
                     'est_annule'       => true,
-                    'date_annulation'  => now(),
-                    'motif_annulation' => $request->motif_annulation,
+                    'date_annulation'  => now()->addHour(),
+                    'motif_annulation' => "Annulation de l'opération : " . $mvt->num_mouvement . "  [ Motif : " . $request->motif_annulation. " ]",
                     'annulateur_id'    => Auth::id(),
                 ]);
+
+                // ✅ Créer le mouvement inverse
+                $mouvementInverse = $mvt->replicate(); // copie toutes les colonnes
+                $mouvementInverse->montant_debit  = $mvt->montant_credit; // on inverse
+                $mouvementInverse->montant_credit = $mvt->montant_debit;  // on inverse
+                $mouvementInverse->motif_standard_id = null; // nouveau ID
+                $mouvementInverse->est_annule     = false;
+                $mouvementInverse->libelle_personnalise = "Annulation de l'opération : " . $mvt->num_mouvement;
+                $mouvementInverse->date_mouvement = now()->addHour(); // on met la date actuelle
+                $mouvementInverse->num_mouvement = $numMouvement; // même numéro pour lier les mouvements
+                $mouvementInverse->operateur_id = Auth::id(); // l'utilisateur qui annule
+                $mouvementInverse->save();
+
+                // ✅ Mettre à jour le solde de la caisse
+                $nouveauSolde = $caisse->seuil_encaissement;
+
+                if ($mvt->montant_debit > 0) {
+                    // Si c'était un débit, on ajoute l'argent
+                    $nouveauSolde += $mvt->montant_debit;
+                } else {
+                    // Si c'était un crédit, on retire l'argent
+                    $nouveauSolde -= $mvt->montant_credit;
+                }
 
                 $caisse->update([
                     'seuil_encaissement' => $nouveauSolde
@@ -249,7 +279,7 @@ class MouvementController extends Controller
 
         return redirect()->back()->with(
             'success',
-            "Les Opérations liées au transfert [ $num_mouvement ] ont été annulées avec succès."
+            "Les opérations liées au transfert [ $num_mouvement ] ont été annulées ."
         );
     }
 }

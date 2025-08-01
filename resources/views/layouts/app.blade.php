@@ -29,7 +29,7 @@
 </head>
 
 <body>
-   
+
     <!-- Top Bar Start -->
     <div class="topbar d-print-none">
         <div class="container-fluid">
@@ -184,7 +184,7 @@
         </div><!--end startbar-menu-->
     </div><!--end startbar-->
     <div class="startbar-overlay d-print-none"></div>
- <!-- Loader global -->
+    <!-- Loader global -->
     <div id="global-loader"
         class="position-fixed top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center bg-white"
         style="z-index: 2000;">
@@ -192,27 +192,12 @@
         <small class="mt-2">Chargement ...</small>
     </div>
 
-    <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const loader = document.getElementById("global-loader");
-
-    // Quand toute la page est chargée (HTML + CSS + images)
-    window.addEventListener("load", () => {
-        loader.style.opacity = "0"; // transition en douceur
-        loader.style.pointerEvents = "none"; // évite de bloquer les clics pendant la transition
-
-        setTimeout(() => {
-            loader.style.display = "none"; // cache complètement le loader
-        }, 500); // délai pour la transition
-    });
-});
-</script>
-                                        <style>
-    .mouvement-annule td {
-        text-decoration: line-through;
-        opacity: 0.6;
-    }
-</style>
+    
+    <style>
+        .mouvement-annule td {
+            opacity: 0.6;
+        }
+    </style>
     <div class="page-title-box">
         <div class="container-fluid">
             <div class="row gap-0">
@@ -271,9 +256,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
     @yield('content')
     @include('components.content_application.create_categorie_offcanvas')
-  
 
 
+<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const loader = document.getElementById("global-loader");
+
+            // Quand toute la page est chargée (HTML + CSS + images)
+            window.addEventListener("load", () => {
+                loader.style.opacity = "0"; // transition en douceur
+                loader.style.pointerEvents = "none"; // évite de bloquer les clics pendant la transition
+
+                setTimeout(() => {
+                    loader.style.display = "none"; // cache complètement le loader
+                }, 500); // délai pour la transition
+            });
+        });
+    </script>
     <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
     <script src="{{ asset('assets/libs/iconify-icon/iconify-icon.min.js') }}"></script>

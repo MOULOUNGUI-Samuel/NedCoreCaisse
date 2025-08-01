@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CaisseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -19,14 +20,14 @@ use App\Http\Controllers\UserController;
 
 Route::get('/UserInfo', [CaisseController::class, 'UserInfo'])->name('api.users.UserInfo');
 // Route publique pour se connecter et obtenir un token
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'authenticate']);
 
 // Groupe de routes protégées par Sanctum
 Route::middleware('auth:sanctum')->group(function () {
-    
+
     // Cette route ne sera accessible qu'avec un token valide
     Route::get('/UserInfo', [UserController::class, 'UserInfo']);
-    
+
     // Vous pouvez obtenir les informations de l'utilisateur authentifié comme ceci
     Route::get('/user', function (Request $request) {
         return $request->user();

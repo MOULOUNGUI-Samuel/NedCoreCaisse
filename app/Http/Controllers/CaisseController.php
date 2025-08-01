@@ -156,8 +156,7 @@ class CaisseController extends Controller
 
         $mouvementsRecents = Mouvement::with(['operateur', 'motifStandard'])
             ->where('caisse_id', $id)
-            ->latest()
-            ->take(5)
+            ->orderBy('date_mouvement', 'desc')
             ->get();
 
         return view(
