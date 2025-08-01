@@ -105,8 +105,9 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
 
                             <div class="col-md-4">
-                                <form method="POST" action="{{ route('mouvements.annuler.numero', $mvt->num_mouvement) }}">
+                                <form method="POST" action="{{ route('mouvements.annuler.numero') }}">
                                     @csrf
+                                    <input type="hidden" name="num_mouvement" value="${numMouvement}">
                                     <label class="form-label">Motif d'annulation</label>
                                     <textarea name="motif_annulation" class="form-control mb-3 shadow" rows="4" required></textarea>
                                     <button type="submit" class="btn btn-danger w-100">

@@ -34,7 +34,7 @@ Route::middleware('auth')->group(function () {
         // web.php
 Route::get('/mouvements/{num}/associes', [MouvementController::class, 'getAssocies'])
      ->name('mouvements.associes');
-Route::post('/mouvements/annuler/{num_mouvement}', [MouvementController::class, 'annulerParNumero'])
+Route::post('/mouvements/annuler/', [MouvementController::class, 'annulerParNumero'])
     ->name('mouvements.annuler.numero');
 
     Route::get('/categorie/{id}/motifs', [CaisseController::class, 'getMotifs']);

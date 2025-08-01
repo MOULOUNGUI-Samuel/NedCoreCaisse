@@ -62,20 +62,67 @@ class CaisseController extends Controller
         ]);
     }
     public function index()
-    {
-        $users = User::where('societe_id', Auth::user()->societe_id)
-            ->get();
-        $caisses = Caisse::with('user')->where('societe_id', Auth::user()->societe_id)
-            ->where('est_supprime', false)
-            ->get();
-        $categorieMotifs = CategorieMotif::with('motifsStandards')
-            ->where('societe_id', Auth::user()->societe_id)
-            ->get();
-        // On peut aussi ajouter les catégories de motifs si nécessaire
+{
+    $userSociete = Auth::user()->societe_id;
+
+    $users = User::where('societe_id', $userSociete)->get();
+
+    $caisses = Caisse::with('user')
+        ->where('societe_id', $userSociete)
+        ->where('est_supprime', false)
+        ->get()
+        ->map(function ($caisse) {
+            
+            // 🔹 Compter le nombre de versements et retraits
+            $versements = $caisse->mouvements()
+            ->where('montant_credit', '>', 0)
+            ->where('est_annule', 0)
+            ->sum('montant_credit');
+
+            $retraits   = $caisse->mouvements()
+            ->where('montant_debit', '>', 0)
+            ->where('est_annule', 0)
+            ->sum('montant_debit');
+
+            $caisse->versements = $versements;
+            $caisse->retraits   = $retraits;
+
+            // 🔹 Calculer les pourcentages de la barre de progression
+            $totalOps = $versements + $retraits;
+
+            $caisse->pourcentVersements = $totalOps > 0 ? ($versements * 100) / $totalOps : 0;
+            $caisse->pourcentRetraits   = $totalOps > 0 ? ($retraits * 100) / $totalOps : 0;
+
+            return $caisse;
+        });
+
+    // ✅ Sélectionner la première caisse par défaut
+    $activeCaisse = $caisses->first();
+
+    // ✅ Charger les mouvements de la première caisse
+    $mouvements = $activeCaisse
+        ? Mouvement::with(['operateur', 'motifStandard', 'annulateur'])
+            ->where('caisse_id', $activeCaisse->id)
+            ->orderByDesc('date_mouvement')
+            ->take(10)
+            ->get()
+        : collect();
+
+    $categorieMotifs = CategorieMotif::with('motifsStandards')
+        ->where('societe_id', $userSociete)
+        ->get();
+
+    return view('components.content_application.liste_caisse', compact(
+        'users',
+        'caisses',
+        'categorieMotifs',
+        'activeCaisse',
+        'mouvements'
+    ));
+}
 
 
-        return view('components.content_application.liste_caisse', compact('users', 'caisses', 'categorieMotifs'));
-    }
+
     public function operations($id)
     {
         $users = User::where('societe_id', Auth::user()->societe_id)
@@ -235,25 +282,17 @@ class CaisseController extends Controller
             'mouvements' => $mouvements
         ]);
     }
-    public function getMouvementsHtml(Request $request, $id_caisse)
+    public function getMouvementsHtml($id_caisse)
     {
-        $user = Auth::user();
+        $mouvements = Mouvement::with(['operateur', 'motifStandard'])
+            ->where('caisse_id', $id_caisse)
+            ->latest()
+            ->take(10)
+            ->get();
 
-        // On récupère les informations de la caisse demandée (juste pour le titre)
-        // $allCaisses = getListeCaissesAvecSoapClient($user->code_entreprise, $user->username);
-        // $activeCaisse = collect($allCaisses)->firstWhere('idcaisse', $id_caisse);
-
-        // On récupère les mouvements
-        // $date_debut = Carbon::now()->startOfMonth()->format('Ymd');
-        // $date_fin = Carbon::now()->endOfMonth()->format('Ymd');
-        // $mouvements = getMouvementsCaisse($id_caisse, $date_debut, $date_fin);
-
-        // On retourne la vue partielle, qui ne contient que le tableau HTML
-        return view('components.content_application._mouvements_table', [
-            'activeCaisse' => null,
-            'mouvements' => null
-        ]);
+        return view('components.content_application._mouvements_table', compact('mouvements'));
     }
+
 
     // public function __construct()
     // {

@@ -203,31 +203,28 @@ class MouvementController extends Controller
         return response()->json($mouvements);
     }
 
-    public function annulerParNumero(Request $request, $num_mouvement)
+    public function annulerParNumero(Request $request)
     {
-        $request->validate(
-            [
-                'motif_annulation' => 'required|string|max:255',
-            ],
-            [
-                'motif_annulation.required' => 'Le motif d\'annulation est obligatoire.',
-                'motif_annulation.string' => 'Le motif d\'annulation doit être une chaîne de caractères.',
-                'motif_annulation.max' => 'Le motif d\'annulation ne peut pas dépasser 255 caractères.',
-            ]
-        );
+        $request->validate([
+            'motif_annulation' => 'required|string|max:255',
+        ], [
+            'motif_annulation.required' => "Le motif d'annulation est obligatoire.",
+            'motif_annulation.string'   => "Le motif d'annulation doit être une chaîne de caractères.",
+            'motif_annulation.max'      => "Le motif d'annulation ne peut pas dépasser 255 caractères.",
+        ]);
+        $num_mouvement = $request->num_mouvement;
+        $mouvementsLies = Mouvement::where('num_mouvement', $num_mouvement)->get();
 
-        DB::transaction(function () use ($request, $num_mouvement) {
+        // ✅ Vérifier AVANT la transaction
+        if ($mouvementsLies->isEmpty()) {
+            return back()->with('error', 'Aucun mouvement trouvé pour ce numéro.');
+        }
+        if ($mouvementsLies->every(fn($m) => $m->est_annule)) {
+            return back()->with('error', 'Ces mouvements ont déjà été annulés.');
+        }
 
-            $mouvementsLies = Mouvement::where('num_mouvement', $num_mouvement)->get();
-
-            if ($mouvementsLies->isEmpty()) {
-                return back()->with('error', 'Aucun mouvement trouvé pour ce numéro.');
-            }
-
-            if ($mouvementsLies->every(fn($m) => $m->est_annule)) {
-                return back()->with('error', 'Ces mouvements ont déjà été annulés.');
-            }
-
+        // ✅ Transaction seulement pour la mise à jour
+        DB::transaction(function () use ($request, $mouvementsLies) {
             foreach ($mouvementsLies as $mvt) {
                 if ($mvt->est_annule) continue;
 
@@ -238,10 +235,10 @@ class MouvementController extends Controller
                     : $caisse->seuil_encaissement - $mvt->montant_credit;
 
                 $mvt->update([
-                    'est_annule' => true,
-                    'date_annulation' => now(),
+                    'est_annule'       => true,
+                    'date_annulation'  => now(),
                     'motif_annulation' => $request->motif_annulation,
-                    'annulateur_id' => Auth::id(),
+                    'annulateur_id'    => Auth::id(),
                 ]);
 
                 $caisse->update([
@@ -250,6 +247,9 @@ class MouvementController extends Controller
             }
         });
 
-        return redirect()->back()->with('success', "Les Opérations liées au transfert [ $num_mouvement ] ont été annulées avec succès.");
+        return redirect()->back()->with(
+            'success',
+            "Les Opérations liées au transfert [ $num_mouvement ] ont été annulées avec succès."
+        );
     }
 }

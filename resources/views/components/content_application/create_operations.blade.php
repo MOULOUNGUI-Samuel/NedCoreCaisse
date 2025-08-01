@@ -324,35 +324,29 @@
                             'autreCaisses' => $autreCaisses,
                         ])
                         <div class="row">
-                            <div class="col-md-6 col-lg-6">
+                            <div class="col-md-12 col-lg-6">
                                 <div class="card border-0 bg-gradient-purple">
                                     <div class="card-body">
                                         <span class="fs-14 fw-semibold">Encaissements du jour</span>
                                         <h4 class="my-2 fs-22 fw-semibold">
                                             {{ number_format($encaissementsJour, 0, ',', ' ') }}</h4>
-                                        <p class="text-muted fs-13">
-                                            <span class="text-success"><i class="fas fa-arrow-up me-1"></i>--,--%</span>
-                                            Augmentation du solde
-                                        </p>
+                                        
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-6 col-lg-6">
+                            <div class="col-md-12 col-lg-6">
                                 <div class="card border-0 bg-gradient-info">
                                     <div class="card-body">
                                         <span class="fs-14 fw-semibold">Décaissements du jour</span>
                                         <h4 class="text-dark my-2 fw-semibold fs-22">
                                             {{ number_format($decaissementsJour, 0, ',', ' ') }}</h4>
-                                        <p class="text-muted fs-13">
-                                            <span class="text-danger"><i class="fas fa-arrow-down me-1"></i>--,--%</span>
-                                            Diminution du solde
-                                        </p>
+                                       
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-6 col-lg-6">
+                            <div class="col-md-12 col-lg-6">
                                 <div class="card border-0 bg-gradient-purple">
                                     <div class="card-body">
                                         <span class="fs-14 fw-semibold">Opérations passées</span>
@@ -361,7 +355,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6 col-lg-6">
+                            <div class="col-md-12 col-lg-6">
                                 <div class="card border-0 bg-gradient-info">
                                     <div class="card-body">
                                         <span class="fs-14 fw-semibold">Opérations annulées</span>
@@ -383,13 +377,15 @@
                             <div class="card-body pt-0">
                                 <div class="table-responsive">
                                     <table class="table mb-0 table-striped">
+
                                         <tbody>
                                             @forelse ($mouvementsRecents as $mvt)
                                                 @php
                                                     $isDebit = $mvt->montant_debit > 0;
                                                 @endphp
-                                                <tr class="align-middle bg-white"
-                                                    style="border-bottom: 1px solid #dee2e6;">
+                                                <tr class="align-middle bg-white {{ $mvt->est_annule ? 'mouvement-annule' : '' }}"
+                                                        style="border-bottom: 1px solid;"
+                                                    >
                                                     <td>
                                                         <div class="d-flex align-items-center">
                                                             <img src="{{ asset('assets/images/user.jpg') }}"
