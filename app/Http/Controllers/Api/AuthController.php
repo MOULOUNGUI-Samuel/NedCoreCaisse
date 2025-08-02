@@ -13,13 +13,11 @@ class AuthController extends Controller
     {
 
         $response = Http::withHeaders([
-            'X-API-KEY' => '3e10a57a18cc9fc669babbd9adc21b7bdf2b970effe7dce38b8e040e1d08824b',
-            'accept' => 'application/json',
-            'X-CSRF-TOKEN' => ''
-        ])->get('https://nedcore.net/users/' . $id);
+    'X-API-KEY' => '3e10a57a18cc9fc669babbd9adc21b7bdf2b970effe7dce38b8e040e1d08824b',
+    'accept' => 'application/json',
+])->get('https://nedcore.net/api/users/' . $id);
 
-        $data = $response->json();
-dd($data);
+dd($response->json());
         if ($response->successful() ) {
             
         } else {
