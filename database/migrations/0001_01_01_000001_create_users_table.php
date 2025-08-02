@@ -15,6 +15,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('nedcore_user_id');
             $table->uuid('code_entreprise');
+            $table->string('photo')->nullable();
+            $table->string('role')->default('employer'); // Ajout d'un champ '
             $table->string('name')->nullable();
             // J'ai ajouté l'index unique sur username, c'est important
             $table->string('username')->unique()->nullable(); 

@@ -14,6 +14,7 @@ class Societe extends Model
     protected $fillable = [
         'code_societe',
         'nom_societe',
+        'logo',
         'email',
         'telephone',
         'statut',

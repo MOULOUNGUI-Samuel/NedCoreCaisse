@@ -43,7 +43,7 @@ class LoginRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-   
+
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
@@ -70,19 +70,6 @@ class LoginRequest extends FormRequest
             ]);
         }
 
-        // ----------------------------------------------------
-        //        NOUVELLE VÉRIFICATION VIA LE SERVICE SOAP
-        // ----------------------------------------------------
-
-        // Cas 1 : L'utilisateur existe, mais l'authentification externe échoue.
-        // On utilise le mot de passe en clair fourni par l'utilisateur.
-        // if (!$this->verifierLogin($code_entreprise, $identifiant, $password)) {
-        //     RateLimiter::hit($this->throttleKey());
-
-        //     throw ValidationException::withMessages([
-        //         'password' => 'Informations de connexion incorrectes. Merci de vérifier vos informations',
-        //     ]);
-        // }
 
         // On cherche l'utilisateur dans la base de données locale
         $user = User::where('identifiant', $identifiant)
@@ -96,48 +83,12 @@ class LoginRequest extends FormRequest
                 'identifiant' => trans('auth.failed'),
             ]);
             throw ValidationException::withMessages([
-              'password' => 'Informations de connexion incorrectes. Merci de vérifier vos informations',
+                'password' => 'Informations de connexion incorrectes. Merci de vérifier vos informations',
             ]);
         }
-        
-        if ($user) {
-            // $user = User::findOrFail($user->id);
-            // $user->username = $identifiant;
-            // $user->identifiant = $identifiant;
-            // $user->email = $identifiant . '@gmail.com';
-            // if (!empty($password)) {
-            //     $user->password = Hash::make($password);
-            // } 
-            // // 4. Sauvegardez les modifications dans la base de données.
-            // $user->save();
 
-            Auth::login($user, $this->boolean('remember'));
-        } else {
-            // Si l'utilisateur n'existe pas, on le crée
-            $societe = Societe::create([
-                'code_societe' => 'NEDCORE',
-                'nom_societe' => 'Nedcore Systems Inc.',
-                'statut' => 1,
-                'logo' => 'logos/nedcore.png',
-                'telephone' => fake()->unique()->phoneNumber(),
-                'adresse' => fake()->address(),
-            ]);
-            $user = User::create([
-                'id' => (string) Str::uuid(), // Utilisation de UUID
-                'name' => null,
-                'nedcore_user_id' => (string) Str::uuid(),
-                'societe_id' => $societe->id,
-                'code_entreprise' => $code_entreprise,
-                'username' => $identifiant,
-                'email' => $identifiant . '@gmail.com',
-                'identifiant' => $identifiant, // Peut être un email, numéro de téléphone ou nom d'utilisateur
-                'google_id' => null,
-                'facebook_id' => null,
-                'password' => Hash::make('password'), // Mot de passe sécurisé
-            ]);
-            // Si l'authentification externe réussit, on connecte l'utilisateur local.
-            Auth::login($user, $this->boolean('remember'));
-        }
+        // Si l'authentification externe réussit, on connecte l'utilisateur local.
+        Auth::login($user, $this->boolean('remember'));
 
         RateLimiter::clear($this->throttleKey());
     }

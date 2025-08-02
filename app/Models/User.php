@@ -30,6 +30,8 @@ class User extends Authenticatable
         'nedcore_user_id',
         'societe_id',
         'code_entreprise', 
+        'photo',
+        'role',
         'username',
         'email',
         'identifiant',
