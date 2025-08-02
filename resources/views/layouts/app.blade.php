@@ -51,8 +51,8 @@
                         >{{ Auth::User()->societe->nom_societe }}</button>
                     </li>
                     <li class="mx-2 welcome-text">
-                        <h5 class="mb-0 fw-semibold text-truncate">Bienvenue,
-                            {{ Auth::User()->identifiant ?? 'Utilisateur' }}</h5>
+                        <h5 class="mb-0 fw-semibold text-truncate">Salut, 
+                            {{ Auth::User()->username ?? 'Utilisateur' }}</h5>
                         <!-- <h6 class="mb-0 fw-normal text-muted text-truncate fs-14">Voici un aperçu de vos caisses.</h6> -->
                     </li>
                 </ul>
