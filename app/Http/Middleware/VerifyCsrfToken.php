@@ -13,6 +13,5 @@ class VerifyCsrfToken extends Middleware
      */
 
     protected $except = [
-        '/authenticate_externe', // Désactive CSRF pour cette route
     ];
 }
