@@ -21,7 +21,7 @@ class AuthController extends Controller
         $response = Http::withHeaders([
             'X-API-KEY' => '3e10a57a18cc9fc669babbd9adc21b7bdf2b970effe7dce38b8e040e1d08824b',
             'accept' => 'application/json',
-        ])->get('https://nedcore.net/api/users/051a1a80-6e6e-4b99-abff-308faf6781e4');
+        ])->get('https://nedcore.net/api/users/' . $id);
 
         if ($response->successful()) {
             $data = $response->json();
