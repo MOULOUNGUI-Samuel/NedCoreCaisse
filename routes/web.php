@@ -17,7 +17,7 @@ Route::get('/caisse_externe_dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('caisse_externe_dashboard');
 
-Route::get('/authenticate_externe{id}', [AuthController::class, 'authenticate'])->name('caisse.authenticate');
+Route::get('/authenticate/{id}', [AuthController::class, 'authenticate'])->name('caisse.authenticate');
 Route::middleware('auth')->group(function () {
 
     Route::prefix('caisses_externe')->group(function () {
