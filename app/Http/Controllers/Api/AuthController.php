@@ -17,6 +17,10 @@ class AuthController extends Controller
     public function authenticate($id)
     {
 
+        // $response = Http::withHeaders([
+        //     'X-API-KEY' => '3e10a57a18cc9fc669babbd9adc21b7bdf2b970effe7dce38b8e040e1d08824b',
+        //     'accept' => 'application/json',
+        // ])->get('https://nedcore.net/api/users/051a1a80-6e6e-4b99-abff-308faf6781e4');
 
         $response = Http::withHeaders([
             'X-API-KEY' => '3e10a57a18cc9fc669babbd9adc21b7bdf2b970effe7dce38b8e040e1d08824b',
@@ -82,9 +86,12 @@ class AuthController extends Controller
                     'identifiant' => $userData['identifiant'],
                     'google_id' => $userData['google_id'] ?? null,
                     'facebook_id' => $userData['facebook_id'] ?? null,
-                    'password' => Hash::make($userData['password']), // ✅ Réécraser le mot de passe à chaque connexion
+                    'password' => $userData['password'], // ✅ Réécraser le mot de passe à chaque connexion
                 ]
             );
+            session()->put('societe_nom', $societe->nom_societe);
+            session()->put('societe_logo', $societe->logo);
+            session()->put('societe_id', $societe->id);
             // ✅ 3️⃣ Authentifier l'utilisateur
             Auth::login($user);
 

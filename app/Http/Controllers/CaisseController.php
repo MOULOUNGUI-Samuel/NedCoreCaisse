@@ -62,70 +62,104 @@ class CaisseController extends Controller
         ]);
     }
     public function index()
-{
-    $userSociete = Auth::user()->societe_id;
+    {
+        $societe_id = session('societe_id');
 
-    $users = User::where('societe_id', $userSociete)->get();
+        $users = User::where('societe_id', $societe_id)->get();
 
-    $caisses = Caisse::with('user')
-        ->where('societe_id', $userSociete)
-        ->where('est_supprime', false)
-        ->get()
-        ->map(function ($caisse) {
-            
-            // 🔹 Compter le nombre de versements et retraits
-            $versements = $caisse->mouvements()
-            ->where('montant_credit', '>', 0)
-            ->where('est_annule', 0)
-            ->sum('montant_credit');
+        if (Auth::user()->role == 'Admin') {
+            $caisses = Caisse::with('user')
+                ->where('societe_id', $societe_id)
+                ->where('est_supprime', false)
+                ->get()
+                ->map(function ($caisse) {
 
-            $retraits   = $caisse->mouvements()
-            ->where('montant_debit', '>', 0)
-            ->where('est_annule', 0)
-            ->sum('montant_debit');
+                    // 🔹 Compter le nombre de versements et retraits
+                    $versements = $caisse->mouvements()
+                        ->where('montant_credit', '>', 0)
+                        ->where('est_annule', 0)
+                        ->sum('montant_credit');
 
-            $caisse->versements = $versements;
-            $caisse->retraits   = $retraits;
+                    $retraits   = $caisse->mouvements()
+                        ->where('montant_debit', '>', 0)
+                        ->where('est_annule', 0)
+                        ->sum('montant_debit');
 
-            // 🔹 Calculer les pourcentages de la barre de progression
-            $totalOps = $versements + $retraits;
+                    $caisse->versements = $versements;
+                    $caisse->retraits   = $retraits;
 
-            $caisse->pourcentVersements = $totalOps > 0 ? ($versements * 100) / $totalOps : 0;
-            $caisse->pourcentRetraits   = $totalOps > 0 ? ($retraits * 100) / $totalOps : 0;
+                    // 🔹 Calculer les pourcentages de la barre de progression
+                    $totalOps = $versements + $retraits;
 
-            return $caisse;
-        });
+                    $caisse->pourcentVersements = $totalOps > 0 ? ($versements * 100) / $totalOps : 0;
+                    $caisse->pourcentRetraits   = $totalOps > 0 ? ($retraits * 100) / $totalOps : 0;
 
-    // ✅ Sélectionner la première caisse par défaut
-    $activeCaisse = $caisses->first();
+                    return $caisse;
+                });
+        } else {
+            $caisses = Caisse::with('user')
+                ->where('societe_id', $societe_id)
+                ->where('user_id', Auth::id())
+                ->where('est_supprime', false)
+                ->get()
+                ->map(function ($caisse) {
 
-    // ✅ Charger les mouvements de la première caisse
-    $mouvements = $activeCaisse
-        ? Mouvement::with(['operateur', 'motifStandard', 'annulateur'])
+                    // 🔹 Compter le nombre de versements et retraits
+                    $versements = $caisse->mouvements()
+                        ->where('montant_credit', '>', 0)
+                        ->where('est_annule', 0)
+                        ->sum('montant_credit');
+
+                    $retraits   = $caisse->mouvements()
+                        ->where('montant_debit', '>', 0)
+                        ->where('est_annule', 0)
+                        ->sum('montant_debit');
+
+                    $caisse->versements = $versements;
+                    $caisse->retraits   = $retraits;
+
+                    // 🔹 Calculer les pourcentages de la barre de progression
+                    $totalOps = $versements + $retraits;
+
+                    $caisse->pourcentVersements = $totalOps > 0 ? ($versements * 100) / $totalOps : 0;
+                    $caisse->pourcentRetraits   = $totalOps > 0 ? ($retraits * 100) / $totalOps : 0;
+
+                    return $caisse;
+                });
+        }
+
+
+        // ✅ Sélectionner la première caisse par défaut
+        $activeCaisse = $caisses->first();
+
+        // ✅ Charger les mouvements de la première caisse
+        $mouvements = $activeCaisse
+            ? Mouvement::with(['operateur', 'motifStandard', 'annulateur'])
             ->where('caisse_id', $activeCaisse->id)
             ->orderByDesc('date_mouvement')
             ->take(10)
             ->get()
-        : collect();
+            : collect();
 
-    $categorieMotifs = CategorieMotif::with('motifsStandards')
-        ->where('societe_id', $userSociete)
-        ->get();
+        $categorieMotifs = CategorieMotif::with('motifsStandards')
+            ->where('societe_id', $societe_id)
+            ->get();
 
-    return view('components.content_application.liste_caisse', compact(
-        'users',
-        'caisses',
-        'categorieMotifs',
-        'activeCaisse',
-        'mouvements'
-    ));
-}
+        return view('components.content_application.liste_caisse', compact(
+            'users',
+            'caisses',
+            'categorieMotifs',
+            'activeCaisse',
+            'mouvements'
+        ));
+    }
 
 
 
     public function operations($id)
     {
-        $users = User::where('societe_id', Auth::user()->societe_id)
+        $societe_id = session('societe_id');
+        $users = User::where('societe_id', $societe_id)
             ->get();
         $caisse = Caisse::with('user')->where('id', $id)
             ->first();
@@ -133,11 +167,11 @@ class CaisseController extends Controller
             ->where('id', '!=', $id)
             ->get();
         $categorieMotifsEntrer = CategorieMotif::with('motifsStandards')
-            ->where('societe_id', Auth::user()->societe_id)
+            ->where('societe_id', $societe_id)
             ->where('type_operation', 'Entrée')
             ->get();
         $categorieMotifsSorties = CategorieMotif::with('motifsStandards')
-            ->where('societe_id', Auth::user()->societe_id)
+            ->where('societe_id', $societe_id)
             ->where('type_operation', 'Sortie')
             ->get();
 
@@ -184,6 +218,7 @@ class CaisseController extends Controller
 
     public function store(Request $request)
     {
+        $societe_id = session('societe_id');
         $validator = Validator::make(
             $request->all(), // Tu avais oublié de passer les données à valider !
             [
@@ -212,7 +247,7 @@ class CaisseController extends Controller
         Caisse::create([
             'libelle_caisse' => $data['libelle_caisse'],
             'user_id' => $data['user_id'],
-            'societe_id' => Auth::user()->societe_id,
+            'societe_id' => $societe_id,
             'seuil_maximum' => $request->input('limiter_solde') === 'oui'
                 ? $data['seuil_maximum'] ?? 0.00
                 : 0.00,
@@ -225,6 +260,7 @@ class CaisseController extends Controller
     }
     public function update(Request $request, $id)
     {
+        $societe_id = session('societe_id');
         // 1️⃣ On récupère la caisse à modifier
         $caisse = Caisse::findOrFail($id);
 
@@ -246,7 +282,7 @@ class CaisseController extends Controller
         $caisse->update([
             'libelle_caisse' => $data['libelle_caisse'],
             'user_id' => $data['user_id'],
-            'societe_id' => Auth::user()->societe_id, // Si ça ne change jamais, tu peux même le laisser tel quel
+            'societe_id' => $societe_id, // Si ça ne change jamais, tu peux même le laisser tel quel
             'seuil_maximum' => ($request->input('limiter_solde') === 'oui')
                 ? ($data['seuil_maximum'] ?? null)
                 : null,
@@ -264,6 +300,7 @@ class CaisseController extends Controller
      */
     public function getMouvementsHtmlExterne(Request $request, $id_caisse)
     {
+
         $user = Auth::user();
 
         // On récupère les informations de la caisse demandée (juste pour le titre)
@@ -306,17 +343,11 @@ class CaisseController extends Controller
      * API n°1: Lister les inscriptions.
      * La réponse ne contient que les données, pas de token CSRF.
      */
-    public function UserInfo()
-    {
-        $utilisateurs = User::select('id', 'code_entreprise', 'matricule', 'nom', 'prenom', 'email', 'role', 'created_at', 'updated_at')
-            ->latest()
-            ->paginate(25);
 
-        return response()->json($utilisateurs);
-    }
 
     public function storecategorie(Request $request)
     {
+        $societe_id = session('societe_id');
         $validated = $request->validate(
             [
                 'nom_categorie' => 'required|string|max:255',
@@ -334,7 +365,7 @@ class CaisseController extends Controller
         // 1️⃣ Création de la catégorie
         $categorie = CategorieMotif::create([
             'nom_categorie' => $validated['nom_categorie'],
-            'societe_id' => Auth::user()->societe_id,
+            'societe_id' => $societe_id,
             'type_operation' => $validated['type_operation'], // Ou autre valeur selon ton besoin
         ]);
 

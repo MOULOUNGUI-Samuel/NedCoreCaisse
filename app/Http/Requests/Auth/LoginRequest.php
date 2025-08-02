@@ -86,7 +86,9 @@ class LoginRequest extends FormRequest
                 'password' => 'Informations de connexion incorrectes. Merci de vérifier vos informations',
             ]);
         }
-
+        session()->put('societe_nom', $user->societe->nom_societe);
+        session()->put('societe_logo', $user->societe->logo);
+        session()->put('societe_id', $user->societe->id);
         // Si l'authentification externe réussit, on connecte l'utilisateur local.
         Auth::login($user, $this->boolean('remember'));
 

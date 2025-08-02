@@ -29,7 +29,9 @@
 </head>
 
 <body>
-
+    @php
+        $mesModules = \App\Helpers\DateHelper::dossier_info();
+    @endphp
     <!-- Top Bar Start -->
     <div class="topbar d-print-none">
         <div class="container-fluid">
@@ -40,6 +42,13 @@
                         <button class="nav-link mobile-menu-btn nav-icon" id="togglemenu">
                             <iconify-icon icon="solar:hamburger-menu-line-duotone" class="fs-20"></iconify-icon>
                         </button>
+                    </li>
+                    <li class="mx-2">
+                        <button class="btn btn-outline-primary"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvasWithBackdrop"
+                            aria-controls="offcanvasWithBackdrop"
+                        >{{ Auth::User()->societe->nom_societe }}</button>
                     </li>
                     <li class="mx-2 welcome-text">
                         <h5 class="mb-0 fw-semibold text-truncate">Bienvenue,
@@ -68,10 +77,13 @@
 
 
                     <li class="dropdown topbar-item">
-                        <a class="nav-link dropdown-toggle arrow-none nav-icon" data-bs-toggle="dropdown" href="#"
-                            role="button">
-                            <img src="{{ asset('assets/images/user.jpg') }}" alt="" class="thumb-md rounded">
+                        <a class="nav-link dropdown-toggle arrow-none nav-icon" data-bs-toggle="dropdown" href="#" role="button">
+                            <img src="{{ Auth::user()->societe && Auth::user()->societe->logo 
+                                        ? asset('storage/' . Auth::user()->societe->logo) 
+                                        : asset('assets/images/user.jpg') }}" 
+                                 alt="Logo" class="thumb-md rounded shadow">
                         </a>
+                        
                         <div class="dropdown-menu dropdown-menu-end py-0">
                             <div class="d-flex align-items-center dropdown-item py-2 bg-secondary-subtle">
                                 <div class="flex-shrink-0">
@@ -123,9 +135,28 @@
                 <div class="d-flex align-items-start flex-column w-100">
                     <!-- Navigation -->
                     <ul class="navbar-nav mb-auto w-100">
+                        <li class="clinicdropdown bg-light rounded shadow">
+                            <a href="javascript:void(0);" class="nav-link dropdown-toggle arrow-none d-flex px-2">
+                                <img src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : asset('assets/images/user.jpg') }}" 
+                                     class="img-fluid me-3" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%;" />
+                                <div class="user-names">
+                                    <h5 class="mb-1" style="margin: 0; font-size: 16px; font-weight: 600;">
+                                        {{ Auth::user()->name ?? 'Nom utilisateur' }}
+                                    </h5>
+                                    <h6 style="margin: 0; font-size: 14px; font-weight: 400; color: #6c757d;">
+                                        {{ Auth::user()->role ?? 'Rôle' }}
+                                    </h6>
+                                </div>
+                            </a>
+                        </li>
+                        
+                    </ul>
+
+                    <ul class="navbar-nav mb-auto w-100">
                         <li class="menu-label mt-2">
                             <span>Navigation</span>
                         </li>
+
 
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('dashboard') }}">
@@ -192,7 +223,7 @@
         <small class="mt-2">Chargement ...</small>
     </div>
 
-    
+
     <style>
         .mouvement-annule td {
             opacity: 0.6;
@@ -256,9 +287,95 @@
 
     @yield('content')
     @include('components.content_application.create_categorie_offcanvas')
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasWithBackdrop"
+    aria-labelledby="offcanvasWithBackdropLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title ps-3 mb-3" id="offcanvasWithBackdropLabel"
+            style="border-left: 5px solid #05436b; color: #333;">
+            Actuellement sur : {{ Str::limit($societe_nom, 15, '...') }}
+        </h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+            aria-label="Close"></button>
+    </div> <!-- end offcanvas-header-->
+    @php
+        $lesSocietes = \App\Helpers\DateHelper::dossier_info();
+    @endphp
+    <div class="offcanvas-body">
+        <div class="p-3" style="overflow-y: auto;">
+            <div class="row row-cols-3 g-2">
+                @foreach ($lesSocietes['societes'] as $societe)
+                    <div class="col text-center  card-hover-zoom">
+                        <a href="{{ route('change_societe', $societe->id) }}"
+                            class="text-decoration-none text-dark d-block">
+                            <div class="d-flex align-items-center justify-content-center mx-auto mb-2 shadow"
+                                style="width: 80px;height: 70px; transition: transform 0.3s;border-radius: 5px;">
+                                <img src="{{ asset('storage/' . $societe->logo) }}"
+                                    alt="{{ $societe->nom_societe }}" class="img-fluid rounded"
+                                    style="width: 80px;height: 70px; object-fit: contain;border-radius: 5px;border-radius: 20px">
+                            </div>
+                            <small class="fw-medium d-block text-truncate"
+                                title="{{ $societe->nom_societe }}">{{ $societe->nom_societe }}</small>
+                        </a>
+                    </div>
+                @endforeach
+                <style>
+                    .card-hover-zoom {
+                        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    }
 
-
-<script>
+                    .card-hover-zoom:hover {
+                        transform: scale(1.15);
+                        z-index: 2;
+                    }
+                </style>
+            </div>
+            
+        </div>
+    </div> <!-- end offcanvas-body-->
+</div>
+    <script>
+        // ✅ Fonction pour créer un cookie
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days*24*60*60*1000));
+            document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
+        }
+    
+        // ✅ Fonction pour lire un cookie
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length);
+            }
+            return null;
+        }
+    
+        // ✅ Appliquer le thème au chargement
+        document.addEventListener("DOMContentLoaded", function() {
+            const theme = getCookie("theme");
+            if (theme === "dark") {
+                document.body.classList.add("dark-mode");
+            } else {
+                document.body.classList.remove("dark-mode");
+            }
+        });
+    
+        // ✅ Gestion du clic pour basculer le thème
+        document.getElementById("light-dark-mode").addEventListener("click", function () {
+            if (document.body.classList.contains("dark-mode")) {
+                document.body.classList.remove("dark-mode");
+                setCookie("theme", "light", 365);
+            } else {
+                document.body.classList.add("dark-mode");
+                setCookie("theme", "dark", 365);
+            }
+        });
+    </script>
+    
+    <script>
         document.addEventListener("DOMContentLoaded", function() {
             const loader = document.getElementById("global-loader");
 

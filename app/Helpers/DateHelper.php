@@ -14,6 +14,7 @@ use App\Models\LienDoc;
 use App\Models\Module;
 use App\Models\Permission;
 use App\Models\PermissionUser;
+use App\Models\Societe;
 use Carbon\Carbon;
 use DateTime;
 use Exception;
@@ -39,6 +40,14 @@ class DateHelper
             // Si la date n'est pas valide, retourner null ou un message d'erreur
             return null; // Ou 'Format de date invalide'
         }
+    }
+    public static function dossier_info()
+    {
+        $societes = Societe::where('statut', 1)->get();
+        return [
+            'societes' => $societes,
+
+        ];
     }
     public static function convertirDateEnTexte($date)
     {
