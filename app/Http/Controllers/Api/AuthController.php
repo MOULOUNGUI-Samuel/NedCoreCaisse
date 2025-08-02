@@ -18,9 +18,9 @@ class AuthController extends Controller
             'X-CSRF-TOKEN' => ''
         ])->get('https://nedcore.net/users/' . $id);
 
-        if ($response->successful() ) {
-            $data = $response->json();
+        $data = $response->json();
 dd($data);
+        if ($response->successful() ) {
             
         } else {
             // Gérer l'erreur de récupération des bénéficiaires
