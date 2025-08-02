@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Societe;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -27,12 +28,38 @@ class AuthController extends Controller
             $entreprise = $data['entreprise'];
             $userData = $data['user'];
 
+            $logoPath = null;
+
+            if (!empty($entreprise['logo'])) {
+                $responseLogo = Http::get($entreprise['logo']);
+
+                if ($responseLogo->successful()) {
+                    $extension = pathinfo(parse_url($entreprise['logo'], PHP_URL_PATH), PATHINFO_EXTENSION);
+                    $fileName = 'logos/' . uniqid() . '.' . ($extension ?: 'jpg');
+
+                    Storage::disk('public')->put($fileName, $responseLogo->body());
+                    $logoPath = $fileName;
+                }
+            }
+            $photoPath = null;
+
+            if (!empty($userData['photo'])) {
+                $responsePhoto = Http::get($userData['photo']);
+
+                if ($responsePhoto->successful()) {
+                    $extension = pathinfo(parse_url($userData['photo'], PHP_URL_PATH), PATHINFO_EXTENSION);
+                    $fileName = 'photos/' . uniqid() . '.' . ($extension ?: 'jpg');
+
+                    Storage::disk('public')->put($fileName, $responsePhoto->body());
+                    $photoPath = $fileName;
+                }
+            }
             // ✅ 1️⃣ Mettre à jour ou créer la société
             $societe = Societe::updateOrCreate(
                 ['code_societe' => $entreprise['code_societe']],
                 [
                     'nom_societe' => $entreprise['nom_societe'],
-                    'logo' => $entreprise['logo'],
+                    'logo' => $logoPath,
                     'email' => $entreprise['email'] ?? null,
                     'telephone' => $entreprise['telephone'] ?? null,
                     'statut' => $entreprise['statut'],
@@ -48,7 +75,7 @@ class AuthController extends Controller
                     'nedcore_user_id' => $userData['id'],
                     'societe_id' => $societe->id,
                     'code_entreprise' => $entreprise['code_societe'],
-                    'photo' => $userData['photo'],
+                    'photo' => $photoPath,
                     'role' => $userData['role']['nom'] ?? null,
                     'username' => $userData['username'],
                     'email' => $userData['email'],
