@@ -26,6 +26,9 @@ Route::middleware('auth')->group(function () {
     Route::prefix('content_application')->group(function () {
         Route::get('/', [CaisseController::class, 'index'])->name('caisse.index');
         Route::post('/store', [CaisseController::class, 'store'])->name('caisses.store');
+        Route::put('/update/{id}', [CaisseController::class, 'update'])->name('caisses.update');
+
+
 
         Route::get('/operations/{id}', [CaisseController::class, 'operations'])->name('operations');
         Route::post('/storecategorie', [CaisseController::class, 'storecategorie'])->name('categorie.store');

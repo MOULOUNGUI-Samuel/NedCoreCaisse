@@ -131,43 +131,6 @@
                     </div>
                 </div>
             </div>
-
-            <hr class="hr-dashed my-3">
-
-            <h5 class="fs-14 m-0 px-3 pb-3 d-flex justify-content-between align-items-center">
-                Messages de la caisse
-                <a href="#" class="text-body-tertiary d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Connectés">
-                    <i class="iconoir-group text-success fs-13 me-1"></i><span class="fs-12">14 en ligne</span>
-                </a>
-            </h5>
-
-            <div class="ms-0 px-3" style="max-height:300px;" data-simplebar>
-                <a href="#" class="dropdown-item py-3">
-                    <span class="badge text-white bg-primary rounded-circle float-end fs-10 size-16 d-flex justify-content-center">2</span>
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <img src="assets/images/users/avatar-2.jpg" alt="" class="thumb-md rounded-circle">
-                        </div>
-                        <div class="flex-grow-1 ms-2 text-truncate">
-                            <h6 class="my-0 fw-normal text-dark fs-13">Marie (Caisse 1)</h6>
-                            <small class="text-success mb-0">En ligne</small>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="#" class="dropdown-item py-3">
-                    <small class="float-end text-muted ps-2"><i class="iconoir-double-check fs-15"></i></small>
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <img src="assets/images/users/avatar-1.jpg" alt="" class="thumb-md rounded-circle">
-                        </div>
-                        <div class="flex-grow-1 ms-2 text-truncate">
-                            <h6 class="my-0 fw-normal text-dark fs-13">Responsable Finance</h6>
-                            <small class="text-muted mb-0">Vu à 11:00</small>
-                        </div>
-                    </div>
-                </a>
-            </div>
         </div>
     </div>
 </div>

@@ -159,6 +159,19 @@ class CaisseController extends Controller
     public function operations($id)
     {
         $societe_id = session('societe_id');
+
+        if (Auth::user()->role == 'Admin') {
+            $caisses = Caisse::with('user')
+                ->where('societe_id', $societe_id)
+                ->where('est_supprime', false)
+                ->get();
+        } else {
+            $caisses = Caisse::with('user')
+                ->where('societe_id', $societe_id)
+                ->where('user_id', Auth::id())
+                ->where('est_supprime', false)
+                ->get();
+        }
         $users = User::where('societe_id', $societe_id)
             ->get();
         $caisse = Caisse::with('user')->where('id', $id)
@@ -205,7 +218,8 @@ class CaisseController extends Controller
                 'decaissementsJour',
                 'operationsPassees',
                 'operationsAnnulees',
-                'mouvementsRecents'
+                'mouvementsRecents',
+                'caisses'
             )
         );
     }
@@ -224,14 +238,13 @@ class CaisseController extends Controller
             [
                 'libelle_caisse' => 'required|string|max:255',
                 'user_id' => 'required|exists:users,id',
-                'seuil_maximum' => 'nullable|numeric|min:0',
+                'seuil_maximum' => 'nullable|min:0',
                 'description_caisse' => 'nullable|string',
             ],
             [
                 'libelle_caisse.required' => 'Le libellé de la caisse est obligatoire.',
                 'user_id.required' => 'Le gestionnaire de la caisse est obligatoire.',
                 'user_id.exists' => 'Le gestionnaire sélectionné n\'existe pas.',
-                'seuil_maximum.numeric' => 'Le seuil maximum doit être un nombre valide.',
                 'seuil_maximum.min' => 'Le seuil maximum ne peut pas être négatif.',
                 'description_caisse.string' => 'La description de la caisse doit être une chaîne de caractères.',
             ]
@@ -249,7 +262,7 @@ class CaisseController extends Controller
             'user_id' => $data['user_id'],
             'societe_id' => $societe_id,
             'seuil_maximum' => $request->input('limiter_solde') === 'oui'
-                ? $data['seuil_maximum'] ?? 0.00
+                ? intval(str_replace([' ', "\u{00A0}"], '', htmlspecialchars($data['seuil_maximum'] ))) ?? 0.00
                 : 0.00,
             'decouvert_autorise' => 0,
             'est_supprime' => false,
@@ -268,13 +281,12 @@ class CaisseController extends Controller
         $data = $request->validate([
             'libelle_caisse' => 'required|string|max:255',
             'user_id' => 'required|exists:users,id',
-            'seuil_maximum' => 'nullable|numeric|min:0',
+            'seuil_maximum' => 'nullable|min:0',
             'description_caisse' => 'nullable|string',
             'limiter_solde' => 'nullable|in:oui,non',
         ], [
             'libelle_caisse.required' => 'Le libellé de la caisse est obligatoire.',
             'user_id.required' => 'Le gestionnaire de la caisse est obligatoire.',
-            'seuil_maximum.numeric' => 'Le seuil maximum doit être un nombre valide.',
             'seuil_maximum.min' => 'Le seuil maximum ne peut pas être négatif.',
         ]);
 
@@ -283,9 +295,9 @@ class CaisseController extends Controller
             'libelle_caisse' => $data['libelle_caisse'],
             'user_id' => $data['user_id'],
             'societe_id' => $societe_id, // Si ça ne change jamais, tu peux même le laisser tel quel
-            'seuil_maximum' => ($request->input('limiter_solde') === 'oui')
-                ? ($data['seuil_maximum'] ?? null)
-                : null,
+            'seuil_maximum' => $request->input('limiter_solde') === 'oui'
+                ? intval(str_replace([' ', "\u{00A0}"], '', htmlspecialchars($data['seuil_maximum'] ))) ?? 0.00
+                : 0.00,
             'description_caisse' => $data['description_caisse'] ?? null,
         ]);
 
@@ -328,21 +340,6 @@ class CaisseController extends Controller
 
         return view('components.content_application._mouvements_table', compact('mouvements'));
     }
-
-
-    // public function __construct()
-    // {
-    //     $cleApiFournie = request()->header('X-API-KEY');
-    //     $cleApiValide = env('Nedcore_API_KEY');
-    //     if (!$cleApiFournie || $cleApiFournie !== $cleApiValide) {
-    //         abort(401, 'Accès non autorisé.');
-    //     }
-    // }
-
-    /**
-     * API n°1: Lister les inscriptions.
-     * La réponse ne contient que les données, pas de token CSRF.
-     */
 
 
     public function storecategorie(Request $request)

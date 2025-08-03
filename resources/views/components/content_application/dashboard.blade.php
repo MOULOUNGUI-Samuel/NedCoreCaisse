@@ -95,13 +95,64 @@
                                     </thead>
                                     <tbody>
                                         @forelse ($transactions as $t)
-                                            <tr>
-                                                <td>{{ $t->operateur->username ?? 'Utilisateur' }}</td>
-                                                <td>{{ $t->date_mouvement->format('d/m/Y H:i') }}</td>
-                                                <td>{{ $t->montant_debit > 0 ? 'Débit' : 'Crédit' }}</td>
-                                                <td>{{ $t->motifStandard->libelle_motif ?? $t->libelle_personnalise }}</td>
-                                                <td>{{ number_format($t->montant_debit ?: $t->montant_credit, 0, ',', ' ') }}</td>
-                                            </tr>
+                                        <tr class="align-middle bg-white {{ $t->est_annule ? 'mouvement-annule' : '' }}" style="border-bottom: 1px solid #dee2e6;">
+                                            <!-- ✅ Colonne opérateur -->
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="{{ asset('assets/images/user.jpg') }}" height="34"
+                                                        class="me-3 rounded border bg-white" alt="...">
+                                                    <div class="flex-grow-1 text-truncate">
+                                                        <h6 class="m-0 mb-2 fs-13">{{ $t->operateur->username ?? 'Utilisateur' }}</h6>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        
+                                            <!-- ✅ Date du mouvement -->
+                                            <td class="text-center">
+                                                <span class="fw-bold text-dark">{{ $t->date_mouvement->format('d/m/Y H:i') }}</span>
+                                            </td>
+                                        
+                                            <!-- ✅ Type d'opération + motif -->
+                                            <td>
+                                                <div style="border-left: 3px solid {{ $t->montant_debit > 0 ? '#ff0000' : '#086721' }}; padding-left: 10px;">
+                                                    <span class="badge text-white mb-1"
+                                                        style="background-color: {{ $t->montant_debit > 0 ? '#ff0000' : '#086721' }};">
+                                                        {{ $t->montant_debit > 0 ? 'Débit' : 'Crédit' }}
+                                                    </span><br>
+                                                    <span class="text-dark fw-semibold">
+                                                        {{ $t->motifStandard->libelle_motif ?? $t->libelle_personnalise }}
+                                                    </span><br>
+                                                    <small class="text-muted">{{ $t->observations ?? '' }}</small>
+                                                </div>
+                                            </td>
+                                        
+                                            <!-- ✅ Montant -->
+                                            <td class="text-end fw-semibold">
+                                                <span class="badge bg-transparent text-dark fs-12 mb-2">Montant</span><br>
+                                                <span class="{{ $t->montant_debit > 0 ? 'text-danger' : 'text-success' }} fw-semibold">
+                                                    {{ number_format($t->montant_debit ?: $t->montant_credit, 0, ',', ' ') }}
+                                                </span>
+                                            </td>
+                                        
+                                            <!-- ✅ Action -->
+                                            <td class="text-end">
+                                                <span class="badge bg-transparent text-primary fs-12 mb-2">Action</span><br>
+                                                <div class="d-flex justify-content-end">
+                                                    <button class="btn btn-sm btn-light border" data-bs-toggle="tooltip" data-bs-title="Imprimer">
+                                                        <i class="fas fa-print text-secondary fs-18"></i>
+                                                    </button>
+                                        
+                                                    @if ($t->est_annule)
+                                                        <button class="btn btn-sm btn-light border ms-1 text-info"
+                                                            data-bs-toggle="offcanvas"
+                                                            data-bs-target="#offcanvasMotifAnnulation{{ $t->id }}">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        
                                         @empty
                                             <tr>
                                                 <td colspan="5" class="text-center">Aucune transaction</td>
@@ -128,7 +179,7 @@
                                 @forelse ($caisses as $caisse)
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                         <span>{{ $caisse->libelle_caisse }}</span>
-                                        <span class="badge bg-primary">{{ number_format($caisse->seuil_encaissement, 0, ',', ' ') }} F</span>
+                                        <span class="badge bg-primary">{{ number_format($caisse->seuil_encaissement, 0, ',', ' ') }} XAF</span>
                                     </li>
                                 @empty
                                     <li class="list-group-item text-center text-muted">Aucune caisse disponible</li>

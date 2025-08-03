@@ -80,7 +80,7 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'identifiant' => trans('auth.failed'),
+                'identifiant' => 'Informations de connexion incorrectes. Merci de vérifier vos informations',
             ]);
             throw ValidationException::withMessages([
                 'password' => 'Informations de connexion incorrectes. Merci de vérifier vos informations',

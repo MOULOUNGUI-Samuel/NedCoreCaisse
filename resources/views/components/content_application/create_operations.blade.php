@@ -19,16 +19,43 @@
                                     Créer une catégorie
                                     <i class="fas fa-plus-circle"></i>
                                 </button>
-                                <button type="button" class="btn rounded-pill btn-light me-3 text-info"
+                                {{-- <button type="button" class="btn rounded-pill btn-light me-3 text-info"
                                     data-bs-toggle="offcanvas" data-bs-target="#myOffcanvasM" aria-controls="myOffcanvas">
                                     Créer un libellé de mouvement
                                     <i class="fas fa-plus-circle"></i>
-                                </button>
+                                </button> --}}
                                 <button type="button" data-bs-toggle="offcanvas" data-bs-target="#myOffcanvasT"
                                     aria-controls="myOffcanvas" class="btn rounded-pill btn-light me-3 text-danger">
                                     <span class="me-2">Transfert de fond</span>
                                     <i class="fas fa-exchange-alt"></i>
                                 </button>
+                                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                        <li class="nav-item dropdown">
+                                            <button type="button" class="btn rounded-pill btn-light" href="#"
+                                                id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                                Liste des caisses <i class="la la-angle-down"></i>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                @foreach ($caisses as $caisseListe)
+                                                    @if ($caisseListe->id !== $caisse->id)
+                                                        <li>
+                                                            <a class="dropdown-item"
+                                                                href="{{ route('operations', $caisseListe->id) }}">
+                                                                <i class="las la-wallet fs-18 me-2"></i>
+                                                                {{ $caisseListe->libelle_caisse }}
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <hr class="dropdown-divider">
+                                                        </li>
+                                                    @endif
+                                                @endforeach
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
                                 <div class="collapse navbar-collapse d-flex justify-content-center align-items-center"
                                     id="navbarSupportedContent">
                                     <div class="d-flex flex align-items-center me-5">
@@ -64,20 +91,22 @@
                                 <hr>
 
                                 <!-- ✅ Formulaire de création de mouvement -->
-                                <form id="form-creation-mouvement" class="form needs-validation" novalidate method="POST"
-                                    action="{{ route('mouvements.store') }}">
+                                <form id="form-creation-mouvement" class="form needs-validation monFormulaire"
+                                    data-form-id="form1" novalidate method="POST" action="{{ route('mouvements.store') }}">
                                     @csrf
+
+                                    <div class="messageErreur alert alert-danger my-2" style="display: none;"></div>
                                     <!-- Date de l'opération -->
                                     <div class="mb-3">
                                         <label for="date_mouvement" class="form-label fs-15">Date de l'opération</label>
-                                        <input class="form-control shadow" type="text" id="date_mouvement"
-                                            name="date_mouvement" value="{{ now()->format('d/m/Y') }}" readonly>
+                                        <input class="form-control shadow date-format" type="text" id="date_mouvement"
+                                            name="date_mouvement" value="{{ now()->format('d/m/Y') }}" required>
                                     </div>
                                     <input type="hidden" id="caisse_id" name="caisse_id" value="{{ $caisse->id }}">
                                     <input type="hidden" id="type_mouvement" name="type_mouvement" value="credit">
                                     <!-- Montant -->
                                     <div class="mb-3">
-                                        <label for="montant_operation" class="form-label fs-15">Montant de
+                                        <label for="montant_operation1" class="form-label fs-15">Montant de
                                             l'opération</label>
                                         <input class="form-control shadow separateur-nombre" type="text"
                                             id="montant_operation1" value="{{ old('montant_operation') }}"
@@ -164,13 +193,48 @@
                                     </div>
 
                                     <!-- ✅ Champs cachés pour envoyer au back -->
-                                    <input type="hidden" name="categorie_motif_id" id="selected_categorie_id" required>
-                                    <input type="hidden" name="motif_standard_id" id="selected_motif_id" required>
+                                    <input type="hidden" name="categorie_motif_id" id="selected_categorie_id" required
+                                        class="validate-custom" data-error-message="Veuillez sélectionner une catégorie.">
+                                    <input type="hidden" name="motif_standard_id" id="selected_motif_id" required
+                                        class="validate-custom" data-error-message="Veuillez sélectionner un motif.">
                                     <!-- Bouton d'envoi -->
-                                    <button type="submit" id="btn_envoie" class="btn btn-success w-100">
+                                    <button type="button" id="btn_envoie" class="btn btn-success w-100"
+                                        data-bs-toggle="modal" data-bs-target="#modalConfirmation" disabled>
                                         <i class="las la-check me-2"></i> Valider l'opération
                                     </button>
+
+                                    <!-- ✅ Modal de confirmation -->
+                                    <div class="modal fade" id="modalConfirmation" tabindex="-1"
+                                        aria-labelledby="modalConfirmationLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-top">
+                                            <div class="modal-content shadow-lg">
+                                                <div class="modal-header bg-success text-white">
+                                                    <h5 class="modal-title fs-16" id="modalConfirmationLabel">Confirmation
+                                                    </h5>
+                                                    <button type="button" class="btn-close btn-close-white"
+                                                        data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                                </div>
+                                                <div class="modal-body fs-5 text-center">
+                                                    <p>Êtes-vous sûr de vouloir <strong>valider cette opération</strong> ?
+                                                    </p>
+                                                </div>
+                                                <div class="modal-footer justify-content-center">
+                                                    <button type="button" class="btn btn-secondary me-3"
+                                                        data-bs-dismiss="modal">Annuler</button>
+                                                    <button type="button" class="btn btn-success monBouton"
+                                                        data-button-for="form1" data-loader-target-form="creer">
+                                                        <i class="las la-check me-2"></i> Oui, valider
+                                                    </button>
+                                                    <button type="button" id="creer" class="btn btn-success"
+                                                        style="display: none;" disabled>
+                                                        <i class="fas fa-spinner fa-spin me-2"></i>Traitement...
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </form>
+
 
                             </div>
                         </div>
@@ -191,14 +255,18 @@
                                 <hr>
 
                                 <!-- ✅ Formulaire de création de mouvement -->
-                                <form id="form-creation-mouvement" class="form needs-validation" novalidate
-                                    method="POST" action="{{ route('mouvements.store') }}">
+                                <form id="form-creation-mouvement1" class="form needs-validation monFormulaire"
+                                    data-form-id="form2" novalidate method="POST"
+                                    action="{{ route('mouvements.store') }}">
                                     @csrf
                                     <!-- Date de l'opération -->
+                                    <div class="messageErreur alert alert-danger my-2" style="display: none;"></div>
+
                                     <div class="mb-3">
                                         <label for="date_mouvement1" class="form-label fs-15">Date de l'opération</label>
-                                        <input class="form-control shadow" type="text" id="date_mouvement1"
-                                            name="date_mouvement" value="{{ now()->format('d/m/Y') }}" readonly>
+                                        <input class="form-control shadow date-format" type="text"
+                                            id="date_mouvement1" name="date_mouvement"
+                                            value="{{ now()->format('d/m/Y') }}" required>
                                     </div>
 
 
@@ -304,15 +372,46 @@
                                         <textarea class="form-control shadow" id="observations1" name="observations" rows="3"
                                             placeholder="Description de la caisse"></textarea>
                                     </div>
-
                                     <!-- ✅ Champs cachés pour envoyer au back -->
-                                    <input type="hidden" name="categorie_motif_id" id="selected_categorie_id1" required>
-                                    <input type="hidden" name="motif_standard_id" id="selected_motif_id1" required>
-
+                                    <input type="hidden" name="categorie_motif_id" id="selected_categorie_id1" required
+                                        class="validate-custom" data-error-message="Veuillez sélectionner une catégorie.">
+                                    <input type="hidden" name="motif_standard_id" id="selected_motif_id1" required
+                                        class="validate-custom" data-error-message="Veuillez sélectionner un motif.">
                                     <!-- Bouton d'envoi -->
-                                    <button type="submit" id="btn_envoyer" class="btn btn-danger w-100">
+                                    <button type="button" id="btn_envoie1" class="btn btn-danger w-100 monBouton"
+                                        data-bs-toggle="modal" data-bs-target="#modalConfirmation1" disabled>
                                         <i class="las la-check me-2"></i> Valider l'opération
                                     </button>
+                                    <!-- ✅ Modal de confirmation -->
+                                    <div class="modal fade" id="modalConfirmation1" tabindex="-1"
+                                        aria-labelledby="modalConfirmationLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-top">
+                                            <div class="modal-content shadow-lg">
+                                                <div class="modal-header bg-danger text-white">
+                                                    <h5 class="modal-title fs-16" id="modalConfirmationLabel">Confirmation
+                                                    </h5>
+                                                    <button type="button" class="btn-close btn-close-white"
+                                                        data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                                </div>
+                                                <div class="modal-body fs-5 text-center">
+                                                    <p>Êtes-vous sûr de vouloir <strong>valider cette opération</strong> ?
+                                                    </p>
+                                                </div>
+                                                <div class="modal-footer justify-content-center">
+                                                    <button type="button" class="btn btn-secondary me-3"
+                                                        data-bs-dismiss="modal">Annuler</button>
+                                                    <button type="button" class="btn btn-danger monBouton"
+                                                        data-button-for="form2" data-loader-target-form="creer1">
+                                                        <i class="las la-check me-2"></i> Oui, valider
+                                                    </button>
+                                                    <button type="button" id="creer1" class="btn btn-danger"
+                                                        style="display: none;" disabled>
+                                                        <i class="fas fa-spinner fa-spin me-2"></i>Traitement...
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </form>
 
                             </div>
@@ -330,7 +429,7 @@
                                         <span class="fs-14 fw-semibold">Encaissements du jour</span>
                                         <h4 class="my-2 fs-22 fw-semibold">
                                             {{ number_format($encaissementsJour, 0, ',', ' ') }}</h4>
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -341,7 +440,7 @@
                                         <span class="fs-14 fw-semibold">Décaissements du jour</span>
                                         <h4 class="text-dark my-2 fw-semibold fs-22">
                                             {{ number_format($decaissementsJour, 0, ',', ' ') }}</h4>
-                                       
+
                                     </div>
                                 </div>
                             </div>
@@ -367,197 +466,197 @@
 
                     </div> <!--end col-->
                 </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">Mouvements récents de la caisse</h4>
-                        </div>
-                        <div class="card-body pt-0">
-                            <div class="table-responsive">
-                                <table class="table mb-0 table-striped">
 
-                                    <tbody>
-                                        @forelse ($mouvementsRecents as $mvt)
-                                            @php
-                                                $isDebit = $mvt->montant_debit > 0;
-                                            @endphp
-                                            <tr class="align-middle bg-white {{ $mvt->est_annule ? 'mouvement-annule' : '' }}"
-                                                    style="border-bottom: 1px solid;"
-                                                >
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <img src="{{ asset('assets/images/user.jpg') }}"
-                                                            height="34" class="me-3 rounded border bg-white">
-                                                        <div class="flex-grow-1 text-truncate">
-                                                            <h6 class="m-0 mb-2 fs-13">
-                                                                {{ $mvt->operateur->username ?? 'Utilisateur' }}</h6>
-                                                        </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Mouvements récents de la caisse</h4>
+                    </div>
+                    <div class="card-body pt-0">
+                        <div class="table-responsive">
+                            <table class="table mb-0 table-striped">
+
+                                <tbody>
+                                    @forelse ($mouvementsRecents as $mvt)
+                                        @php
+                                            $isDebit = $mvt->montant_debit > 0;
+                                        @endphp
+                                        <tr class="align-middle bg-white {{ $mvt->est_annule ? 'mouvement-annule' : '' }}"
+                                            style="border-bottom: 1px solid;">
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="{{ asset('assets/images/user.jpg') }}" height="34"
+                                                        class="me-3 rounded border bg-white">
+                                                    <div class="flex-grow-1 text-truncate">
+                                                        <h6 class="m-0 mb-2 fs-13">
+                                                            {{ $mvt->operateur->username ?? 'Utilisateur' }}</h6>
                                                     </div>
-                                                </td>
-                                                <td class="text-center">
-                                                    <span
-                                                        class="fw-bold text-dark">{{ $mvt->date_mouvement->format('d/m/Y H:i') }}</span>
-                                                        <br>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
                                                 <span
-                                                        class="fw-bold text-dark">{{ $mvt->num_mouvement }}</span>
-                                                    </td>
-                                                <td>
-                                                    <div
-                                                        style="border-left: 3px solid {{ $isDebit ? '#ff0000' : '#086721' }}; padding-left: 10px;">
-                                                        <span class="badge text-white mb-1"
-                                                            style="background-color: {{ $isDebit ? '#ff0000' : '#086721' }};">
-                                                            {{ $isDebit ? 'Débit' : 'Crédit' }}
-                                                        </span><br>
-                                                        <span
-                                                            class="text-dark fw-semibold">{{ $mvt->motifStandard->libelle_motif ?? $mvt->libelle_personnalise }}</span><br>
-                                                        <small
-                                                            class="text-muted">{{ $mvt->observations ?? '' }}</small>
-                                                    </div>
-                                                </td>
-                                                <td class="text-end fw-semibold">
-                                                    <span class="badge bg-transparent text-dark fs-12 mb-2">Montant
-                                                        débit</span><br>
+                                                    class="fw-bold text-dark">{{ $mvt->date_mouvement->format('d/m/Y H:i') }}</span>
+                                                <br>
+                                                <span class="fw-bold text-dark">{{ $mvt->num_mouvement }}</span>
+                                            </td>
+                                            <td>
+                                                <div
+                                                    style="border-left: 3px solid {{ $isDebit ? '#ff0000' : '#086721' }}; padding-left: 10px;">
+                                                    <span class="badge text-white mb-1"
+                                                        style="background-color: {{ $isDebit ? '#ff0000' : '#086721' }};">
+                                                        {{ $isDebit ? 'Débit' : 'Crédit' }}
+                                                    </span><br>
                                                     <span
-                                                        class="text-danger fw-semibold">{{ number_format($mvt->montant_debit, 0, ',', ' ') }}</span>
-                                                </td>
-                                                <td class="text-end text-muted">
-                                                    <span class="badge bg-transparent text-dark fs-12 mb-2">Montant
-                                                        crédit</span><br>
-                                                    <span
-                                                        class="text-dark fw-semibold">{{ number_format($mvt->montant_credit, 0, ',', ' ') }}</span>
-                                                </td>
-                                                <td class="text-end fw-bold text-info">
-                                                    <span class="badge bg-transparent text-info fs-12 mb-2">Ancien
-                                                        solde</span><br>
-                                                    {{ number_format($mvt->solde_avant_mouvement, 0, ',', ' ') }}
-                                                </td>
-                                                <td class="text-end fw-bold text-primary">
-                                                    <span class="badge bg-transparent text-primary fs-12 mb-2">Nouveau
-                                                        solde</span>
-                                                    <br>
-                                                    {{ number_format($mvt->solde_apres_mouvement, 0, ',', ' ') }}
-                                                </td>
+                                                        class="text-dark fw-semibold">{{ $mvt->motifStandard->libelle_motif ?? $mvt->libelle_personnalise }}</span><br>
+                                                    <small class="text-muted">{{ $mvt->observations ?? '' }}</small>
+                                                </div>
+                                            </td>
+                                            <td class="text-end fw-semibold">
+                                                <span class="badge bg-transparent text-dark fs-12 mb-2">Montant
+                                                    débit</span><br>
+                                                <span
+                                                    class="text-danger fw-semibold">{{ number_format($mvt->montant_debit, 0, ',', ' ') }}</span>
+                                            </td>
+                                            <td class="text-end text-muted">
+                                                <span class="badge bg-transparent text-dark fs-12 mb-2">Montant
+                                                    crédit</span><br>
+                                                <span
+                                                    class="text-dark fw-semibold">{{ number_format($mvt->montant_credit, 0, ',', ' ') }}</span>
+                                            </td>
+                                            <td class="text-end fw-bold text-info">
+                                                <span class="badge bg-transparent text-info fs-12 mb-2">Ancien
+                                                    solde</span><br>
+                                                {{ number_format($mvt->solde_avant_mouvement, 0, ',', ' ') }}
+                                            </td>
+                                            <td class="text-end fw-bold text-primary">
+                                                <span class="badge bg-transparent text-primary fs-12 mb-2">Nouveau
+                                                    solde</span>
+                                                <br>
+                                                {{ number_format($mvt->solde_apres_mouvement, 0, ',', ' ') }}
+                                            </td>
 
-                                                <td class="text-end fw-bold {{$mvt->est_annule? 'text-danger': 'text-primary'}} ">
-                                                    <span class="badge bg-transparent {{$mvt->est_annule? 'text-danger': 'text-primary'}}  fs-12 mb-2">Motif</span>
-                                                    @if ($mvt->est_annule)
+                                            <td
+                                                class="text-end fw-bold {{ $mvt->est_annule ? 'text-danger' : 'text-primary' }} ">
+                                                <span
+                                                    class="badge bg-transparent {{ $mvt->est_annule ? 'text-danger' : 'text-primary' }}  fs-12 mb-2">Motif</span>
+                                                @if ($mvt->est_annule)
                                                     <br>
                                                     Annulation...
+                                                @endif
+                                            </td>
+                                            <td class="text-end">
+                                                <span
+                                                    class="badge bg-transparent text-primary fs-12 mb-2">Action</span><br>
+
+                                                <div class="d-flex justify-content-end">
+
+                                                    {{-- ✅ Bouton d’impression toujours disponible --}}
+                                                    <button class="btn btn-sm btn-light border" data-bs-toggle="tooltip"
+                                                        data-bs-title="Imprimer">
+                                                        <i class="fas fa-print text-secondary fs-18"></i>
+                                                    </button>
+
+                                                    @if ($mvt->est_annule)
+                                                        <button class="btn btn-sm btn-light border ms-1 text-info"
+                                                            data-bs-toggle="offcanvas"
+                                                            data-bs-target="#offcanvasMotifAnnulation{{ $mvt->id }}">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                    @else
+                                                        {{-- ✅ Bouton annuler si non annulé --}}
+                                                        <button
+                                                            class="btn btn-sm btn-light border ms-1 btn-show-mouvements"
+                                                            data-num="{{ $mvt->num_mouvement }}"
+                                                            data-bs-toggle="offcanvas"
+                                                            data-bs-target="#myOffcanvas{{ $mvt->num_mouvement }}"
+                                                            aria-controls="myOffcanvas{{ $mvt->num_mouvement }}">
+                                                            <i class="fas fa-times-circle text-danger fs-18"></i>
+                                                        </button>
                                                     @endif
-                                                </td>
-                                                <td class="text-end">
-                                                    <span
-                                                        class="badge bg-transparent text-primary fs-12 mb-2">Action</span><br>
+                                                </div>
+                                            </td>
 
-                                                        <div class="d-flex justify-content-end">
+                                        </tr>
+                                        @include(
+                                            'components.content_application.create_annulermouvement_offcanvas',
+                                            ['mvt' => $mvt]
+                                        )
+                                        @if ($mvt->est_annule)
+                                            <div class="offcanvas offcanvas-bottom rounded-top shadow-lg" tabindex="-1"
+                                                id="offcanvasMotifAnnulation{{ $mvt->id }}"
+                                                aria-labelledby="offcanvasLabel{{ $mvt->id }}"
+                                                style="height: 35vh;">
 
-                                                            {{-- ✅ Bouton d’impression toujours disponible --}}
-                                                            <button class="btn btn-sm btn-light border"
-                                                                data-bs-toggle="tooltip" data-bs-title="Imprimer">
-                                                                <i class="fas fa-print text-secondary fs-18"></i>
-                                                            </button>
-    
-                                                            @if ($mvt->est_annule)
-                                                                <button class="btn btn-sm btn-light border ms-1 text-info"
-                                                                    data-bs-toggle="offcanvas"
-                                                                    data-bs-target="#offcanvasMotifAnnulation{{ $mvt->id }}">
-                                                                    <i class="fas fa-eye"></i>
-                                                                </button>
-                                                            @else
-                                                                {{-- ✅ Bouton annuler si non annulé --}}
-                                                                <button
-                                                                    class="btn btn-sm btn-light border ms-1 btn-show-mouvements"
-                                                                    data-num="{{ $mvt->num_mouvement }}"
-                                                                    data-bs-toggle="offcanvas"
-                                                                    data-bs-target="#myOffcanvas{{ $mvt->num_mouvement }}"
-                                                                    aria-controls="myOffcanvas{{ $mvt->num_mouvement }}">
-                                                                    <i class="fas fa-times-circle text-danger fs-18"></i>
-                                                                </button>
-                                                            @endif
-                                                        </div>
-                                                </td>
-                                                
-                                            </tr>
-                                            @include(
-                                                'components.content_application.create_annulermouvement_offcanvas',
-                                                ['mvt' => $mvt]
-                                            )
-                                            @if ($mvt->est_annule)
-                                                <div class="offcanvas offcanvas-bottom rounded-top shadow-lg"
-                                                    tabindex="-1" id="offcanvasMotifAnnulation{{ $mvt->id }}"
-                                                    aria-labelledby="offcanvasLabel{{ $mvt->id }}"
-                                                    style="height: 35vh;">
+                                                <div class="offcanvas-header bg-info text-white">
+                                                    <h5 class="offcanvas-title text-white"
+                                                        id="offcanvasLabel{{ $mvt->id }}">
+                                                        <i class="fas fa-info-circle me-2"></i> Détail de
+                                                        l'annulation
+                                                    </h5>
+                                                    <button type="button" class="btn-close fs-28 btn-close-white"
+                                                        data-bs-dismiss="offcanvas" aria-label="Fermer"></button>
+                                                </div>
 
-                                                    <div class="offcanvas-header bg-info text-white">
-                                                        <h5 class="offcanvas-title text-white"
-                                                            id="offcanvasLabel{{ $mvt->id }}">
-                                                            <i class="fas fa-info-circle me-2"></i> Détail de
-                                                            l'annulation
-                                                        </h5>
-                                                        <button type="button" class="btn-close fs-28 btn-close-white"
-                                                            data-bs-dismiss="offcanvas" aria-label="Fermer"></button>
-                                                    </div>
-
-                                                    <div class="offcanvas-body">
-                                                        <div class="row">
-                                                            <div class="col-md-8">
-                                                                <div class="card border-0 shadow-sm mb-3">
-                                                                    <div class="card-body">
-                                                                        <h6 class="fw-bold text-muted mb-2">
-                                                                            Informations de l'opération annulée</h6>
-                                                                        <p class="mb-1"><strong>Opérateur :</strong>
-                                                                            {{ $mvt->operateur->username ?? 'Utilisateur inconnu' }}
-                                                                        </p>
-                                                                        <p class="mb-1"><strong>Type :</strong>
-                                                                            <span
-                                                                                class="badge {{ $mvt->montant_debit > 0 ? 'bg-danger' : 'bg-success' }}">
-                                                                                {{ $mvt->montant_debit > 0 ? 'Débit' : 'Crédit' }}
-                                                                            </span>
-                                                                        </p>
-                                                                        <p class="mb-1"><strong>Montant :</strong>
-                                                                            <span
-                                                                                class="fw-bold">{{ number_format($mvt->montant_debit > 0 ? $mvt->montant_debit : $mvt->montant_credit, 0, ',', ' ') }}
-                                                                                FCFA</span>
-                                                                        </p>
-                                                                        <p class="mb-0"><strong>Date du mouvement
-                                                                                :</strong>
-                                                                            {{ $mvt->date_mouvement->format('d/m/Y H:i') }}
-                                                                        </p>
-                                                                    </div>
+                                                <div class="offcanvas-body">
+                                                    <div class="row">
+                                                        <div class="col-md-8">
+                                                            <div class="card border-0 shadow-sm mb-3">
+                                                                <div class="card-body">
+                                                                    <h6 class="fw-bold text-muted mb-2">
+                                                                        Informations de l'opération annulée</h6>
+                                                                    <p class="mb-1"><strong>Opérateur :</strong>
+                                                                        {{ $mvt->operateur->username ?? 'Utilisateur inconnu' }}
+                                                                    </p>
+                                                                    <p class="mb-1"><strong>Type :</strong>
+                                                                        <span
+                                                                            class="badge {{ $mvt->montant_debit > 0 ? 'bg-danger' : 'bg-success' }}">
+                                                                            {{ $mvt->montant_debit > 0 ? 'Débit' : 'Crédit' }}
+                                                                        </span>
+                                                                    </p>
+                                                                    <p class="mb-1"><strong>Montant :</strong>
+                                                                        <span
+                                                                            class="fw-bold">{{ number_format($mvt->montant_debit > 0 ? $mvt->montant_debit : $mvt->montant_credit, 0, ',', ' ') }}
+                                                                            FCFA</span>
+                                                                    </p>
+                                                                    <p class="mb-0"><strong>Date du mouvement
+                                                                            :</strong>
+                                                                        {{ $mvt->date_mouvement->format('d/m/Y H:i') }}
+                                                                    </p>
                                                                 </div>
                                                             </div>
+                                                        </div>
 
-                                                            <div class="col-md-4">
-                                                                <div class="card border-0 shadow-sm bg-light">
-                                                                    <div class="card-body">
-                                                                        <div class="card border-0 shadow-sm">
-                                                                            <div class="card-body">
-                                                                                <h6 class="fw-bold text-danger mb-3">
-                                                                                    <i class="fas fa-ban me-2"></i>
-                                                                                    Détails de l'annulation
-                                                                                </h6>
+                                                        <div class="col-md-4">
+                                                            <div class="card border-0 shadow-sm bg-light">
+                                                                <div class="card-body">
+                                                                    <div class="card border-0 shadow-sm">
+                                                                        <div class="card-body">
+                                                                            <h6 class="fw-bold text-danger mb-3">
+                                                                                <i class="fas fa-ban me-2"></i>
+                                                                                Détails de l'annulation
+                                                                            </h6>
 
-                                                                                <div class="alert alert-danger d-flex align-items-start"
-                                                                                    role="alert">
-                                                                                    <i
-                                                                                        class="fas fa-info-circle fs-4 me-3"></i>
-                                                                                    <div>
-                                                                                        <p class="mb-1"><strong>Motif
-                                                                                                :</strong></p>
-                                                                                        <p class="mb-0 fw-semibold">
-                                                                                            {{ $mvt->motif_annulation }}
-                                                                                        </p>
-                                                                                    </div>
+                                                                            <div class="alert alert-danger d-flex align-items-start"
+                                                                                role="alert">
+                                                                                <i
+                                                                                    class="fas fa-info-circle fs-4 me-3"></i>
+                                                                                <div>
+                                                                                    <p class="mb-1"><strong>Motif
+                                                                                            :</strong></p>
+                                                                                    <p class="mb-0 fw-semibold">
+                                                                                        {{ $mvt->motif_annulation }}
+                                                                                    </p>
                                                                                 </div>
-
-                                                                                <p class="mb-1"><strong>Annulé par
-                                                                                        :</strong>
-                                                                                    {{ $mvt->annulateur->username ?? 'Utilisateur inconnu' }}
-                                                                                </p>
-                                                                                <p class="mb-0"><strong>Date
-                                                                                        d'annulation :</strong>
-                                                                                    {{ \Carbon\Carbon::parse($mvt->date_annulation)->format('d/m/Y H:i') }}
-                                                                                </p>
                                                                             </div>
+
+                                                                            <p class="mb-1"><strong>Annulé par
+                                                                                    :</strong>
+                                                                                {{ $mvt->annulateur->username ?? 'Utilisateur inconnu' }}
+                                                                            </p>
+                                                                            <p class="mb-0"><strong>Date
+                                                                                    d'annulation :</strong>
+                                                                                {{ \Carbon\Carbon::parse($mvt->date_annulation)->format('d/m/Y H:i') }}
+                                                                            </p>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -565,19 +664,20 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            @endif
+                                            </div>
+                                        @endif
 
-                                        @empty
-                                            <tr>
-                                                <td colspan="6" class="text-center py-4">Aucun mouvement récent.
-                                                </td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="text-center py-4">Aucun mouvement récent.
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+                </div>
                 <!--Start Rightbar-->
                 <!--Start Endbar-->
                 @include('layouts.lateralContent')
@@ -599,11 +699,11 @@
                                             <script>
                                                 document.write(new Date().getFullYear())
                                             </script>
-                                            Materialy
+                                            Yodingenierie
                                             <span class="text-muted d-none d-sm-inline-block float-end">
-                                                Design with
+                                                Yodingenierie
                                                 <i class="iconoir-heart-solid text-danger align-middle"></i>
-                                                by Mannatthemes</span>
+                                                tous droits réservés.</span>
                                         </p>
                                     </div>
                                 </div>
@@ -616,32 +716,7 @@
             </div>
             <!-- end page content -->
         </div>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Sélectionne tous les champs avec la classe .separateur-nombre
-                const inputFields = document.querySelectorAll('.separateur-nombre');
 
-                inputFields.forEach(function(inputField) {
-                    // Ajoute un écouteur pour mettre à jour les séparateurs en temps réel
-                    inputField.addEventListener('input', function() {
-                        // Supprime tout ce qui n'est pas un chiffre
-                        let value = inputField.value.replace(/[^0-9]/g, '');
-
-                        // Ajoute les séparateurs de milliers
-                        inputField.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-                    });
-
-                    // Ajoute un écouteur pour empêcher la saisie de caractères non numériques
-                    inputField.addEventListener('keydown', function(event) {
-                        const allowedKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab"];
-                        // Permet uniquement les chiffres et les touches autorisées
-                        if (!/^\d$/.test(event.key) && !allowedKeys.includes(event.key)) {
-                            event.preventDefault();
-                        }
-                    });
-                });
-            });
-        </script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const inputMontant = document.getElementById("montant_operation1");
@@ -695,7 +770,7 @@
         </script>
 
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener('DOMContentLoaded', function() {
                 function setupCategorieMotif(options) {
                     const radioCategorie = document.getElementById(options.radioId);
                     const blocListe = document.getElementById(options.listeId);
@@ -759,6 +834,7 @@
                                 `<i class="las la-plus-circle me-2"></i> Choisir un libellé`;
 
                             blocLibelle.style.display = "block";
+                            validateForm(); // Mettre à jour l'état du bouton
                         });
                     });
 
@@ -824,6 +900,7 @@
                             hiddenMotif.value = selectedId;
                             btnChoisirLibelle.innerHTML = `<i class="las la-check me-2"></i> ${selectedName}`;
                             motifsList.style.display = "none";
+                            validateForm(); // Mettre à jour l'état du bouton
                         }
                     });
                 }
@@ -860,8 +937,115 @@
                     loaderId: "loader1",
                     labelAffichageId: "label-affichage-categorie1" // ✅ Nouveau !
                 });
+
+                const btnEnvoie = document.getElementById("btn_envoie");
+                const form = document.getElementById('form-creation-mouvement');
+                const categorieMotifId = document.getElementById('selected_categorie_id');
+                const motifStandardId = document.getElementById('selected_motif_id');
+
+                // Fonction pour valider le formulaire et activer/désactiver le bouton
+                function validateForm() {
+                    if (form.checkValidity() && categorieMotifId.value && motifStandardId.value) {
+                        btnEnvoie.removeAttribute('disabled');
+                        document.querySelectorAll('[data-loader-target-form]').forEach(function(
+                            btn) { // Simplification du sélecteur
+                            btn.addEventListener('click', function(event) {
+                                const targetId = btn.getAttribute(
+                                    'data-loader-target-form');
+                                const loaderBtn = document.getElementById(targetId);
+
+                                // Validation du formulaire (toujours exécutée)
+                                const form = btn.closest('form');
+                                if (form && !form.checkValidity()) {
+                                    // Si le formulaire n'est pas valide, empêche l'action par défaut
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    form.classList.add(
+                                        'was-validated'
+                                    ); // Ajoute la classe Bootstrap pour afficher les erreurs
+                                    return; // Ne pas afficher le loader si le formulaire est invalide
+                                }
+
+                                // Affichage du loader (uniquement si le formulaire est valide)
+                                if (loaderBtn) {
+                                    btn.style.display = 'none';
+                                    loaderBtn.style.display = 'inline-block';
+                                }
+                            });
+                        });
+                    } else {
+                        btnEnvoie.setAttribute('disabled', 'disabled');
+                    }
+                }
+
+
+                // Validation initiale
+                validateForm();
+
+                //Surveiller les changements dans les champs
+                form.addEventListener('input', validateForm);
             });
         </script>
 
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const btn = document.getElementById("btn_envoie1");
+                const champs = [
+                    document.getElementById("date_mouvement1"),
+                    document.getElementById("montant_operation"),
+                    document.getElementById("selected_categorie_id1"),
+                    document.getElementById("selected_motif_id1")
+                ];
 
-    @endsection
+                function verifierChamps() {
+                    const tousRemplis = champs.every(champ => champ.value.trim() !== "");
+                    btn.disabled = !tousRemplis;
+                }
+
+                // Pour les champs visibles → écouteurs d’événements
+                ["date_mouvement1", "montant_operation"].forEach(id => {
+                    document.getElementById(id).addEventListener("input", verifierChamps);
+                    document.getElementById(id).addEventListener("change", verifierChamps);
+                });
+
+                // Pour les champs hidden → observer les changements de value
+                champs.filter(champ => champ.type === "hidden").forEach(hiddenChamp => {
+                    const observer = new MutationObserver(verifierChamps);
+                    observer.observe(hiddenChamp, {
+                        attributes: true,
+                        attributeFilter: ["value"]
+                    });
+                });
+                document.querySelectorAll('[data-loader-target-form]').forEach(function(
+                    btn) { // Simplification du sélecteur
+                    btn.addEventListener('click', function(event) {
+                        const targetId = btn.getAttribute(
+                            'data-loader-target-form');
+                        const loaderBtn = document.getElementById(targetId);
+
+                        // Validation du formulaire (toujours exécutée)
+                        const form = btn.closest('form');
+                        if (form && !form.checkValidity()) {
+                            // Si le formulaire n'est pas valide, empêche l'action par défaut
+                            event.preventDefault();
+                            event.stopPropagation();
+                            form.classList.add(
+                                'was-validated'
+                            ); // Ajoute la classe Bootstrap pour afficher les erreurs
+                            return; // Ne pas afficher le loader si le formulaire est invalide
+                        }
+
+                        // Affichage du loader (uniquement si le formulaire est valide)
+                        if (loaderBtn) {
+                            btn.style.display = 'none';
+                            loaderBtn.style.display = 'inline-block';
+                        }
+                    });
+                });
+                // Vérification initiale
+                verifierChamps();
+            });
+        </script>
+    </div>
+
+@endsection

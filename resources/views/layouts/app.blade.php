@@ -44,14 +44,12 @@
                         </button>
                     </li>
                     <li class="mx-2">
-                        <button class="btn btn-outline-primary"
-                            data-bs-toggle="offcanvas"
+                        <button class="btn btn-outline-primary" data-bs-toggle="offcanvas"
                             data-bs-target="#offcanvasWithBackdrop"
-                            aria-controls="offcanvasWithBackdrop"
-                        >{{ Auth::User()->societe->nom_societe }}</button>
+                            aria-controls="offcanvasWithBackdrop">{{ Auth::User()->societe->nom_societe }}</button>
                     </li>
                     <li class="mx-2 welcome-text">
-                        <h5 class="mb-0 fw-semibold text-truncate">Salut, 
+                        <h5 class="mb-0 fw-semibold text-truncate">Salut,
                             {{ Auth::User()->username ?? 'Utilisateur' }}</h5>
                         <!-- <h6 class="mb-0 fw-normal text-muted text-truncate fs-14">Voici un aperçu de vos caisses.</h6> -->
                     </li>
@@ -77,13 +75,14 @@
 
 
                     <li class="dropdown topbar-item">
-                        <a class="nav-link dropdown-toggle arrow-none nav-icon" data-bs-toggle="dropdown" href="#" role="button">
-                            <img src="{{ Auth::user()->societe && Auth::user()->societe->logo 
-                                        ? asset('storage/' . Auth::user()->societe->logo) 
-                                        : asset('assets/images/user.jpg') }}" 
-                                 alt="Logo" class="thumb-md rounded shadow">
+                        <a class="nav-link dropdown-toggle arrow-none nav-icon" data-bs-toggle="dropdown" href="#"
+                            role="button">
+                            <img src="{{ Auth::user()->societe && Auth::user()->societe->logo
+                                ? asset('storage/' . Auth::user()->societe->logo)
+                                : asset('assets/images/user.jpg') }}"
+                                alt="Logo" class="thumb-md rounded shadow">
                         </a>
-                        
+
                         <div class="dropdown-menu dropdown-menu-end py-0">
                             <div class="d-flex align-items-center dropdown-item py-2 bg-secondary-subtle">
                                 <div class="flex-shrink-0">
@@ -117,31 +116,32 @@
     <!-- leftbar-tab-menu -->
     <div class="startbar d-print-none">
         <!--start brand-->
-        <div class="brand">
+        {{-- <div class="brand mt-3" style="margin-left: 60px;">
             <a href="#" class="logo">
                 <span>
-                    <img src="assets/images/logo-sm.png" alt="logo-small" class="logo-sm">
+                    <img src="{{'assets/images/caisse.jpg'}}" alt="logo-small" class="logo-sm  rounded shadow" width="50" >
                 </span>
-                <span class="">
-                    <img src="assets/images/logo-light.png" alt="logo-large" class="logo-lg logo-light">
-                    <img src="assets/images/logo-dark.png" alt="logo-large" class="logo-lg logo-dark">
+                <span class="" >
+                    <img src="{{'assets/images/caisse.jpg'}}" alt="logo-large" class="logo-lg logo-light  rounded shadow" width="100" >
+                    <img src="{{'assets/images/caisse.jpg'}}" alt="logo-large" class="logo-lg logo-dark  rounded shadow" width="100" >
                 </span>
             </a>
-        </div>
+        </div> --}}
         <!--end brand-->
         <!--start startbar-menu-->
         <div class="startbar-menu">
             <div class="startbar-collapse" id="startbarCollapse" data-simplebar>
                 <div class="d-flex align-items-start flex-column w-100">
                     <!-- Navigation -->
-                    <ul class="navbar-nav mb-auto w-100">
+                    <ul class="navbar-nav mb-auto w-100 mt-3">
                         <li class="clinicdropdown bg-light rounded shadow">
                             <a href="javascript:void(0);" class="nav-link dropdown-toggle arrow-none d-flex px-2">
-                                <img src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : asset('assets/images/user.jpg') }}" 
-                                     class="img-fluid me-3" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%;" />
+                                <img src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : asset('assets/images/user.jpg') }}"
+                                    class="img-fluid me-3" alt="Profile"
+                                    style="width: 40px; height: 40px; border-radius: 50%;" />
                                 <div class="user-names">
                                     <h5 class="mb-1" style="margin: 0; font-size: 16px; font-weight: 600;">
-                                        {{ Auth::user()->name ?? 'Nom utilisateur' }}
+                                        {{ Str::limit(Auth::user()->name, 20, '...') }}
                                     </h5>
                                     <h6 style="margin: 0; font-size: 14px; font-weight: 400; color: #6c757d;">
                                         {{ Auth::user()->role ?? 'Rôle' }}
@@ -149,24 +149,24 @@
                                 </div>
                             </a>
                         </li>
-                        
+
                     </ul>
 
                     <ul class="navbar-nav mb-auto w-100">
-                        <li class="menu-label mt-2">
+                        <li class="menu-label mt-2 fs-17">
                             <span>Navigation</span>
                         </li>
 
 
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('dashboard') }}">
-                                <iconify-icon icon="solar:dashboard-bold-duotone" class="menu-icon"></iconify-icon>
+                            <a class="nav-link fs-17 {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
+                                <iconify-icon icon="solar:home-bold-duotone" class="menu-icon"></iconify-icon>
                                 <span>Tableau de bord</span>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('caisse.index') }}">
+                            <a class="nav-link fs-17 {{ request()->routeIs('caisse.index','operations') ? 'active' : '' }}" href="{{ route('caisse.index') }}">
                                 <iconify-icon icon="solar:transfer-horizontal-bold-duotone"
                                     class="menu-icon"></iconify-icon>
                                 <span>Liste des caisses</span>
@@ -288,93 +288,200 @@
     @yield('content')
     @include('components.content_application.create_categorie_offcanvas')
     <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasWithBackdrop"
-    aria-labelledby="offcanvasWithBackdropLabel">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title ps-3 mb-3" id="offcanvasWithBackdropLabel"
-            style="border-left: 5px solid #05436b; color: #333;">
-            Actuellement sur : {{ Str::limit($societe_nom, 15, '...') }}
-        </h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
-            aria-label="Close"></button>
-    </div> <!-- end offcanvas-header-->
-    @php
-        $lesSocietes = \App\Helpers\DateHelper::dossier_info();
-    @endphp
-    <div class="offcanvas-body">
-        <div class="p-3" style="overflow-y: auto;">
-            <div class="row row-cols-3 g-2">
-                @foreach ($lesSocietes['societes'] as $societe)
-                    <div class="col text-center  card-hover-zoom">
-                        <a href="{{ route('change_societe', $societe->id) }}"
-                            class="text-decoration-none text-dark d-block">
-                            <div class="d-flex align-items-center justify-content-center mx-auto mb-2 shadow"
-                                style="width: 80px;height: 70px; transition: transform 0.3s;border-radius: 5px;">
-                                <img src="{{ asset('storage/' . $societe->logo) }}"
-                                    alt="{{ $societe->nom_societe }}" class="img-fluid rounded"
-                                    style="width: 80px;height: 70px; object-fit: contain;border-radius: 5px;border-radius: 20px">
-                            </div>
-                            <small class="fw-medium d-block text-truncate"
-                                title="{{ $societe->nom_societe }}">{{ $societe->nom_societe }}</small>
-                        </a>
-                    </div>
-                @endforeach
-                <style>
-                    .card-hover-zoom {
-                        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        aria-labelledby="offcanvasWithBackdropLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title ps-3 mb-3" id="offcanvasWithBackdropLabel"
+                style="border-left: 5px solid #05436b; color: #333;">
+                Actuellement sur : {{ Str::limit($societe_nom, 15, '...') }}
+            </h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+        </div> <!-- end offcanvas-header-->
+        @php
+            $lesSocietes = \App\Helpers\DateHelper::dossier_info();
+        @endphp
+        <div class="offcanvas-body">
+            <div class="p-3" style="overflow-y: auto;">
+                <div class="row row-cols-3 g-2">
+                    @foreach ($lesSocietes['societes'] as $societe)
+                        <div class="col text-center  card-hover-zoom">
+                            <a href="{{ route('change_societe', $societe->id) }}"
+                                class="text-decoration-none text-dark d-block">
+                                <div class="d-flex align-items-center justify-content-center mx-auto mb-2 shadow"
+                                    style="width: 80px;height: 70px; transition: transform 0.3s;border-radius: 5px;">
+                                    <img src="{{ asset('storage/' . $societe->logo) }}"
+                                        alt="{{ $societe->nom_societe }}" class="img-fluid rounded"
+                                        style="width: 80px;height: 70px; object-fit: contain;border-radius: 5px;border-radius: 20px">
+                                </div>
+                                <small class="fw-medium d-block text-truncate"
+                                    title="{{ $societe->nom_societe }}">{{ $societe->nom_societe }}</small>
+                            </a>
+                        </div>
+                    @endforeach
+                    <style>
+                        .card-hover-zoom {
+                            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                        }
+
+                        .card-hover-zoom:hover {
+                            transform: scale(1.15);
+                            z-index: 2;
+                        }
+                    </style>
+                </div>
+
+            </div>
+        </div> <!-- end offcanvas-body-->
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".date-format").forEach(input => {
+                // ✅ Auto-formatage pendant la saisie
+                input.addEventListener("input", function() {
+                    let value = input.value.replace(/[^0-9]/g,
+                        ""); // garder uniquement les chiffres
+
+                    if (value.length > 2 && value.length <= 4) {
+                        value = value.slice(0, 2) + "/" + value.slice(2);
+                    } else if (value.length > 4) {
+                        value = value.slice(0, 2) + "/" + value.slice(2, 4) + "/" + value.slice(4,
+                            8);
                     }
 
-                    .card-hover-zoom:hover {
-                        transform: scale(1.15);
-                        z-index: 2;
+                    input.value = value;
+                });
+
+                // ✅ Validation du format à la perte de focus
+                input.addEventListener("blur", function() {
+                    const regex = /^([0-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/\d{4}$/;
+
+                    if (input.value && !regex.test(input.value)) {
+                        alert("Veuillez entrer une date valide au format jj/mm/aaaa");
+                        input.focus();
                     }
-                </style>
-            </div>
-            
-        </div>
-    </div> <!-- end offcanvas-body-->
-</div>
-    <script>
-        // ✅ Fonction pour créer un cookie
-        function setCookie(name, value, days) {
-            const date = new Date();
-            date.setTime(date.getTime() + (days*24*60*60*1000));
-            document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
-        }
-    
-        // ✅ Fonction pour lire un cookie
-        function getCookie(name) {
-            const nameEQ = name + "=";
-            const ca = document.cookie.split(';');
-            for (let i = 0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) === ' ') c = c.substring(1);
-                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length);
-            }
-            return null;
-        }
-    
-        // ✅ Appliquer le thème au chargement
-        document.addEventListener("DOMContentLoaded", function() {
-            const theme = getCookie("theme");
-            if (theme === "dark") {
-                document.body.classList.add("dark-mode");
-            } else {
-                document.body.classList.remove("dark-mode");
-            }
-        });
-    
-        // ✅ Gestion du clic pour basculer le thème
-        document.getElementById("light-dark-mode").addEventListener("click", function () {
-            if (document.body.classList.contains("dark-mode")) {
-                document.body.classList.remove("dark-mode");
-                setCookie("theme", "light", 365);
-            } else {
-                document.body.classList.add("dark-mode");
-                setCookie("theme", "dark", 365);
-            }
+                });
+            });
         });
     </script>
-    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const boutons = document.querySelectorAll('.monBouton');
+
+            boutons.forEach(function(bouton) {
+                bouton.addEventListener('click', function() {
+                    const formId = bouton.getAttribute('data-button-for');
+                    const formulaire = document.querySelector('.monFormulaire[data-form-id="' +
+                        formId + '"]');
+                    const messageErreur = formulaire.querySelector('.messageErreur');
+
+                    if (!formulaire.checkValidity()) {
+                        // Trouver le premier champ invalide
+                        const premierChampInvalide = formulaire.querySelector(':invalid');
+
+                        // Récupérer le label associé (si possible)
+                        let label = document.querySelector('label[for="' + premierChampInvalide.id +
+                            '"]');
+                        let texteLabel = label ? label.textContent :
+                            'Ce champ'; // Fallback si pas de label
+
+                        // Afficher le message d'erreur
+                        messageErreur.textContent = texteLabel.replace('(obligatoire)', '').trim() +
+                            ' est obligatoire.';
+                        messageErreur.style.display = 'block';
+
+                        // Empêcher la soumission
+                        return;
+                    }
+
+                    document.querySelectorAll('[data-loader-target-form]').forEach(function(
+                        btn) { // Simplification du sélecteur
+                        btn.addEventListener('click', function(event) {
+                            const targetId = btn.getAttribute(
+                                'data-loader-target-form');
+                            const loaderBtn = document.getElementById(targetId);
+
+                            // Validation du formulaire (toujours exécutée)
+                            const form = btn.closest('form');
+                            if (form && !form.checkValidity()) {
+                                // Si le formulaire n'est pas valide, empêche l'action par défaut
+                                event.preventDefault();
+                                event.stopPropagation();
+                                form.classList.add(
+                                    'was-validated'
+                                ); // Ajoute la classe Bootstrap pour afficher les erreurs
+                                return; // Ne pas afficher le loader si le formulaire est invalide
+                            }
+
+                            // Affichage du loader (uniquement si le formulaire est valide)
+                            if (loaderBtn) {
+                                btn.style.display = 'none';
+                                loaderBtn.style.display = 'inline-block';
+                            }
+                        });
+                    });
+                    // Si le formulaire est valide, changer le type du bouton et soumettre le formulaire
+                    bouton.type = 'submit';
+                    //formulaire.submit(); // Décommenter si tu veux soumettre le formulaire automatiquement
+                });
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cible tous les boutons ayant l'attribut data-loader-target
+            document.querySelectorAll('[data-loader-target]').forEach(function(btn) { // Simplification du sélecteur
+                btn.addEventListener('click', function(event) {
+                    const targetId = btn.getAttribute('data-loader-target');
+                    const loaderBtn = document.getElementById(targetId);
+
+                    // Validation du formulaire (toujours exécutée)
+                    const form = btn.closest('form');
+                    if (form && !form.checkValidity()) {
+                        // Si le formulaire n'est pas valide, empêche l'action par défaut
+                        event.preventDefault();
+                        event.stopPropagation();
+                        form.classList.add(
+                            'was-validated'
+                        ); // Ajoute la classe Bootstrap pour afficher les erreurs
+                        return; // Ne pas afficher le loader si le formulaire est invalide
+                    }
+
+                    // Affichage du loader (uniquement si le formulaire est valide)
+                    if (loaderBtn) {
+                        btn.style.display = 'none';
+                        loaderBtn.style.display = 'inline-block';
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sélectionne tous les champs avec la classe .separateur-nombre
+            const inputFields = document.querySelectorAll('.separateur-nombre');
+
+            inputFields.forEach(function(inputField) {
+                // Ajoute un écouteur pour mettre à jour les séparateurs en temps réel
+                inputField.addEventListener('input', function() {
+                    // Supprime tout ce qui n'est pas un chiffre
+                    let value = inputField.value.replace(/[^0-9]/g, '');
+
+                    // Ajoute les séparateurs de milliers
+                    inputField.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+                });
+
+                // Ajoute un écouteur pour empêcher la saisie de caractères non numériques
+                inputField.addEventListener('keydown', function(event) {
+                    const allowedKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab"];
+                    // Permet uniquement les chiffres et les touches autorisées
+                    if (!/^\d$/.test(event.key) && !allowedKeys.includes(event.key)) {
+                        event.preventDefault();
+                    }
+                });
+            });
+        });
+    </script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const loader = document.getElementById("global-loader");

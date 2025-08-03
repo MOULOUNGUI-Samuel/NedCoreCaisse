@@ -49,11 +49,11 @@
                                     Créer une catégorie
                                     <i class="fas fa-plus-circle"></i>
                                 </button>
-                                <button type="button" class="btn rounded-pill btn-light me-3 text-info"
+                                {{-- <button type="button" class="btn rounded-pill btn-light me-3 text-info"
                                     data-bs-toggle="offcanvas" data-bs-target="#myOffcanvasM" aria-controls="myOffcanvas">
                                     Créer un libellé de mouvement
                                     <i class="fas fa-plus-circle"></i>
-                                </button>
+                                </button> --}}
                                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                                         <li class="nav-item dropdown">
@@ -86,6 +86,7 @@
                     </div> <!--end col-->
                 </div><!--end row-->
                 @include('components.content_application.create_caisse_offcanvas', ['users' => $users])
+               
 
 
                 {{-- Conteneur pour les cartes de caisse --}}
@@ -102,7 +103,7 @@
                                             <p class="text-dark fw-semibold mb-2 fs-18">
                                                 <i class="fas fa-cash-register fs-22"></i>
                                                 {{-- On utilise le nom de la caisse --}}
-                                                {{ $caisse->libelle_caisse }}
+                                                {{ Str::limit($caisse->libelle_caisse, 20, '...') }}
                                             </p>
                                             <div class="dropdown">
                                                 <a class="btn btn-sm btn-outline-light dropdown-toggle" type="button"
@@ -111,30 +112,29 @@
                                                 </a>
                                                 <ul class="dropdown-menu mb-3" aria-labelledby="dropdownMenuButton">
                                                     <li>
-                                                        <a class="dropdown-item"
+                                                        <a class="dropdown-item fs-16"
                                                             href="{{ route('operations', $caisse->id) }}">
                                                             <i class="fas fa-plus-circle me-2"></i>Nouvelle opération
                                                         </a>
                                                     </li>
-                                                    <li><a class="dropdown-item" href="#"><i
-                                                                class="fas fa-edit me-2"></i>Modifier les informations de
-                                                            la
-                                                            caisse</a></li>
+                                                    <li><a class="dropdown-item fs-16" href="#" data-bs-toggle="offcanvas"
+                                                        data-bs-target="#myOffcanvasEdit" aria-controls="myOffcanvasEdit"><i
+                                                                class="fas fa-edit me-2"></i>Modifier la caisse</a></li>
                                                     <li>
                                                         <hr class="dropdown-divider">
                                                     </li>
-                                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                    {{-- <li><a class="dropdown-item text-danger" href="#"><i
                                                                 class="fas fa-trash-alt me-2"></i>Supprimer la caisse</a>
-                                                    </li>
-                                                    <li><a class="dropdown-item" href="#"><i
+                                                    </li> --}}
+                                                    <li><a class="dropdown-item fs-16 text-primary" href="#"><i
                                                                 class="fas fa-archive me-2"></i>Archiver la caisse</a></li>
-                                                    <li>
+                                                    {{-- <li>
                                                         <hr class="dropdown-divider">
-                                                    </li>
-                                                    <li><a class="dropdown-item" href="#"><i
+                                                    </li> --}}
+                                                    {{-- <li><a class="dropdown-item" href="#"><i
                                                                 class="fas fa-eye me-2"></i>Paramètre de visibilité
                                                             caisse</a>
-                                                    </li>
+                                                    </li> --}}
                                                     <li>
                                                         <hr class="dropdown-divider">
                                                     </li>
@@ -172,9 +172,11 @@
                                             <img src="{{ asset('assets/images/user.jpg') }}" height="34"
                                                 class="me-3 align-self-center rounded border bg-white" alt="...">
                                             <div class="flex-grow-1 text-truncate">
-                                                <h6 class="m-0 mb-n1 fs-13">{{ $caisse->user->name }}
-                                                    {{ $caisse->user->username }}</h6>
-                                                <p class="mb-0 text-truncate fs-13 text-muted">{{ $caisse->user->email }}
+                                                <h6 class="m-0 mb-n1 fs-14">
+                                                    {{ Str::limit($caisse->user->name . ' ' . $caisse->user->username . '', 15, '...') }}
+                                                </h6>
+                                                <p class="mb-0 text-truncate fs-14 text-muted">
+                                                    {{ Str::limit($caisse->user->role, 15, '...') }}
                                                 </p>
                                             </div>
                                         </div>
@@ -190,14 +192,14 @@
                                     </div>
 
                                     {{-- Barre de progression dynamique --}}
-                                    <div class="progress rounded-0 mt-2" style="height: 12px">
-                                        <div class="progress-bar fs-9 bg-success" role="progressbar"
+                                    <div class="progress rounded-0 mt-2 " style="height: 12px">
+                                        <div class="progress-bar fs-12 bg-success" role="progressbar"
                                             style="width: {{ $caisse->pourcentVersements }}%;"
                                             aria-valuenow="{{ $caisse->pourcentVersements }}">
                                             {{ round($caisse->pourcentVersements) }}%
                                         </div>
 
-                                        <div class="progress-bar fs-9 bg-danger" role="progressbar"
+                                        <div class="progress-bar fs-12 bg-danger" role="progressbar"
                                             style="width: {{ $caisse->pourcentRetraits }}%;"
                                             aria-valuenow="{{ $caisse->pourcentRetraits }}">
                                             {{ round($caisse->pourcentRetraits) }}%
@@ -207,9 +209,11 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- @include('components.content_application.create_mouvement_offcanvas', [
+                        @include('components.content_application.create_caisseModif_offcanvas', [
                             'caisse' => $caisse,
-                        ]) --}}
+                            'users' => $users,
+                        ])
+                        {{-- On inclut le formulaire de création de mouvement --}}
                     @empty
                         <div class="alert alert-info">Aucune caisse n'a été trouvée pour votre compte.</div>
                     @endforelse

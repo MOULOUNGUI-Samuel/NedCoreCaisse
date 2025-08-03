@@ -78,14 +78,6 @@
                                             data-bs-target="#offcanvasMotifAnnulation{{ $mvt->id }}">
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                    @else
-                                        {{-- ✅ Bouton annuler si non annulé --}}
-                                        <button class="btn btn-sm btn-light border ms-1 btn-show-mouvements"
-                                            data-num="{{ $mvt->num_mouvement }}" data-bs-toggle="offcanvas"
-                                            data-bs-target="#myOffcanvas{{ $mvt->num_mouvement }}"
-                                            aria-controls="myOffcanvas{{ $mvt->num_mouvement }}">
-                                            <i class="fas fa-times-circle text-danger fs-18"></i>
-                                        </button>
                                     @endif
                                 </div>
                             </td>
