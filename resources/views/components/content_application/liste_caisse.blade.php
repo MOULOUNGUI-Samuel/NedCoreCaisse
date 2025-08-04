@@ -105,41 +105,43 @@
                                                 {{-- On utilise le nom de la caisse --}}
                                                 {{ Str::limit($caisse->libelle_caisse, 20, '...') }}
                                             </p>
-                                            <div class="dropdown">
-                                                <a class="btn btn-sm btn-outline-light dropdown-toggle" type="button"
-                                                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="fas fa-ellipsis-v me-2"></i>Actions
-                                                </a>
-                                                <ul class="dropdown-menu mb-3" aria-labelledby="dropdownMenuButton">
-                                                    <li>
-                                                        <a class="dropdown-item fs-16"
-                                                            href="{{ route('operations', $caisse->id) }}">
-                                                            <i class="fas fa-plus-circle me-2"></i>Nouvelle opération
-                                                        </a>
-                                                    </li>
-                                                    <li><a class="dropdown-item fs-16" href="#" data-bs-toggle="offcanvas"
-                                                        data-bs-target="#myOffcanvasEdit" aria-controls="myOffcanvasEdit"><i
-                                                                class="fas fa-edit me-2"></i>Modifier la caisse</a></li>
-                                                    <li>
-                                                        <hr class="dropdown-divider">
-                                                    </li>
-                                                    {{-- <li><a class="dropdown-item text-danger" href="#"><i
-                                                                class="fas fa-trash-alt me-2"></i>Supprimer la caisse</a>
-                                                    </li> --}}
-                                                    <li><a class="dropdown-item fs-16 text-primary" href="#"><i
-                                                                class="fas fa-archive me-2"></i>Archiver la caisse</a></li>
-                                                    {{-- <li>
-                                                        <hr class="dropdown-divider">
-                                                    </li> --}}
-                                                    {{-- <li><a class="dropdown-item" href="#"><i
-                                                                class="fas fa-eye me-2"></i>Paramètre de visibilité
-                                                            caisse</a>
-                                                    </li> --}}
-                                                    <li>
-                                                        <hr class="dropdown-divider">
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                            @if (Auth::user()->id === $caisse->user_id)
+                                                <div class="dropdown">
+                                                    <a class="btn btn-sm btn-outline-light dropdown-toggle" type="button"
+                                                        id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="fas fa-ellipsis-v me-2"></i>Actions
+                                                    </a>
+                                                    <ul class="dropdown-menu mb-3" aria-labelledby="dropdownMenuButton">
+                                                        <li>
+                                                            <a class="dropdown-item fs-16"
+                                                                href="{{ route('operations', $caisse->id) }}">
+                                                                <i class="fas fa-plus-circle me-2"></i>Nouvelle opération
+                                                            </a>
+                                                        </li>
+                                                        <li><a class="dropdown-item fs-16" href="#" data-bs-toggle="offcanvas"
+                                                            data-bs-target="#myOffcanvasEdit" aria-controls="myOffcanvasEdit"><i
+                                                                    class="fas fa-edit me-2"></i>Modifier la caisse</a></li>
+                                                        <li>
+                                                            <hr class="dropdown-divider">
+                                                        </li>
+                                                        {{-- <li><a class="dropdown-item text-danger" href="#"><i
+                                                                    class="fas fa-trash-alt me-2"></i>Supprimer la caisse</a>
+                                                        </li> --}}
+                                                        <li><a class="dropdown-item fs-16 text-primary" href="#"><i
+                                                                    class="fas fa-archive me-2"></i>Archiver la caisse</a></li>
+                                                        {{-- <li>
+                                                            <hr class="dropdown-divider">
+                                                        </li> --}}
+                                                        {{-- <li><a class="dropdown-item" href="#"><i
+                                                                    class="fas fa-eye me-2"></i>Paramètre de visibilité
+                                                                caisse</a>
+                                                        </li> --}}
+                                                        <li>
+                                                            <hr class="dropdown-divider">
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
