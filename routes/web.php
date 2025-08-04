@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
     // Nouvelle route pour les appels AJAX
     Route::get('/caisses/{id_caisse}/mouvements', [CaisseController::class, 'getMouvementsHtml'])->name('caisses.mouvements.html');
     Route::get('/caisses/{id_caisse}/mouvementsExterne', [CaisseController::class, 'getMouvementsHtmlExterne'])->name('caisses.mouvements.htmlExterne');
+Route::get('/recherche-libelles', [MouvementController::class, 'rechercherCategorieLibelle'])->name('recherche.libelles');
 });
 
 require __DIR__ . '/auth.php';

@@ -49,11 +49,11 @@
                                     Créer une catégorie
                                     <i class="fas fa-plus-circle"></i>
                                 </button>
-                                {{-- <button type="button" class="btn rounded-pill btn-light me-3 text-info"
-                                    data-bs-toggle="offcanvas" data-bs-target="#myOffcanvasM" aria-controls="myOffcanvas">
+                                <button type="button" class="btn rounded-pill btn-light me-3 text-info"
+                                    data-bs-toggle="modal" data-bs-target="#exampleModalFullscreen">
                                     Créer un libellé de mouvement
                                     <i class="fas fa-plus-circle"></i>
-                                </button> --}}
+                                </button>
                                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                                         <li class="nav-item dropdown">
@@ -220,10 +220,6 @@
                         <div class="alert alert-info">Aucune caisse n'a été trouvée pour votre compte.</div>
                     @endforelse
                 </div>
-
-                {{-- Conteneur pour les mouvements de caisse --}}
-
-                {{-- On inclut le tableau pour l'affichage initial --}}
 
                 {{-- Conteneur initial avec les mouvements de la première caisse --}}
                 <div id="mouvements-container" class="mt-4">

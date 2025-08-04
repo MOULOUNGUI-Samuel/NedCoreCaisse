@@ -141,16 +141,27 @@ class CaisseController extends Controller
             ->get()
             : collect();
 
-        $categorieMotifs = CategorieMotif::with('motifsStandards')
+
+            // Récupération des catégories actives
+        $categorieMotifs = CategorieMotif::where('est_actif', true)
             ->where('societe_id', $societe_id)
             ->get();
+
+        $libelles = [];
+        foreach ($categorieMotifs as $categorie) {
+            $libelles[] = [
+                'categorieMotif' => $categorie,
+                'libelle' => MotifStandard::where('est_actif', true)->get()
+            ];
+        }
 
         return view('components.content_application.liste_caisse', compact(
             'users',
             'caisses',
             'categorieMotifs',
             'activeCaisse',
-            'mouvements'
+            'mouvements',
+            'libelles'
         ));
     }
 

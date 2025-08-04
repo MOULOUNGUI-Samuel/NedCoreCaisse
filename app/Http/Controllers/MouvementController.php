@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Mouvement;
 use App\Models\Caisse;
+use App\Models\CategorieMotif;
 use App\Models\MotifStandard;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -281,5 +282,31 @@ class MouvementController extends Controller
             'success',
             "Les opérations liées au transfert [ $num_mouvement ] ont été annulées ."
         );
+    }
+
+    public function rechercherCategorieLibelle(Request $request)
+    {
+        $keyword = $request->input('search');
+        $type = $request->input('type');
+        $societe_id = $request->user()->societe_id;
+        $page = $request->input('page', 1);
+        $perPage = 6;
+
+        $query = CategorieMotif::with(['motifs' => function ($q) use ($keyword, $type) {
+            $q->where('est_actif', true)
+                ->when($keyword, fn($q) => $q->where('libelle', 'like', "%$keyword%"))
+                ->when($type, fn($q) => $q->where('type', $type));
+        }])
+            ->where('est_actif', true)
+            ->where('societe_id', $societe_id)
+            ->when($keyword, fn($q) => $q->orWhere('nom', 'like', "%$keyword%"));
+
+        $total = $query->count();
+        $categories = $query->skip(($page - 1) * $perPage)->take($perPage)->get();
+
+        return response()->json([
+            'data' => $categories,
+            'nextPage' => ($page * $perPage) < $total ? $page + 1 : null,
+        ]);
     }
 }

@@ -287,6 +287,8 @@
 
     @yield('content')
     @include('components.content_application.create_categorie_offcanvas')
+    @include('components.content_application._libeller_mouvement')
+
     <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasWithBackdrop"
         aria-labelledby="offcanvasWithBackdropLabel">
         <div class="offcanvas-header">

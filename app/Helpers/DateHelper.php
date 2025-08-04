@@ -20,6 +20,8 @@ use DateTime;
 use Exception;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Illuminate\Support\Facades\Auth;
+use App\Models\CategorieMotif;
+use App\Models\MotifStandard;
 
 class DateHelper
 {
@@ -44,9 +46,21 @@ class DateHelper
     public static function dossier_info()
     {
         $societes = Societe::where('statut', 1)->get();
+        $societe_id = session('societe_id');
+        $categorieMotifs = CategorieMotif::where('est_actif', true)
+            ->where('societe_id', $societe_id)
+            ->get();
+
+        $categorieLibelles = [];
+        foreach ($categorieMotifs as $categorie) {
+            $categorieLibelles[] = [
+                'categorieMotif' => $categorie,
+                'libelle' => MotifStandard::where('est_actif', true)->get()
+            ];
+        }
         return [
             'societes' => $societes,
-
+            'categorieLibelles' => $categorieLibelles,
         ];
     }
     public static function convertirDateEnTexte($date)
