@@ -69,6 +69,7 @@ class DashboardController extends Controller
         // ✅ Transactions du jour (les dernières 10)
         $transactions = Mouvement::with(['operateur', 'motifStandard'])
             ->where('operateur_id', $user->id)
+            ->where('societe_id', $societe_id)
             ->whereDate('date_mouvement', $today)
             ->latest()
             ->take(10)
