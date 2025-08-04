@@ -2,8 +2,8 @@
     <div class="offcanvas-header">
         <h4 class="offcanvas-title text-primary" id="offcanvasLabel"><i class="fas fa-plus-circle me-2"></i>
             Création d'une caisse</h4>
-        <button type="button" class="btn-close fs-28 text-primary" data-bs-dismiss="offcanvas"
-            aria-label="Fermer"></button>
+      <button type="button" class="btn-close text-reset fs-22 border border-dark" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
         <div class="card p-3">
@@ -11,11 +11,11 @@
                 @csrf
                 <div class="text-end mb-2">
                     <button type="button" class="monBouton btn btn-light rounded-pill w-50 shadow"
-                        data-button-for="form1" data-loader-target-form="creer">
+                        data-button-for="form1" data-loader-target="creer0">
                         <i class="las la-save fs-18 me-2"></i>
                         <span class="d-none d-sm-inline">Créer la caisse</span>
                     </button>
-                    <button type="button" id="creer" class="btn btn-light rounded-pill w-50 shadow"
+                    <button type="button" id="creer0" class="btn btn-light rounded-pill w-50 shadow"
                         style="display: none;" disabled>
                         <i class="fas fa-spinner fa-spin me-2"></i>Traitement...
                     </button>

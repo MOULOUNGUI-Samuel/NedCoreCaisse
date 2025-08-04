@@ -4,8 +4,8 @@
             <i class="fas fa-edit me-2"></i>
             Modification de la caisse
         </h4>
-        <button type="button" class="btn-close fs-28 text-primary" data-bs-dismiss="offcanvas"
-            aria-label="Fermer"></button>
+        <button type="button" class="btn-close text-reset fs-22 border border-dark" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
         <div class="card p-3">

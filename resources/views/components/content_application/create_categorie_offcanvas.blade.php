@@ -2,8 +2,8 @@
     <div class="offcanvas-header">
         <h4 class="offcanvas-title text-primary" id="offcanvasLabel"><i class="fas fa-plus-circle me-2"></i>
             Création d'une categorie</h4>
-        <button type="button" class="btn-close fs-28 text-primary" data-bs-dismiss="offcanvas"
-            aria-label="Fermer"></button>
+        <button type="button" class="btn-close text-reset fs-22 border border-dark" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
         <div class="card p-3">

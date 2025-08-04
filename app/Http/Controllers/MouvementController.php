@@ -222,11 +222,11 @@ class MouvementController extends Controller
         if ($mouvementsLies->every(fn($m) => $m->est_annule)) {
             return back()->with('error', 'Ces mouvements ont déjà été annulés.');
         }
-// 🔹 3. Générer un numéro unique de transfert
-DB::transaction(function () use ($request, $mouvementsLies) {
-    foreach ($mouvementsLies as $mvt) {
+        // 🔹 3. Générer un numéro unique de transfert
+        DB::transaction(function () use ($request, $mouvementsLies) {
+            foreach ($mouvementsLies as $mvt) {
                 $lastMouvement = Mouvement::orderByDesc('created_at')->first();
-    
+
                 if ($lastMouvement) {
                     // 🔹 Extraire la partie numérique après le dernier tiret
                     $parts = explode('-', $lastMouvement->num_mouvement);
@@ -234,7 +234,7 @@ DB::transaction(function () use ($request, $mouvementsLies) {
                 } else {
                     $lastNumber = 0;
                 }
-    
+
                 $numMouvement = Auth::user()->code_entreprise . '-' . date('Y') . '-' . ($lastNumber + 1);
                 if ($mvt->est_annule) continue;
 
@@ -244,7 +244,7 @@ DB::transaction(function () use ($request, $mouvementsLies) {
                 $mvt->update([
                     'est_annule'       => true,
                     'date_annulation'  => now()->addHour(),
-                    'motif_annulation' => "Annulation de l'opération : " . $mvt->num_mouvement . "  [ Motif : " . $request->motif_annulation. " ]",
+                    'motif_annulation' => "Annulation de l'opération : " . $mvt->num_mouvement . "  [ Motif : " . $request->motif_annulation . " ]",
                     'annulateur_id'    => Auth::id(),
                 ]);
 

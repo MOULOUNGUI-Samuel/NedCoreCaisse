@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\Models\Mouvement;
 use App\Models\Caisse;
 use App\Models\Societe;
+use Illuminate\Support\Facades\Route;
 
 class DashboardController extends Controller
 {
@@ -19,25 +20,26 @@ class DashboardController extends Controller
         $societe_id = session('societe_id');
         // ➤ Raccourcis pour les requêtes
         if ($user->role == 'Admin') {
+
             $sum = fn($column, $date) =>
-            Mouvement::where('operateur_id', $user->id)
+            Mouvement::whereHas('caisse', fn($q) => $q->where('societe_id', $societe_id))
+                ->where('caisse_id', $user->caisse_id)
                 ->whereDate('date_mouvement', $date)
                 ->sum($column);
 
             $count = fn($date) =>
-            Mouvement::where('operateur_id', $user->id)
+            Mouvement::whereHas('caisse', fn($q) => $q->where('societe_id', $societe_id))
+                ->where('caisse_id', $user->caisse_id)
                 ->whereDate('date_mouvement', $date)
                 ->count();
         } else {
             $sum = fn($column, $date) =>
-            Mouvement::whereHas('caisse', fn($q) => $q->where('societe_id', $societe_id))
-                ->where('caisse_id', $user->caisse_id)
+            Mouvement::where('operateur_id', $user->id)
                 ->whereDate('date_mouvement', $date)
                 ->sum($column);
 
             $count = fn($date) =>
-            Mouvement::whereHas('caisse', fn($q) => $q->where('societe_id', $societe_id))
-                ->where('caisse_id', $user->caisse_id)
+            Mouvement::where('operateur_id', $user->id)
                 ->whereDate('date_mouvement', $date)
                 ->count();
         }
@@ -94,6 +96,15 @@ class DashboardController extends Controller
         if (!$societe) {
             return redirect()->back()->withErrors(['message' => 'Société non trouvée']);
         }
+        $currentRouteName = url()->previous();
+        // Convertir l'URL en requête
+        $request = Request::create($currentRouteName, 'GET');
+
+        // Trouver la route correspondante
+        $route = Route::getRoutes()->match($request);
+
+        // Retourner le nom de la route
+        $routeName = $route->getName();
 
         // Mettre à jour les sessions avec les informations de la société sélectionnée
         session()->forget(['societe_nom', 'societe_logo', 'societe_id']);
@@ -101,6 +112,10 @@ class DashboardController extends Controller
         session()->put('societe_logo', $societe->logo);
         session()->put('societe_id', $societe->id);
 
-        return redirect()->back();
+        if($routeName == 'operations') {
+            return redirect()->route('caisse.index');
+        }else{
+            return redirect()->route($routeName);
+        }
     }
 }

@@ -46,7 +46,7 @@
                     <li class="mx-2">
                         <button class="btn btn-outline-primary" data-bs-toggle="offcanvas"
                             data-bs-target="#offcanvasWithBackdrop"
-                            aria-controls="offcanvasWithBackdrop">{{ Auth::User()->societe->nom_societe }}</button>
+                            aria-controls="offcanvasWithBackdrop">{{ $societe_nom }}</button>
                     </li>
                     <li class="mx-2 welcome-text">
                         <h5 class="mb-0 fw-semibold text-truncate">Salut,
@@ -294,7 +294,7 @@
                 style="border-left: 5px solid #05436b; color: #333;">
                 Actuellement sur : {{ Str::limit($societe_nom, 15, '...') }}
             </h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+            <button type="button" class="btn-close text-reset fs-22 border border-dark" data-bs-dismiss="offcanvas"
                 aria-label="Close"></button>
         </div> <!-- end offcanvas-header-->
         @php

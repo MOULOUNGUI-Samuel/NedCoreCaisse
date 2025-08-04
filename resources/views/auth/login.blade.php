@@ -38,9 +38,9 @@
                                             class="auth-logo">
                                     </a>
                                     <h4 class="mt-3 mb-1 fw-semibold text-white fs-18">Gerez vos finances avec
-                                        CaisseManager Pro</h4>
+                                        YodiCaisse</h4>
                                     <p class="text-muted fw-medium mb-0">Connectez-vous pour continuer vers
-                                        CaisseManager Pro.</p>
+                                        YodiCaisse.</p>
                                 </div>
                             </div>
                             <div class="card-body pt-0">

@@ -2,8 +2,8 @@
     <div class="offcanvas-header bg-danger">
         <h4 class="offcanvas-title text-white" id="offcanvasLabel"><i class="fas fa-exchange-alt me-2"></i>
             Transfert de fonds</h4>
-        <button type="button" class="btn-close fs-28 text-white" data-bs-dismiss="offcanvas"
-            aria-label="Fermer"></button>
+        <button type="button" class="btn-close text-reset fs-22 border border-dark" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
         <div class="card p-3">
