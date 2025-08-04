@@ -76,7 +76,7 @@ class DashboardController extends Controller
             ->get();
 
         // ✅ Liste des caisses de l'utilisateur
-        $caisses = Caisse::where('societe_id', $user->societe_id)->get();
+        $caisses = Caisse::where('societe_id', $societe_id)->get();
 
         return view('components.content_application.dashboard', compact(
             'encToday',
