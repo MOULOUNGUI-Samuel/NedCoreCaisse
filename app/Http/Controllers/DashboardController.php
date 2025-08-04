@@ -35,13 +35,11 @@ class DashboardController extends Controller
         } else {
             $sum = fn($column, $date) =>
             Mouvement::where('operateur_id', $user->id)
-                ->where('societe_id', $societe_id)
                 ->whereDate('date_mouvement', $date)
                 ->sum($column);
 
             $count = fn($date) =>
             Mouvement::where('operateur_id', $user->id)
-                ->where('societe_id', $societe_id)
                 ->whereDate('date_mouvement', $date)
                 ->count();
         }
@@ -69,7 +67,6 @@ class DashboardController extends Controller
         // ✅ Transactions du jour (les dernières 10)
         $transactions = Mouvement::with(['operateur', 'motifStandard'])
             ->where('operateur_id', $user->id)
-            ->where('societe_id', $societe_id)
             ->whereDate('date_mouvement', $today)
             ->latest()
             ->take(10)
@@ -115,9 +112,9 @@ class DashboardController extends Controller
         session()->put('societe_logo', $societe->logo);
         session()->put('societe_id', $societe->id);
 
-        if ($routeName == 'operations') {
+        if($routeName == 'operations') {
             return redirect()->route('caisse.index');
-        } else {
+        }else{
             return redirect()->route($routeName);
         }
     }
