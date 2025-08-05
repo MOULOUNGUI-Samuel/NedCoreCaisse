@@ -55,7 +55,7 @@ class DateHelper
         foreach ($categorieMotifs as $categorie) {
             $categorieLibelles[] = [
                 'categorieMotif' => $categorie,
-                'libelle' => MotifStandard::where('est_actif', true)->get()
+                'libelle' => MotifStandard::where('est_actif', true)->where('categorie_motif_id',$categorie->id)->get()
             ];
         }
         return [

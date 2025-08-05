@@ -34,8 +34,8 @@
                   </div>
                   <div class="row">
                       @foreach ($infos['categorieLibelles'] as $categorieLibelle)
-                          <div id="cardsContainer">
-                              <div class="col-md-4">
+                          <div class="col-md-4">
+                              <div id="cardsContainer">
                                   <div class="card">
                                       <div class="card-body">
                                           <div class="position-absolute  end-0 me-3">
