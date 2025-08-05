@@ -29,9 +29,7 @@
                           </select>
                       </div>
                   </div>
-                  <div id="noResultsMessage" class="alert alert-warning d-none">
-                      Aucun résultat trouvé.
-                  </div>
+                   <div id="noResultsMessage-1" class="alert alert-warning d-none mt-2">Aucun résultat trouvé.</div>
                   <div class="row">
                       @foreach ($infos['categorieLibelles'] as $categorieLibelle)
                           <div class="col-md-4">
