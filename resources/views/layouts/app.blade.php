@@ -55,12 +55,12 @@
                 </ul>
 
                 <ul class="topbar-item list-unstyled d-inline-flex align-items-center mb-0">
-                    <li class="hide-phone app-search">
-                        <form role="search" action="#" method="get">
-                            <input type="search" name="search" class="form-control top-search mb-0"
-                                placeholder="Rechercher une caisse, un utilisateur...">
-                            <button type="submit"><i class="iconoir-search"></i></button>
-                        </form>
+                    <li class="hide-phone app-search me-5">
+                       <a class="nav-link dropdown-toggle arrow-none nav-icon" href="https://nedcore.net/liste_modules"
+                            role="button">
+                            <img src="{{ asset('assets/images/logo_nedcore.JPG') }}"
+                                alt="Logo" class="shadow" width="100">
+                        </a>
                     </li>
 
 

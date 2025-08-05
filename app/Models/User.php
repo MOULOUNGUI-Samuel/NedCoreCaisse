@@ -38,6 +38,9 @@ class User extends Authenticatable
         'google_id',
         'facebook_id',
         'password',
+        'super_admin',
+        'tout_voir',
+        'caisse_nedco',
     ];
 
     /**

@@ -450,6 +450,7 @@ class CaisseController extends Controller
 
      public function updateLibelle(Request $request, $id)
     {
+        $societe_id = session('societe_id');
         // Validation simple
         $validated = $request->validate([
             'libelle_motif' => 'required|string|max:255',
@@ -463,7 +464,8 @@ class CaisseController extends Controller
         }
 
         // Vérification d'unicité (optionnel mais recommandé)
-        $exists = MotifStandard::where('libelle_motif', $validated['libelle_motif'])
+        $exists = MotifStandard::whereHas('CategorieMotif', fn($q) => $q->where('societe_id', $societe_id))
+                                ->where('libelle_motif', $validated['libelle_motif'])
                                 ->where('categorie_motif_id', $libelle->categorie_motif_id)
                                 ->where('id', '!=', $id)
                                 ->exists();

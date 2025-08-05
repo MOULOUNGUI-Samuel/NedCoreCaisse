@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController; // Ensure this controller exists in the specified namespace
 use App\Http\Controllers\MouvementController;
 use App\Http\Controllers\Api\AuthController; // Ensure this controller exists in the specified namespace
+use App\Http\Controllers\SuperAdminController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -50,6 +51,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/caisses/{id_caisse}/mouvementsExterne', [CaisseController::class, 'getMouvementsHtmlExterne'])->name('caisses.mouvements.htmlExterne');
     Route::get('/recherche-libelles', [MouvementController::class, 'rechercherCategorieLibelle'])->name('recherche.libelles');
     Route::patch('/libelles/{id}/update', [CaisseController::class, 'updateLibelle'])->name('libelle.update');
+
+    // Route superAdmin
+     Route::post('/replique', [SuperAdminController::class, 'copierCategoriesEtLibelles'])
+    ->name('replique.categorie');
 });
 
 require __DIR__ . '/auth.php';

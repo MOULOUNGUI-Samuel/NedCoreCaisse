@@ -33,4 +33,8 @@ class Societe extends Model
         // CHANGÉ : La relation est maintenant standard
         return $this->hasMany(Caisse::class);
     }
+    public function CategorieMotif()
+    {
+        return $this->hasMany(CategorieMotif::class, 'societe_id');
+    }
 }

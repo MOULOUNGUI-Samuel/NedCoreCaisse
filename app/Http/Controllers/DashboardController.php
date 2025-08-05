@@ -9,6 +9,8 @@ use App\Models\Mouvement;
 use App\Models\Caisse;
 use App\Models\Societe;
 use Illuminate\Support\Facades\Route;
+use App\Models\Categorie;
+use App\Models\CategorieMotif;
 
 class DashboardController extends Controller
 {
@@ -35,13 +37,13 @@ class DashboardController extends Controller
         } else {
             $sum = fn($column, $date) =>
             Mouvement::whereHas('caisse', fn($q) => $q->where('societe_id', $societe_id))
-            ->where('operateur_id', $user->id)
+                ->where('operateur_id', $user->id)
                 ->whereDate('date_mouvement', $date)
                 ->sum($column);
 
             $count = fn($date) =>
             Mouvement::whereHas('caisse', fn($q) => $q->where('societe_id', $societe_id))
-            ->where('operateur_id', $user->id)
+                ->where('operateur_id', $user->id)
                 ->whereDate('date_mouvement', $date)
                 ->count();
         }
@@ -68,7 +70,7 @@ class DashboardController extends Controller
 
         // ✅ Transactions du jour (les dernières 10)
         $transactions = Mouvement::with(['operateur', 'motifStandard'])
-        ->whereHas('caisse', fn($q) => $q->where('societe_id', $societe_id))
+            ->whereHas('caisse', fn($q) => $q->where('societe_id', $societe_id))
             ->where('operateur_id', $user->id)
             ->whereDate('date_mouvement', $today)
             ->latest()
@@ -115,10 +117,12 @@ class DashboardController extends Controller
         session()->put('societe_logo', $societe->logo);
         session()->put('societe_id', $societe->id);
 
-        if($routeName == 'operations') {
+        if ($routeName == 'operations') {
             return redirect()->route('caisse.index');
-        }else{
+        } else {
             return redirect()->route($routeName);
         }
     }
+
+    
 }

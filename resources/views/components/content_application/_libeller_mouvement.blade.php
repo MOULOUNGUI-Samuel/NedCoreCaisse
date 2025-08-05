@@ -13,7 +13,7 @@
                       aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                  <div class="row">
+                  <div class="row mb-3">
                       <div class="col-md-8">
                           <label for="">Recherche...</label>
                           <input type="text" id="searchInput" class="form-control mb-3 shadow"
@@ -59,6 +59,17 @@
                                               </div><!--end media-body-->
                                           </a>
                                       </div><!--end card-body-->
+                                      @if (count($categorieLibelle['societes']) > 0 && Auth::user()->super_admin === 1)
+                                          <div class=" p-2">
+                                              <button type="button" class="btn btn-light rounded-pill shadow w-100"
+                                                  data-bs-toggle="offcanvas"
+                                                  data-bs-target="#myOffcanvasSociete{{ $categorieLibelle['categorieMotif']->id }}"
+                                                  aria-controls="myOffcanvasSociete{{ $categorieLibelle['categorieMotif']->id }}">
+                                                  <i class="fas fa-plus-circle me-2"></i>Repliquer dans une autre
+                                                  société
+                                              </button>
+                                          </div>
+                                      @endif
                                   </div><!--end card-->
                               </div>
                           </div>
@@ -188,6 +199,11 @@
 
                               </div>
                           </div>
+                          @include('components.super_admin._replique_categorie', [
+                              'categorieLibelle_id' => $categorieLibelle['categorieMotif']->id,
+                              'categorieLibelle_nom' => $categorieLibelle['categorieMotif']->nom_categorie,
+                              'societes' => $categorieLibelle['societes'],
+                          ])
                       @endforeach
 
                   </div>
