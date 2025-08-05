@@ -21,15 +21,17 @@
 
                       </div>
                       <div class="col">
-                          <label for="">Filtre</label>
-                          <select id="filterType" class="form-select shadow">
+                          <label class="mt-1">Filtre</label>
+                          <select class="form-select shadow" id="filterType">
                               <option value="">-- Tous les types --</option>
                               <option value="Débit">Débit</option>
                               <option value="Crédit">Crédit</option>
                           </select>
                       </div>
                   </div>
-                   <div id="noResultsMessage-1" class="alert alert-warning d-none mt-2">Aucun résultat trouvé.</div>
+                  <div id="noResultsMessage" class="alert alert-warning d-none">
+                      Aucun résultat trouvé.
+                  </div>
                   <div class="row">
                       @foreach ($infos['categorieLibelles'] as $categorieLibelle)
                           <div class="col-md-4">
