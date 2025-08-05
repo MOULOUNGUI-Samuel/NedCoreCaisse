@@ -49,7 +49,7 @@
                                     Créer une catégorie
                                     <i class="fas fa-plus-circle"></i>
                                 </button>
-                                <button type="button" class="btn rounded-pill btn-light me-3 text-info"
+                                <button type="button" class="btn rounded-pill btn-light me-3 text-dark"
                                     data-bs-toggle="modal" data-bs-target="#exampleModalFullscreen">
                                     Créer un libellé de mouvement
                                     <i class="fas fa-plus-circle"></i>

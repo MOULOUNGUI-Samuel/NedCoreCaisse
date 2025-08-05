@@ -142,7 +142,7 @@ class CaisseController extends Controller
             : collect();
 
 
-            // Récupération des catégories actives
+        // Récupération des catégories actives
         $categorieMotifs = CategorieMotif::where('est_actif', true)
             ->where('societe_id', $societe_id)
             ->get();
@@ -273,7 +273,7 @@ class CaisseController extends Controller
             'user_id' => $data['user_id'],
             'societe_id' => $societe_id,
             'seuil_maximum' => $request->input('limiter_solde') === 'oui'
-                ? intval(str_replace([' ', "\u{00A0}"], '', htmlspecialchars($data['seuil_maximum'] ))) ?? 0.00
+                ? intval(str_replace([' ', "\u{00A0}"], '', htmlspecialchars($data['seuil_maximum']))) ?? 0.00
                 : 0.00,
             'decouvert_autorise' => 0,
             'est_supprime' => false,
@@ -307,7 +307,7 @@ class CaisseController extends Controller
             'user_id' => $data['user_id'],
             'societe_id' => $societe_id, // Si ça ne change jamais, tu peux même le laisser tel quel
             'seuil_maximum' => $request->input('limiter_solde') === 'oui'
-                ? intval(str_replace([' ', "\u{00A0}"], '', htmlspecialchars($data['seuil_maximum'] ))) ?? 0.00
+                ? intval(str_replace([' ', "\u{00A0}"], '', htmlspecialchars($data['seuil_maximum']))) ?? 0.00
                 : 0.00,
             'description_caisse' => $data['description_caisse'] ?? null,
         ]);
@@ -389,5 +389,94 @@ class CaisseController extends Controller
         }
 
         return redirect()->back()->with('success', 'Catégorie et motifs créés avec succès !');
+    }
+
+    public function storeLibelles(Request $request)
+    {
+        // 1. Validation des données du formulaire dynamique
+        $validated = $request->validate([
+            'categorie_id' => 'required|exists:categories_motifs,id',
+            'motifs' => 'required|array|min:1',
+            'motifs.*.libelle_motif' => 'required|string|max:255',
+        ]);
+
+        $categorieId = $validated['categorie_id'];
+        $nouveauxAjoutes = 0;
+        $dejaExistants = 0;
+
+        // 2. Boucle sur chaque libellé soumis
+        foreach ($validated['motifs'] as $motifData) {
+
+            // On ignore les champs vides qui pourraient être soumis
+            if (empty($motifData['libelle_motif'])) {
+                continue;
+            }
+
+            // 3. On utilise firstOrCreate pour chaque libellé
+            $motif = MotifStandard::firstOrCreate(
+                [
+                    'libelle_motif' => $motifData['libelle_motif'],
+                    'categorie_motif_id' => $categorieId,
+                ],
+                [
+                    'est_actif' => true,
+                    'est_special_autre' => false,
+                ]
+            );
+
+            // On compte pour donner un feedback précis
+            if ($motif->wasRecentlyCreated) {
+                $nouveauxAjoutes++;
+            } else {
+                $dejaExistants++;
+            }
+        }
+
+        // 4. Construction du message de succès final
+        $message = "Opération terminée. ";
+        if ($nouveauxAjoutes > 0) {
+            $message .= "$nouveauxAjoutes libellé(s) ajouté(s). ";
+        }
+        if ($dejaExistants > 0) {
+            $message .= "$dejaExistants libellé(s) existai(en)t déjà et ont été ignoré(s).";
+        }
+
+        if ($nouveauxAjoutes == 0 && $dejaExistants == 0) {
+            $message = "Aucun libellé n'a été traité.";
+        }
+
+        return redirect()->back()->with('success', $message);
+    }
+
+     public function updateLibelle(Request $request, $id)
+    {
+        // Validation simple
+        $validated = $request->validate([
+            'libelle_motif' => 'required|string|max:255',
+        ]);
+
+        // Recherche du libellé
+        $libelle = MotifStandard::find($id);
+
+        if (!$libelle) {
+            return response()->json(['error' => 'Libellé non trouvé.'], 404);
+        }
+
+        // Vérification d'unicité (optionnel mais recommandé)
+        $exists = MotifStandard::where('libelle_motif', $validated['libelle_motif'])
+                                ->where('categorie_motif_id', $libelle->categorie_motif_id)
+                                ->where('id', '!=', $id)
+                                ->exists();
+
+        if ($exists) {
+            return response()->json(['error' => 'Libellé déjà existant pour la catégorie.'], 422); // 422: Unprocessable Entity
+        }
+
+        // Mise à jour et sauvegarde
+        $libelle->libelle_motif = $validated['libelle_motif'];
+        $libelle->save();
+
+        // Réponse de succès
+        return response()->json(['success' => 'Libellé mis à jour avec succès !']);
     }
 }
