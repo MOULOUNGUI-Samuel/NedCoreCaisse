@@ -38,6 +38,7 @@
                               <div id="cardsContainer">
                                   <div class="card">
                                       <div class="card-body">
+                                        @if (Auth::user()->super_admin === 1)
                                           <div class="position-absolute  end-0 me-3">
                                               <button type="button" class="btn btn-light rounded-pill shadow"
                                                   data-bs-toggle="offcanvas"
@@ -46,15 +47,14 @@
                                                   <i class="fas fa-plus-circle me-2"></i>Libellé
                                               </button>
                                           </div>
+                                           @endif
                                           <a href="#" data-bs-toggle="offcanvas"
                                               data-bs-target="#myOffcanvas{{ $categorieLibelle['categorieMotif']->id }}">
                                               <div class="flex-grow-1 ms-2 text-truncate ">
                                                   <h5 class="fw-bold mb-1 fs-15">
                                                       {{ $categorieLibelle['categorieMotif']->nom_categorie }}
                                                   </h5>
-                                                  <p class="text-dark mb-0 fs-13 fw-semibold"><span
-                                                          class="text-muted">Type :
-                                                      </span>{{ $categorieLibelle['categorieMotif']->type_operation === 'Entrée' ? 'Débit' : 'Crédit' }}
+                                                  <p class="text-dark mb-0 fs-13 fw-semibold"><span class="text-muted">Type : </span> <strong class="{{ $categorieLibelle['categorieMotif']->type_operation === 'Entrée' ? 'text-success' : 'text-danger' }}">{{ $categorieLibelle['categorieMotif']->type_operation === 'Entrée' ? 'Débit' : 'Crédit' }}</strong>
                                                   </p>
                                               </div><!--end media-body-->
                                           </a>
