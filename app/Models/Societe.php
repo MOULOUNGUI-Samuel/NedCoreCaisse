@@ -37,4 +37,5 @@ class Societe extends Model
     {
         return $this->hasMany(CategorieMotif::class, 'societe_id');
     }
+    
 }

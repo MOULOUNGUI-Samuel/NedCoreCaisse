@@ -52,14 +52,26 @@ class DateHelper
             ->get();
 
         $categorieLibelles = [];
+
         foreach ($categorieMotifs as $categorie) {
+            $libelles = MotifStandard::where('est_actif', true)
+                ->where('categorie_motif_id', $categorie->id)
+                ->get();
+
+            $societesSansCategorie = Societe::where('statut', 1)
+                ->whereDoesntHave('CategorieMotif', function ($query) use ($categorie) {
+                    $query->where('nom_categorie', $categorie->nom_categorie)
+                        ->where('type_operation', $categorie->type_operation);
+                })
+                ->get();
+
             $categorieLibelles[] = [
                 'categorieMotif' => $categorie,
-                'libelle' => MotifStandard::where('est_actif', true)->where('categorie_motif_id', $categorie->id)->get(),
-                'societes' => Societe::doesntHave('CategorieMotif')->get()
-
+                'libelle' => $libelles,
+                'societes' => $societesSansCategorie,
             ];
         }
+
         return [
             'societes' => $societes,
             'categorieLibelles' => $categorieLibelles,
