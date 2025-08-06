@@ -59,7 +59,7 @@
                                               </div><!--end media-body-->
                                           </a>
                                       </div><!--end card-body-->
-                                      @if (count($categorieLibelle['societes']) > 0 && Auth::user()->super_admin === 1)
+                                      @if (Auth::user()->super_admin === 1)
                                           <div class=" p-2">
                                               <button type="button" class="btn btn-light rounded-pill shadow w-100"
                                                   data-bs-toggle="offcanvas"

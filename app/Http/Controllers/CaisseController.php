@@ -65,7 +65,7 @@ class CaisseController extends Controller
     {
         $societe_id = session('societe_id');
 
-        $users = User::where('societe_id', $societe_id)->get();
+        $users = User::All();
 
         if (Auth::user()->role == 'Admin') {
             $caisses = Caisse::with('user')
