@@ -74,7 +74,9 @@
                                     data-id="{{ $user->id }}" data-name="{{ $user->name }} {{ $user->username }}">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-shrink-0 ">
-                                            <img src="{{ asset('assets/images/user.jpg') }}" alt=""
+                                            <img src="{{ Auth::user()->societe && Auth::user()->societe->logo
+                                ? asset('storage/' . Auth::user()->societe->logo)
+                                : asset('assets/images/user.jpg')  }}" alt=""
                                                 class="thumb-md rounded-circle">
                                         </div>
                                         <div class="flex-grow-1 ms-2 text-truncate">
