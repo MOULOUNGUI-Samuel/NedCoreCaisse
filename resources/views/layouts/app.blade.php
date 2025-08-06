@@ -177,14 +177,16 @@
                                 <span>Liste des caisses</span>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link fs-17 {{ request()->routeIs('user.index') ? 'active' : '' }}"
-                                href="{{ route('user.index') }}">
-                                <iconify-icon icon="solar:users-group-rounded-bold-duotone"
-                                    class="menu-icon me-1"></iconify-icon>
-                                <span>Gestion des utilisateurs</span>
-                            </a>
-                        </li>
+                        @if (Auth::user()->super_admin === 1 || Auth::user()->role === 'Administrateur')
+                            <li class="nav-item">
+                                <a class="nav-link fs-17 {{ request()->routeIs('user.index') ? 'active' : '' }}"
+                                    href="{{ route('user.index') }}">
+                                    <iconify-icon icon="solar:users-group-rounded-bold-duotone"
+                                        class="menu-icon me-1"></iconify-icon>
+                                    <span>Gestion des utilisateurs</span>
+                                </a>
+                            </li>
+                        @endif
 
                         {{-- <li class="nav-item">
                             <a class="nav-link" href="#">
