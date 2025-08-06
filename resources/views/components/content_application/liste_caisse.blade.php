@@ -41,15 +41,15 @@
                     <div class="col-md-12 mb-3">
                         <nav class="navbar navbar-expand-lg navbar-light">
                             <div class="container-fluid">
-                                <button type="button" class="btn rounded-pill btn-light me-3" data-bs-toggle="offcanvas"
+                                <button type="button" class="btn rounded-pill btn-light me-3 mb-2" data-bs-toggle="offcanvas"
                                     data-bs-target="#myOffcanvas" aria-controls="myOffcanvas">Créer une caisse <i
                                         class="fas fa-plus-circle"></i></button>
-                                <button type="button" class="btn rounded-pill btn-light me-3 text-dark"
+                                <button type="button" class="btn rounded-pill btn-light me-3 text-dark mb-2"
                                     data-bs-toggle="offcanvas" data-bs-target="#myOffcanvasC" aria-controls="myOffcanvas">
                                     Créer une catégorie
                                     <i class="fas fa-plus-circle"></i>
                                 </button>
-                                <button type="button" class="btn rounded-pill btn-light me-3 text-dark"
+                                <button type="button" class="btn rounded-pill btn-light me-3 text-dark mb-2"
                                     data-bs-toggle="modal" data-bs-target="#exampleModalFullscreen">
                                     Créer un libellé de mouvement
                                     <i class="fas fa-plus-circle"></i>
@@ -86,7 +86,7 @@
                     </div> <!--end col-->
                 </div><!--end row-->
                 @include('components.content_application.create_caisse_offcanvas', ['users' => $users])
-               
+
 
 
                 {{-- Conteneur pour les cartes de caisse --}}
@@ -108,7 +108,8 @@
                                             @if (Auth::user()->id === $caisse->user_id)
                                                 <div class="dropdown">
                                                     <a class="btn btn-sm btn-outline-light dropdown-toggle" type="button"
-                                                        id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                                        aria-expanded="false">
                                                         <i class="fas fa-ellipsis-v me-2"></i>Actions
                                                     </a>
                                                     <ul class="dropdown-menu mb-3" aria-labelledby="dropdownMenuButton">
@@ -118,8 +119,9 @@
                                                                 <i class="fas fa-plus-circle me-2"></i>Nouvelle opération
                                                             </a>
                                                         </li>
-                                                        <li><a class="dropdown-item fs-16" href="#" data-bs-toggle="offcanvas"
-                                                            data-bs-target="#myOffcanvasEdit" aria-controls="myOffcanvasEdit"><i
+                                                        <li><a class="dropdown-item fs-16" href="#"
+                                                                data-bs-toggle="offcanvas" data-bs-target="#myOffcanvasEdit"
+                                                                aria-controls="myOffcanvasEdit"><i
                                                                     class="fas fa-edit me-2"></i>Modifier la caisse</a></li>
                                                         <li>
                                                             <hr class="dropdown-divider">
@@ -128,7 +130,8 @@
                                                                     class="fas fa-trash-alt me-2"></i>Supprimer la caisse</a>
                                                         </li> --}}
                                                         <li><a class="dropdown-item fs-16 text-primary" href="#"><i
-                                                                    class="fas fa-archive me-2"></i>Archiver la caisse</a></li>
+                                                                    class="fas fa-archive me-2"></i>Archiver la caisse</a>
+                                                        </li>
                                                         {{-- <li>
                                                             <hr class="dropdown-divider">
                                                         </li> --}}
@@ -241,29 +244,7 @@
             <!--end Rightbar-->
             <!--Start Footer-->
 
-            <footer class="footer text-center text-sm-start d-print-none">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-12 px-0">
-                                <div class="card mb-0 rounded-bottom-0 border-0">
-                                    <div class="card-body">
-                                        <p class="text-muted mb-0">
-                                            ©
-                                            <script>
-                                                document.write(new Date().getFullYear())
-                                            </script>
-                                            Yodingenierie
-                                            <span class="text-muted d-none d-sm-inline-block float-end">
-                                                Yodingenierie
-                                                <i class="iconoir-heart-solid text-danger align-middle"></i>
-                                                tous droits réservés.</span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </footer>
+            @include('layouts.footer')
 
             <!--end footer-->
         </div>
