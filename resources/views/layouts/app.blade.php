@@ -46,7 +46,7 @@
                         </button>
                     <li class="mx-2">
                         <button class="btn btn-outline-primary"
-                            @if (count($lesSocietes['societes']) > 1 || Auth::user()->role !== 'Administrateur') data-bs-toggle="offcanvas"
+                            @if (count($lesSocietes['societes']) > 1 && Auth::user()->super_admin ===0 ) data-bs-toggle="offcanvas"
                             data-bs-target="#offcanvasWithBackdrop"
                             aria-controls="offcanvasWithBackdrop" @endif>{{ $societe_nom }}</button>
                     </li>

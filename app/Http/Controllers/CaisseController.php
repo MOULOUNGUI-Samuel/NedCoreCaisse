@@ -70,7 +70,7 @@ class CaisseController extends Controller
             ->where('societe_id', $societe_id)
             ->where('est_actif', true)->get();
 
-        if (Auth::user()->role == 'Administrateur') {
+        if (Auth::user()->super_admin ===1) {
             $caisses = Caisse::with('user')
                 // ->where('societe_id', $societe_id)
                 ->where('est_supprime', false)
