@@ -21,8 +21,7 @@ class DashboardController extends Controller
         $yesterday = Carbon::yesterday();
         $societe_id = session('societe_id');
         // ➤ Raccourcis pour les requêtes
-        if ($user->role == 'Admin') {
-
+        if ($user->role == 'Administrateur') {
             $sum = fn($column, $date) =>
             Mouvement::whereHas('caisse', fn($q) => $q->where('societe_id', $societe_id))
                 ->where('caisse_id', $user->caisse_id)

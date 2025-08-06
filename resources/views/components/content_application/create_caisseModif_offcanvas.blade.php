@@ -77,8 +77,8 @@
                         @if (count($users) > 0)
                             @foreach ($users as $user)
                                 <a href="#" class="dropdown-item py-3 gestionnaire-item-edit"
-                                    data-id="{{ $user->id }}" data-name="{{ $user->name }} {{ $user->username }}"
-                                    @if ($caisse->user_id == $user->id) data-selected="true" @endif>
+                                    data-id="{{ $user->user->id }}" data-name="{{ $user->user->name }} {{ $user->user->username }}"
+                                    @if ($caisse->user_id == $user->user->id) data-selected="true" @endif>
                                     <div class="d-flex align-items-center">
                                         <div class="flex-shrink-0 ">
                                             <img src="{{ asset('assets/images/user.jpg') }}" alt=""
@@ -86,8 +86,8 @@
                                         </div>
                                         <div class="flex-grow-1 ms-2 text-truncate">
                                             <h6 class="my-0 fw-normal text-dark fs-13 gestionnaire-name">
-                                                {{ $user->name }} {{ $user->username }}</h6>
-                                            <small class="text-muted mb-0">{{ $user->email }}</small>
+                                                {{ $user->user->name }} {{ $user->user->username }}</h6>
+                                            <small class="text-muted mb-0">{{ $user->user->email }}</small>
                                         </div>
                                         <i class="fas fa-check text-success ms-auto" style="display: none;"></i>
                                     </div>

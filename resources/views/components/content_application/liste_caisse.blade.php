@@ -31,6 +31,12 @@
         .scroll-container::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+
+        .card-desktop {
+            max-width: 430px;
+            flex: 0 0 auto;
+            cursor: pointer;
+        }
     </style>
     <div class="page-wrapper">
 
@@ -98,7 +104,7 @@
                     {{-- Boucle sur chaque caisse pour créer une carte --}}
                     @forelse ($caisses as $caisse)
                         {{-- On ajoute la classe 'caisse-card' et l'attribut data-caisse-id --}}
-                        <div class="card me-2" style="max-width: 430px; flex: 0 0 auto; cursor:pointer;">
+                        <div class="card me-2 card-desktop">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-12 mb-2">

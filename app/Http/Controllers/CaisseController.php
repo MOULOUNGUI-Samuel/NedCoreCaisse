@@ -12,6 +12,7 @@ use App\Models\CategorieMotif;
 use Illuminate\Support\Facades\Validator;
 use App\Models\MotifStandard; // Assurez-vous d'importer le modèle MotifStandard
 use App\Models\Mouvement;
+use App\Models\SocieteUser;
 
 class CaisseController extends Controller
 {
@@ -65,11 +66,13 @@ class CaisseController extends Controller
     {
         $societe_id = session('societe_id');
 
-        $users = User::All();
+        $users = SocieteUser::with('societe','user')
+            ->where('societe_id', $societe_id)
+            ->where('est_actif', true)->get();
 
-        if (Auth::user()->role == 'Admin') {
+        if (Auth::user()->role == 'Administrateur') {
             $caisses = Caisse::with('user')
-                ->where('societe_id', $societe_id)
+                // ->where('societe_id', $societe_id)
                 ->where('est_supprime', false)
                 ->get()
                 ->map(function ($caisse) {
@@ -448,7 +451,7 @@ class CaisseController extends Controller
         return redirect()->back()->with('success', $message);
     }
 
-     public function updateLibelle(Request $request, $id)
+    public function updateLibelle(Request $request, $id)
     {
         $societe_id = session('societe_id');
         // Validation simple
@@ -465,10 +468,10 @@ class CaisseController extends Controller
 
         // Vérification d'unicité (optionnel mais recommandé)
         $exists = MotifStandard::whereHas('CategorieMotif', fn($q) => $q->where('societe_id', $societe_id))
-                                ->where('libelle_motif', $validated['libelle_motif'])
-                                ->where('categorie_motif_id', $libelle->categorie_motif_id)
-                                ->where('id', '!=', $id)
-                                ->exists();
+            ->where('libelle_motif', $validated['libelle_motif'])
+            ->where('categorie_motif_id', $libelle->categorie_motif_id)
+            ->where('id', '!=', $id)
+            ->exists();
 
         if ($exists) {
             return response()->json(['error' => 'Libellé déjà existant pour la catégorie.'], 422); // 422: Unprocessable Entity
