@@ -81,4 +81,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Mouvement::class, 'annulateur_id');
     }
+
+    public function societes()
+    {
+        return $this->belongsToMany(Societe::class)
+                    ->withPivot('role', 'est_actif', 'associe_le')
+                    ->withTimestamps();
+    }
 }

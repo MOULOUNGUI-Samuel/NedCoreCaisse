@@ -22,6 +22,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CategorieMotif;
 use App\Models\MotifStandard;
+use App\Models\SocieteUser;
 
 class DateHelper
 {
@@ -45,7 +46,9 @@ class DateHelper
     }
     public static function dossier_info()
     {
-        $societes = Societe::where('statut', 1)->get();
+        $societes = SocieteUser::with('societe')
+            ->where('user_id', Auth::user()->id)
+            ->where('est_actif', true)->get();
         $societe_id = session('societe_id');
         $categorieMotifs = CategorieMotif::where('est_actif', true)
             ->where('societe_id', $societe_id)

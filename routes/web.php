@@ -39,12 +39,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/transfert_mouvements', [MouvementController::class, 'storeTransfert'])->name('transfert_mouvements.store');
     // web.php
     Route::get('/mouvements/{num}/associes', [MouvementController::class, 'getAssocies'])
-    ->name('mouvements.associes');
+        ->name('mouvements.associes');
     Route::post('/mouvements/annuler/', [MouvementController::class, 'annulerParNumero'])
-    ->name('mouvements.annuler.numero');
-    
+        ->name('mouvements.annuler.numero');
+
     Route::get('/categorie/{id}/motifs', [CaisseController::class, 'getMotifs']);
-    
+
     Route::get('/change_societe/{id}', [DashboardController::class, 'change_societe'])->name('change_societe');
     // Nouvelle route pour les appels AJAX
     Route::get('/caisses/{id_caisse}/mouvements', [CaisseController::class, 'getMouvementsHtml'])->name('caisses.mouvements.html');
@@ -53,8 +53,15 @@ Route::middleware('auth')->group(function () {
     Route::patch('/libelles/{id}/update', [CaisseController::class, 'updateLibelle'])->name('libelle.update');
 
     // Route superAdmin
-     Route::post('/replique', [SuperAdminController::class, 'copierCategoriesEtLibelles'])
-    ->name('replique.categorie');
+    Route::prefix('super_admin')->group(function () {
+        Route::post('/replique', [SuperAdminController::class, 'copierCategoriesEtLibelles'])
+            ->name('replique.categorie');
+
+        Route::get('/utilisateurs', [UserController::class, 'index'])
+            ->name('user.index');
+            Route::post('/associer-utilisateur', [UserController::class, 'associer'])
+     ->name('associer.utilisateur');
+    });
 });
 
 require __DIR__ . '/auth.php';

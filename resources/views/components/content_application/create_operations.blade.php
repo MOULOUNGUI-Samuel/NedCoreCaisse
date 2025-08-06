@@ -14,16 +14,19 @@
                     <div class="col-md-12 mb-3">
                         <nav class="navbar navbar-expand-lg navbar-light">
                             <div class="container-fluid">
-                                <button type="button" class="btn rounded-pill btn-light me-3 text-dark"
-                                    data-bs-toggle="offcanvas" data-bs-target="#myOffcanvasC" aria-controls="myOffcanvas">
-                                    Créer une catégorie
+                                @if (Auth::user()->super_admin === 1 || Auth::user()->role === 'Administrateur')
+                                    <button type="button" class="btn rounded-pill btn-light me-3 text-dark mb-2"
+                                        data-bs-toggle="offcanvas" data-bs-target="#myOffcanvasC"
+                                        aria-controls="myOffcanvas">
+                                        Créer une catégorie
+                                        <i class="fas fa-plus-circle"></i>
+                                    </button>
+                                @endif
+                                <button type="button" class="btn rounded-pill btn-light me-3 text-dark mb-2"
+                                    data-bs-toggle="modal" data-bs-target="#exampleModalFullscreen">
+                                    Libellés de mouvements
                                     <i class="fas fa-plus-circle"></i>
                                 </button>
-                                {{-- <button type="button" class="btn rounded-pill btn-light me-3 text-info"
-                                    data-bs-toggle="offcanvas" data-bs-target="#myOffcanvasM" aria-controls="myOffcanvas">
-                                    Créer un libellé de mouvement
-                                    <i class="fas fa-plus-circle"></i>
-                                </button> --}}
                                 <button type="button" data-bs-toggle="offcanvas" data-bs-target="#myOffcanvasT"
                                     aria-controls="myOffcanvas" class="btn rounded-pill btn-light me-3 text-danger">
                                     <span class="me-2">Transfert de fond</span>

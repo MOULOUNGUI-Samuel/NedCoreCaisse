@@ -37,5 +37,13 @@ class Societe extends Model
     {
         return $this->hasMany(CategorieMotif::class, 'societe_id');
     }
-    
+    /**
+     * Relation avec les utilisateurs (plusieurs-à-plusieurs)
+     */
+    public function user()
+    {
+        return $this->belongsToMany(User::class)
+                    ->withPivot('role', 'est_actif', 'associe_le')
+                    ->withTimestamps();
+    }
 }

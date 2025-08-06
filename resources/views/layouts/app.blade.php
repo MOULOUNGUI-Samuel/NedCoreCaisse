@@ -31,6 +31,9 @@
     @php
         $mesModules = \App\Helpers\DateHelper::dossier_info();
     @endphp
+    @php
+        $lesSocietes = \App\Helpers\DateHelper::dossier_info();
+    @endphp
     <!-- Top Bar Start -->
     <div class="topbar d-print-none">
         <div class="container-fluid">
@@ -43,9 +46,10 @@
                         </button>
                     </li>
                     <li class="mx-2">
-                        <button class="btn btn-outline-primary" data-bs-toggle="offcanvas"
+                        <button class="btn btn-outline-primary"
+                            @if (count($lesSocietes['societes']) > 1) data-bs-toggle="offcanvas"
                             data-bs-target="#offcanvasWithBackdrop"
-                            aria-controls="offcanvasWithBackdrop">{{ $societe_nom }}</button>
+                            aria-controls="offcanvasWithBackdrop" @endif>{{ $societe_nom }}</button>
                     </li>
                     <li class="mx-2 welcome-text">
                         <h5 class="mb-0 fw-semibold text-truncate">Salut,
@@ -56,10 +60,10 @@
 
                 <ul class="topbar-item list-unstyled d-inline-flex align-items-center mb-0">
                     <li class="hide-phone app-search me-5">
-                       <a class="nav-link dropdown-toggle arrow-none nav-icon" href="https://nedcore.net/liste_modules"
+                        <a class="nav-link dropdown-toggle arrow-none nav-icon" href="https://nedcore.net/liste_modules"
                             role="button">
-                            <img src="{{ asset('assets/images/logo_nedcore.JPG') }}"
-                                alt="Logo" class="shadow" width="100">
+                            <img src="{{ asset('assets/images/logo_nedcore.JPG') }}" alt="Logo" class="shadow"
+                                width="100">
                         </a>
                     </li>
 
@@ -140,7 +144,7 @@
                                     style="width: 40px; height: 40px; border-radius: 50%;" />
                                 <div class="user-names">
                                     <h5 class="mb-1" style="margin: 0; font-size: 16px; font-weight: 600;">
-                                        {{ Str::limit(Auth::user()->name, 20, '...') }}
+                                        {{ Str::limit(Auth::user()->name, 15, '...') }}
                                     </h5>
                                     <h6 style="margin: 0; font-size: 14px; font-weight: 400; color: #6c757d;">
                                         {{ Auth::user()->role ?? 'Rôle' }}
@@ -158,17 +162,27 @@
 
 
                         <li class="nav-item">
-                            <a class="nav-link fs-17 {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
+                            <a class="nav-link fs-17 {{ request()->routeIs('dashboard') ? 'active' : '' }}"
+                                href="{{ route('dashboard') }}">
                                 <iconify-icon icon="solar:home-bold-duotone" class="menu-icon"></iconify-icon>
                                 <span>Tableau de bord</span>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link fs-17 {{ request()->routeIs('caisse.index','operations') ? 'active' : '' }}" href="{{ route('caisse.index') }}">
+                            <a class="nav-link fs-17 {{ request()->routeIs('caisse.index', 'operations') ? 'active' : '' }}"
+                                href="{{ route('caisse.index') }}">
                                 <iconify-icon icon="solar:transfer-horizontal-bold-duotone"
                                     class="menu-icon"></iconify-icon>
                                 <span>Liste des caisses</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fs-17 {{ request()->routeIs('user.index') ? 'active' : '' }}"
+                                href="{{ route('user.index') }}">
+                                <iconify-icon icon="solar:users-group-rounded-bold-duotone"
+                                    class="menu-icon me-1"></iconify-icon>
+                                <span>Gestion des utilisateurs</span>
                             </a>
                         </li>
 
@@ -298,24 +312,22 @@
             <button type="button" class="btn-close text-reset fs-22 border border-dark" data-bs-dismiss="offcanvas"
                 aria-label="Close"></button>
         </div> <!-- end offcanvas-header-->
-        @php
-            $lesSocietes = \App\Helpers\DateHelper::dossier_info();
-        @endphp
+
         <div class="offcanvas-body">
             <div class="p-3" style="overflow-y: auto;">
                 <div class="row row-cols-3 g-2">
                     @foreach ($lesSocietes['societes'] as $societe)
                         <div class="col text-center  card-hover-zoom">
-                            <a href="{{ route('change_societe', $societe->id) }}"
+                            <a href="{{ route('change_societe', $societe->societe->id) }}"
                                 class="text-decoration-none text-dark d-block">
                                 <div class="d-flex align-items-center justify-content-center mx-auto mb-2 shadow"
                                     style="width: 80px;height: 70px; transition: transform 0.3s;border-radius: 5px;">
-                                    <img src="{{ asset('storage/' . $societe->logo) }}"
-                                        alt="{{ $societe->nom_societe }}" class="img-fluid rounded"
+                                    <img src="{{ asset('storage/' . $societe->societe->logo) }}"
+                                        alt="{{ $societe->societe->nom_societe }}" class="img-fluid rounded"
                                         style="width: 80px;height: 70px; object-fit: contain;border-radius: 5px;border-radius: 20px">
                                 </div>
                                 <small class="fw-medium d-block text-truncate"
-                                    title="{{ $societe->nom_societe }}">{{ $societe->nom_societe }}</small>
+                                    title="{{ $societe->societe->nom_societe }}">{{ $societe->societe->nom_societe }}</small>
                             </a>
                         </div>
                     @endforeach
@@ -334,6 +346,63 @@
             </div>
         </div> <!-- end offcanvas-body-->
     </div>
+
+    <div class="modal fade" id="societeConfirmModal" tabindex="-1" aria-labelledby="societeConfirmLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-top">
+            <form method="POST" action="{{ route('associer.utilisateur') }}" id="formSocieteConfirm">
+                @csrf
+                <input type="hidden" name="societe_id" id="modalSocieteId">
+                <input type="hidden" name="user_id" id="modalUserId">
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirmer l'association</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body text-center">
+                        <img src="" id="modalSocieteLogo" class="rounded mb-3" width="80"
+                            height="70" style="object-fit: contain;">
+                        <p>Voulez-vous vraiment associer <strong><span id="modalSocieteNom"></span></strong> à cet
+                            utilisateur ?</p>
+                    </div>
+
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-secondary me-3"
+                            data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-success monBouton" data-loader-target="creer">
+                            <i class="las la-check me-2"></i> Confirmer le choix
+                        </button>
+                        <button type="button" id="creer" class="btn btn-success" style="display: none;"
+                            disabled>
+                            <i class="fas fa-spinner fa-spin me-2"></i>Traitement...
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const societeModal = document.getElementById('societeConfirmModal');
+
+        societeModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const societeId = button.getAttribute('data-societe-id');
+            const userId = button.getAttribute('data-user-id');
+            const nom = button.getAttribute('data-societe-nom');
+            const logo = button.getAttribute('data-societe-logo');
+
+            // Injecter dans le formulaire
+            document.getElementById('modalSocieteId').value = societeId;
+            document.getElementById('modalUserId').value = userId;
+
+            // Texte et image dans le modal
+            document.getElementById('modalSocieteNom').textContent = nom;
+            document.getElementById('modalSocieteLogo').src = logo;
+        });
+    </script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll(".date-format").forEach(input => {

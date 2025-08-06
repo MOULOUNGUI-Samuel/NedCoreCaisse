@@ -9,8 +9,10 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Societe;
+use App\Models\SocieteUser;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -80,7 +82,7 @@ class AuthController extends Controller
                     'societe_id' => $societe->id,
                     'code_entreprise' => $entreprise['code_societe'],
                     'photo' => $photoPath,
-                    'role' => $userData['role']['nom'] ?? null,
+                    'role' => 'Employé',
                     'username' => $userData['username'],
                     'email' => $userData['email'],
                     'identifiant' => $userData['identifiant'],
@@ -89,6 +91,25 @@ class AuthController extends Controller
                     'password' => $userData['password'], // ✅ Réécraser le mot de passe à chaque connexion
                 ]
             );
+
+            // Associer via la table pivot avec les données
+            $data = [
+                'user_id' => $user->id,
+                'societe_id' => $societe->id,
+            ];
+
+            $updateData = [
+                'role' => $request->role ?? 'Employé',
+                'est_actif' => true,
+                'associe_le' => now(),
+            ];
+
+            // Vérifie si une ligne existe déjà, et met à jour ou crée
+            SocieteUser::updateOrCreate($data, array_merge($updateData, [
+                'id' => Str::uuid(), // Ne sera utilisé que si create()
+            ]));
+
+            
             session()->put('societe_nom', $societe->nom_societe);
             session()->put('societe_logo', $societe->logo);
             session()->put('societe_id', $societe->id);

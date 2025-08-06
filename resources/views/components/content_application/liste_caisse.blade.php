@@ -44,14 +44,17 @@
                                 <button type="button" class="btn rounded-pill btn-light me-3 mb-2" data-bs-toggle="offcanvas"
                                     data-bs-target="#myOffcanvas" aria-controls="myOffcanvas">Créer une caisse <i
                                         class="fas fa-plus-circle"></i></button>
-                                <button type="button" class="btn rounded-pill btn-light me-3 text-dark mb-2"
-                                    data-bs-toggle="offcanvas" data-bs-target="#myOffcanvasC" aria-controls="myOffcanvas">
-                                    Créer une catégorie
-                                    <i class="fas fa-plus-circle"></i>
-                                </button>
+                                @if (Auth::user()->super_admin === 1 || Auth::user()->role === 'Administrateur')
+                                    <button type="button" class="btn rounded-pill btn-light me-3 text-dark mb-2"
+                                        data-bs-toggle="offcanvas" data-bs-target="#myOffcanvasC"
+                                        aria-controls="myOffcanvas">
+                                        Créer une catégorie
+                                        <i class="fas fa-plus-circle"></i>
+                                    </button>
+                                @endif
                                 <button type="button" class="btn rounded-pill btn-light me-3 text-dark mb-2"
                                     data-bs-toggle="modal" data-bs-target="#exampleModalFullscreen">
-                                    Créer un libellé de mouvement
+                                    Libellés de mouvements
                                     <i class="fas fa-plus-circle"></i>
                                 </button>
                                 <div class="collapse navbar-collapse" id="navbarSupportedContent">

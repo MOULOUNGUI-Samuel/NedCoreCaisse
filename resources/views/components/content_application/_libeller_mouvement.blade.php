@@ -38,28 +38,30 @@
                               <div id="cardsContainer">
                                   <div class="card">
                                       <div class="card-body">
-                                        @if (Auth::user()->super_admin === 1)
-                                          <div class="position-absolute  end-0 me-3">
-                                              <button type="button" class="btn btn-light rounded-pill shadow"
-                                                  data-bs-toggle="offcanvas"
-                                                  data-bs-target="#myOffcanvasAjoute{{ $categorieLibelle['categorieMotif']->id }}"
-                                                  aria-controls="myOffcanvasAjoute{{ $categorieLibelle['categorieMotif']->id }}">
-                                                  <i class="fas fa-plus-circle me-2"></i>Libellé
-                                              </button>
-                                          </div>
-                                           @endif
+                                          @if (Auth::user()->super_admin === 1 || Auth::user()->role === 'Administrateur')
+                                              <div class="position-absolute  end-0 me-3">
+                                                  <button type="button" class="btn btn-light rounded-pill shadow"
+                                                      data-bs-toggle="offcanvas"
+                                                      data-bs-target="#myOffcanvasAjoute{{ $categorieLibelle['categorieMotif']->id }}"
+                                                      aria-controls="myOffcanvasAjoute{{ $categorieLibelle['categorieMotif']->id }}">
+                                                      <i class="fas fa-plus-circle me-2"></i>Libellé
+                                                  </button>
+                                              </div>
+                                          @endif
                                           <a href="#" data-bs-toggle="offcanvas"
                                               data-bs-target="#myOffcanvas{{ $categorieLibelle['categorieMotif']->id }}">
                                               <div class="flex-grow-1 ms-2 text-truncate ">
                                                   <h5 class="fw-bold mb-1 fs-15">
                                                       {{ $categorieLibelle['categorieMotif']->nom_categorie }}
                                                   </h5>
-                                                  <p class="text-dark mb-0 fs-13 fw-semibold"><span class="text-muted">Type : </span> <strong class="{{ $categorieLibelle['categorieMotif']->type_operation === 'Entrée' ? 'text-success' : 'text-danger' }}">{{ $categorieLibelle['categorieMotif']->type_operation === 'Entrée' ? 'Débit' : 'Crédit' }}</strong>
+                                                  <p class="text-dark mb-0 fs-13 fw-semibold"><span
+                                                          class="text-muted">Type : </span> <strong
+                                                          class="{{ $categorieLibelle['categorieMotif']->type_operation === 'Entrée' ? 'text-success' : 'text-danger' }}">{{ $categorieLibelle['categorieMotif']->type_operation === 'Entrée' ? 'Débit' : 'Crédit' }}</strong>
                                                   </p>
                                               </div><!--end media-body-->
                                           </a>
                                       </div><!--end card-body-->
-                                      @if (count($categorieLibelle['societes']) > 0 && Auth::user()->super_admin === 1)
+                                      @if (count($categorieLibelle['societes']) > 0 && Auth::user()->super_admin === 'Administrateur')
                                           <div class=" p-2">
                                               <button type="button" class="btn btn-light rounded-pill shadow w-100"
                                                   data-bs-toggle="offcanvas"
@@ -180,18 +182,20 @@
                                                       <input type="text" class="form-control shadow libelle-input"
                                                           name="libelle_motif" value="{{ $libelle->libelle_motif }}">
                                                   </div>
-                                                  <div class="">
-                                                      {{-- 
+                                                  @if (Auth::user()->super_admin === 1 || Auth::user()->role === 'Administrateur')
+                                                      <div class="">
+                                                          {{-- 
                                                                     - Le bouton est désactivé par défaut.
                                                                     - Il a une classe pour le clic.
                                                                     - Il stocke l'ID du libellé dans un data attribute.
                                                                 --}}
-                                                      <button type="button"
-                                                          class="btn btn-light rounded-pill shadow btn-update-libelle"
-                                                          data-libelle-id="{{ $libelle->id }}" disabled>
-                                                          <i class="fas fa-check fs-18 text-success"></i>
-                                                      </button>
-                                                  </div>
+                                                          <button type="button"
+                                                              class="btn btn-light rounded-pill shadow btn-update-libelle"
+                                                              data-libelle-id="{{ $libelle->id }}" disabled>
+                                                              <i class="fas fa-check fs-18 text-success"></i>
+                                                          </button>
+                                                      </div>
+                                                  @endif
                                               </div>
                                           </form>
                                       @endforeach
