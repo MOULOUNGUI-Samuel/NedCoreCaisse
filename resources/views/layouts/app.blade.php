@@ -44,10 +44,9 @@
                         <button class="nav-link mobile-menu-btn nav-icon" id="togglemenu">
                             <iconify-icon icon="solar:hamburger-menu-line-duotone" class="fs-20"></iconify-icon>
                         </button>
-                    </li>
                     <li class="mx-2">
                         <button class="btn btn-outline-primary"
-                            @if (count($lesSocietes['societes']) > 1) data-bs-toggle="offcanvas"
+                            @if (count($lesSocietes['societes']) > 1 || Auth::user()->role !== 'Administrateur') data-bs-toggle="offcanvas"
                             data-bs-target="#offcanvasWithBackdrop"
                             aria-controls="offcanvasWithBackdrop" @endif>{{ $societe_nom }}</button>
                     </li>
