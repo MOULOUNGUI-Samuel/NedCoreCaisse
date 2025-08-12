@@ -242,10 +242,19 @@
                                         }
 
                                         .transaction-card-mobile-debit {
+                                            border-left: 5px solid;
                                             border-color: #ff0000;
                                             /* Rouge pour le Débit */
                                         }
 
+                                        .transaction-card-mobile-debit.mouvement-annule {
+                                            opacity: 0.6;
+                                            background-color: #f8f9fa;
+                                        }
+
+                                        .transaction-card-mobile-debit.mouvement-annule h6 {
+                                            text-decoration: line-through;
+                                        }
                                         .transaction-card-mobile.mouvement-annule {
                                             opacity: 0.6;
                                             background-color: #f8f9fa;

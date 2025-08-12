@@ -259,7 +259,15 @@
         border-color: #086721; /* Vert par défaut (Crédit) */
     }
     .mouvement-card-mobile-debit {
+        border-left: 5px solid;
         border-color: #ff0000; /* Rouge pour le Débit */
+    }
+    .mouvement-card-mobile-debit.mouvement-annule {
+        opacity: 0.6;
+        background-color: #f8f9fa;
+    }
+    .mouvement-card-mobile-debit.mouvement-annule h6 {
+        text-decoration: line-through;
     }
     .mouvement-card-mobile.mouvement-annule {
         opacity: 0.6;
