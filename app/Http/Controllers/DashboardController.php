@@ -24,13 +24,13 @@ class DashboardController extends Controller
         if ($user->super_admin === 1) {
             $sum = fn($column, $date) =>
             Mouvement::whereHas('caisse')
-                ->where('caisse_id', $user->caisse_id)
+                // ->where('caisse_id', $user->caisse_id)
                 ->whereDate('date_mouvement', $date)
                 ->sum($column);
 
             $count = fn($date) =>
             Mouvement::whereHas('caisse')
-                ->where('caisse_id', $user->caisse_id)
+                // ->where('caisse_id', $user->caisse_id)
                 ->whereDate('date_mouvement', $date)
                 ->count();
                 // ✅ Liste des caisses de l'utilisateur
