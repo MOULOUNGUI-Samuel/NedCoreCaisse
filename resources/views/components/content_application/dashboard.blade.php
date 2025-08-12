@@ -219,6 +219,7 @@
                                                             @if ($t->est_annule)
                                                                 <span class="badge bg-danger">ANNULÉ</span>
                                                             @endif
+                                                             <span class="badge rounded-pill bg-transparent border border-primary text-primary fs-12">{{ Str::limit($t->caisse->societe->nom_societe, 12, '...')}}</span>
                                                         </div>
                                                     </div>
                                                 </div>

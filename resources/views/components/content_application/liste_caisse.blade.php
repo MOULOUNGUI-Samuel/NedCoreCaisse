@@ -157,6 +157,8 @@
                                                             </li>
                                                         </ul>
                                                     </div>
+                                                    @else
+                                                    <span class="badge rounded-pill bg-transparent border border-primary text-primary fs-12">{{ Str::limit($caisse->societe->nom_societe, 12, '...')}}</span>
                                                 @endif
                                             </div>
                                         </div>

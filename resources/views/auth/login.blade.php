@@ -20,7 +20,8 @@
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
-
+<meta name="theme-color" content="#D6E8FA">
+    <link rel="manifest" href="manifest.json">
 </head>
 
 
@@ -34,7 +35,7 @@
                             <div class="card-body p-0 bg-black auth-header-box rounded-top">
                                 <div class="text-center p-3">
                                     <a href="index.html" class="logo logo-admin">
-                                        <img src="assets/images/caisse.png" height="50" alt="logo"
+                                        <img src="{{asset('assets/images/caisse.png')}}" height="50" alt="logo"
                                             class="auth-logo">
                                     </a>
                                     <h4 class="mt-3 mb-1 fw-semibold text-white fs-18">Gerez vos finances avec
@@ -116,6 +117,75 @@
         </div><!--end col-->
     </div><!--end row-->
 </div><!-- container -->
+<script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+
+            const btn = document.createElement('button');
+            btn.textContent = '📲 Installer l’appli mobile ';
+            btn.id = 'installBtn';
+            document.body.appendChild(btn);
+
+            // Appliquer les styles et animations
+            const style = document.createElement('style');
+            style.innerHTML = `
+                #installBtn {
+                    position: fixed;
+                    bottom: 20px;
+                    left: 20px;
+                    padding: 12px 24px;
+                    background: #356687;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 16px;
+                    cursor: pointer;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+                    opacity: 0;
+                    transform: translateY(20px);
+                    animation: fadeInUp 1s ease forwards;
+                    z-index: 9999;
+                }
+
+                #installBtn:hover {
+                    background-color: #356687;
+                    transform: scale(1.05);
+                    transition: background-color 0.3s, transform 0.3s;
+                }
+    
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(20px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Action au clic
+            btn.addEventListener('click', () => {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(choice => {
+                    if (choice.outcome === 'accepted') {
+                        btn.remove();
+                        console.log("✅ L'application YODI EVENTS a été installée !");
+                    } else {
+                        console.log("❌ Installation refusée.");
+                    }
+                });
+            });
+        });
+    </script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Cible tous les boutons ayant l'attribut data-loader-target

@@ -167,6 +167,7 @@
                                                         {{ $mvt->annulateur->username ?? 'Utilisateur inconnu' }}</p>
                                                     <p><strong>Date annulation :</strong>
                                                         {{ \Carbon\Carbon::parse($mvt->date_annulation)->format('d/m/Y H:i') }}
+
                                                     </p>
                                                 </div>
                                             </div>
@@ -227,7 +228,9 @@
                                     <button class="btn btn-sm btn-outline-info py-0 px-2" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMotifAnnulation{{ $mvt->id }}">
                                         <i class="fas fa-eye"></i>
                                     </button>
+
                                 @endif
+                                <span class="badge rounded-pill bg-transparent border border-primary text-primary fs-12">{{ Str::limit($mvt->caisse->societe->nom_societe, 12, '...')}}</span>
                                 {{-- Le bouton d'impression est caché sur mobile pour plus de clarté --}}
                             </div>
                         </div>
@@ -236,11 +239,7 @@
 
                 {{-- Les Offcanvas restent les mêmes et fonctionneront aussi sur mobile --}}
                 @include('components.content_application.create_annulermouvement_offcanvas', ['mvt' => $mvt])
-                @if ($mvt->est_annule)
-                    <div class="offcanvas ... " id="offcanvasMotifAnnulation{{ $mvt->id }}">
-                        {{-- ... Contenu de votre offcanvas ... --}}
-                    </div>
-                @endif
+              
 
             @empty
                 <div class="text-center py-4">
