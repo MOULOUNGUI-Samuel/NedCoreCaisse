@@ -56,7 +56,7 @@
                                                   </h5>
                                                   <p class="text-dark mb-0 fs-13 fw-semibold"><span
                                                           class="text-muted">Type : </span> <strong
-                                                          class="{{ $categorieLibelle['categorieMotif']->type_operation === 'Entrée' ? 'text-success' : 'text-danger' }}">{{ $categorieLibelle['categorieMotif']->type_operation === 'Entrée' ? 'Débit' : 'Crédit' }}</strong>
+                                                          class="{{ $categorieLibelle['categorieMotif']->type_operation === 'Entrée' ? 'text-success' : 'text-danger' }}">{{ $categorieLibelle['categorieMotif']->type_operation === 'Entrée' ? 'Crédit' : 'Débit' }}</strong>
                                                   </p>
                                               </div><!--end media-body-->
                                           </a>
