@@ -34,7 +34,7 @@
                             <div class="card-body p-0 bg-black auth-header-box rounded-top">
                                 <div class="text-center p-3">
                                     <a href="index.html" class="logo logo-admin">
-                                        <img src="assets/images/logo-sm.png" height="50" alt="logo"
+                                        <img src="assets/images/caisse.png" height="50" alt="logo"
                                             class="auth-logo">
                                     </a>
                                     <h4 class="mt-3 mb-1 fw-semibold text-white fs-18">Gerez vos finances avec
