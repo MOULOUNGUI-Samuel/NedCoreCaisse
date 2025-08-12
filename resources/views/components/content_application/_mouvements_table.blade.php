@@ -3,10 +3,28 @@
         <h4 class="card-title">Mouvements récents de la caisse</h4>
     </div>
     <div class="card-body pt-0">
-        <div class="table-responsive">
+
+        <!-- ======================================================== -->
+        <!--   VERSION POUR GRANDS ÉCRANS (DESKTOP) - VOTRE TABLEAU   -->
+        <!--   Visible uniquement sur les écrans larges (lg) et plus -->
+        <!-- ======================================================== -->
+        <div class="table-responsive d-none d-lg-block">
             <table class="table mb-0 table-striped">
+                <thead>
+                    {{-- On ajoute des en-têtes pour la clarté --}}
+                    <tr>
+                        <th>Opérateur</th>
+                        <th class="text-center">Date</th>
+                        <th>Description</th>
+                        <th class="text-end">Débit</th>
+                        <th class="text-end">Crédit</th>
+                        <th class="text-end">Ancien Solde</th>
+                        <th class="text-end">Nouveau Solde</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
                 <tbody>
-                    @forelse ($mouvements as $mvt)
+                   @forelse ($mouvements as $mvt)
                         @php $isDebit = $mvt->montant_debit > 0; @endphp
                         <tr class="align-middle bg-white  {{ $mvt->est_annule ? 'mouvement-annule' : '' }}" style="border-bottom: 1px solid #dee2e6;">
                             <td>
@@ -164,10 +182,95 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
 
+
+        <!-- ======================================================= -->
+        <!--   VERSION POUR PETITS ÉCRANS (MOBILE) - LISTE DE CARTES -->
+        <!--   Visible uniquement sur les écrans en dessous de 'lg'  -->
+        <!-- ======================================================= -->
+        <div class="d-lg-none">
+            @forelse ($mouvements as $mvt)
+                @php $isDebit = $mvt->montant_debit > 0; @endphp
+                
+                {{-- Chaque mouvement est une carte --}}
+                <div class="card mb-2 shadow-sm mouvement-card-mobile {{ $mvt->est_annule ? 'mouvement-annule' : '' }}">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between">
+                            {{-- Section de gauche : Description --}}
+                            <div class="me-3">
+                                <h6 class="fw-bold mb-1">{{ $mvt->motifStandard->libelle_motif ?? $mvt->libelle_personnalise }}</h6>
+                                <p class="text-muted fs-14 mb-0">{{ $mvt->observations ?? 'Aucune observation' }}</p>
+                            </div>
+
+                            {{-- Section de droite : Montant --}}
+                            <div class="text-end text-nowrap">
+                                <h5 class="fw-bold mb-0 {{ $isDebit ? 'text-danger' : 'text-success' }}">
+                                    {{ number_format($isDebit ? $mvt->montant_debit : $mvt->montant_credit, 0, ',', ' ') }}
+                                </h5>
+                                <span class="badge {{ $isDebit ? 'bg-danger-light text-danger' : 'bg-success-light text-success' }}">
+                                    {{ $isDebit ? 'Débit' : 'Crédit' }}
+                                </span>
+                            </div>
+                        </div>
+
+                        {{-- Ligne de séparation --}}
+                        <hr class="my-2">
+
+                        {{-- Section du bas : Date, Actions et Statut --}}
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">{{ $mvt->date_mouvement->format('d/m/y H:i') }}</small>
+                            <div>
+                                @if ($mvt->est_annule)
+                                    <span class="badge bg-danger me-2">ANNULÉ</span>
+                                    {{-- Bouton pour voir le motif d'annulation --}}
+                                    <button class="btn btn-sm btn-outline-info py-0 px-2" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMotifAnnulation{{ $mvt->id }}">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                @endif
+                                {{-- Le bouton d'impression est caché sur mobile pour plus de clarté --}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Les Offcanvas restent les mêmes et fonctionneront aussi sur mobile --}}
+                @include('components.content_application.create_annulermouvement_offcanvas', ['mvt' => $mvt])
+                @if ($mvt->est_annule)
+                    <div class="offcanvas ... " id="offcanvasMotifAnnulation{{ $mvt->id }}">
+                        {{-- ... Contenu de votre offcanvas ... --}}
+                    </div>
+                @endif
+
+            @empty
+                <div class="text-center py-4">
+                    <p>Aucun mouvement trouvé pour cette caisse.</p>
+                </div>
+            @endforelse
         </div>
     </div>
 </div>
+
+{{-- On peut ajouter un peu de style pour les cartes mobiles --}}
+<style>
+    .mouvement-card-mobile {
+        border-left: 5px solid;
+        border-color: #086721; /* Vert par défaut (Crédit) */
+    }
+    .mouvement-card-mobile.debit {
+        border-color: #ff0000; /* Rouge pour le Débit */
+    }
+    .mouvement-card-mobile.mouvement-annule {
+        opacity: 0.6;
+        background-color: #f8f9fa;
+    }
+    .mouvement-card-mobile.mouvement-annule h6 {
+        text-decoration: line-through;
+    }
+    /* Classes de badge personnalisées pour le mobile */
+    .bg-danger-light { background-color: rgba(255, 0, 0, 0.1); }
+    .bg-success-light { background-color: rgba(8, 103, 33, 0.1); }
+</style>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll(".caisse-card").forEach(card => {

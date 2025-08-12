@@ -6,38 +6,55 @@
 
 @section('content')
     <style>
-        .scroll-container {
-            overflow-x: auto;
-            overflow-y: hidden;
-            white-space: nowrap;
-            scrollbar-width: auto;
-            /* Firefox */
-        }
+    /* 1. Le conteneur principal pour le défilement */
+    .caisse-scroll-container {
+        display: flex;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding-bottom: 15px; /* Espace pour la barre de défilement */
+        white-space: nowrap;
+        scrollbar-width: thin; /* Pour Firefox */
+        scrollbar-color: #6c757d #e9ecef; /* Pour Firefox */
+    }
 
-        .scroll-container::-webkit-scrollbar {
-            height: 12px;
-        }
+    /* Style de la barre de défilement pour Chrome, Safari, etc. */
+    .caisse-scroll-container::-webkit-scrollbar {
+        height: 8px;
+    }
+    .caisse-scroll-container::-webkit-scrollbar-track {
+        background: #e9ecef;
+        border-radius: 4px;
+    }
+    .caisse-scroll-container::-webkit-scrollbar-thumb {
+        background: #6c757d;
+        border-radius: 4px;
+    }
+    .caisse-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #5c636a;
+    }
 
-        .scroll-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
+    /* 2. Le "wrapper" qui contient chaque carte individuelle */
+    .caisse-wrapper {
+        /* Par défaut (mobile first), une carte prend 90% de la largeur de l'écran */
+        flex: 0 0 90%; 
+        /* On retire la classe me-2 pour un contrôle total ici */
+        margin-right: 1rem;
+    }
 
-        .scroll-container::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 4px;
+    /* 3. Style de la carte active (non modifiée) */
+    .caisse-card.active {
+        background-color: #e7f1ff; /* Un fond bleu léger pour la sélection */
+        border: 1px solid #0d6efd;
+    }
+    
+    /* 4. Media Query pour les écrans plus grands (tablettes et bureau) */
+    @media (min-width: 768px) {
+        .caisse-wrapper {
+            /* Sur les grands écrans, on fixe la largeur de la carte */
+            flex-basis: 400px;
         }
-
-        .scroll-container::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-
-        .card-desktop {
-            max-width: 430px;
-            flex: 0 0 auto;
-            cursor: pointer;
-        }
-    </style>
+    }
+</style>
     <div class="page-wrapper">
 
         <!-- Page Content-->
@@ -100,129 +117,123 @@
 
                 {{-- Conteneur pour les cartes de caisse --}}
 
-                <div class="scroll-container d-flex  mt-4" style="gap: 1rem;">
-                    {{-- Boucle sur chaque caisse pour créer une carte --}}
+                <div class="caisse-scroll-container">
+
+                    {{-- On boucle sur les caisses ici --}}
                     @forelse ($caisses as $caisse)
-                        {{-- On ajoute la classe 'caisse-card' et l'attribut data-caisse-id --}}
-                        <div class="card me-2 card-desktop">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-12 mb-2">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <p class="text-dark fw-semibold mb-2 fs-18">
-                                                <i class="fas fa-cash-register fs-22"></i>
-                                                {{-- On utilise le nom de la caisse --}}
-                                                {{ Str::limit($caisse->libelle_caisse, 20, '...') }}
-                                            </p>
-                                            @if (Auth::user()->id === $caisse->user_id)
-                                                <div class="dropdown">
-                                                    <a class="btn btn-sm btn-outline-light dropdown-toggle" type="button"
-                                                        id="dropdownMenuButton" data-bs-toggle="dropdown"
-                                                        aria-expanded="false">
-                                                        <i class="fas fa-ellipsis-v me-2"></i>Actions
-                                                    </a>
-                                                    <ul class="dropdown-menu mb-3" aria-labelledby="dropdownMenuButton">
-                                                        <li>
-                                                            <a class="dropdown-item fs-16"
-                                                                href="{{ route('operations', $caisse->id) }}">
-                                                                <i class="fas fa-plus-circle me-2"></i>Nouvelle opération
-                                                            </a>
-                                                        </li>
-                                                        <li><a class="dropdown-item fs-16" href="#"
-                                                                data-bs-toggle="offcanvas" data-bs-target="#myOffcanvasEdit"
-                                                                aria-controls="myOffcanvasEdit"><i
-                                                                    class="fas fa-edit me-2"></i>Modifier la caisse</a></li>
-                                                        <li>
-                                                            <hr class="dropdown-divider">
-                                                        </li>
-                                                        {{-- <li><a class="dropdown-item text-danger" href="#"><i
-                                                                    class="fas fa-trash-alt me-2"></i>Supprimer la caisse</a>
-                                                        </li> --}}
-                                                        <li><a class="dropdown-item fs-16 text-primary" href="#"><i
-                                                                    class="fas fa-archive me-2"></i>Archiver la caisse</a>
-                                                        </li>
-                                                        {{-- <li>
-                                                            <hr class="dropdown-divider">
-                                                        </li> --}}
-                                                        {{-- <li><a class="dropdown-item" href="#"><i
-                                                                    class="fas fa-eye me-2"></i>Paramètre de visibilité
-                                                                caisse</a>
-                                                        </li> --}}
-                                                        <li>
-                                                            <hr class="dropdown-divider">
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="caisse-card px-3 py-1 rounded {{ $caisse->id === $activeCaisse->id ? 'active' : '' }}"
-                                    data-caisse-id="{{ $caisse->id }}">
+                        <!-- Voici le wrapper qui gère la taille et l'espacement de chaque carte -->
+                        <div class="caisse-wrapper">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
                                     <div class="row">
-                                        <div class="col">
-                                            <h4 class="text-dark mb-0 fw-semibold fs-20">
-                                                {{ number_format($caisse->seuil_encaissement, 0, ',', ' ') }}
-                                            </h4>
-                                        </div>
-                                        <div class="col-auto align-self-center">
-                                            <ul class="list-inline url-list mb-0">
-                                                <li class="list-item mb-1">
-                                                    <i class="fas fa-arrow-up text-success fs-10"></i>
-                                                    <span class="fs-13">Versements :
-                                                        {{ number_format($caisse->versements, 0, ',', ' ') }}</span>
-                                                </li>
-                                                <li class="list-item mb-1">
-                                                    <i class="fas fa-arrow-down text-danger fs-10"></i>
-                                                    <span class="fs-13">Retraits :
-                                                        {{ number_format($caisse->retraits, 0, ',', ' ') }}</span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between align-items-center py-2">
-                                        <div class="d-flex align-items-center">
-                                            <img src="{{ asset('assets/images/user.jpg') }}" height="34"
-                                                class="me-3 align-self-center rounded border bg-white" alt="...">
-                                            <div class="flex-grow-1 text-truncate">
-                                                <h6 class="m-0 mb-n1 fs-14">
-                                                    {{ Str::limit($caisse->user->name . ' ' . $caisse->user->username . '', 15, '...') }}
-                                                </h6>
-                                                <p class="mb-0 text-truncate fs-14 text-muted">
-                                                    {{ Str::limit($caisse->user->role, 15, '...') }}
+                                        <div class="col-12 mb-2">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <p class="text-dark fw-semibold mb-2 fs-18 text-truncate">
+                                                    <i class="fas fa-cash-register fs-22"></i>
+                                                    {{ $caisse->libelle_caisse }}
                                                 </p>
-                                            </div>
-                                        </div>
+                                                @if (Auth::user()->id === $caisse->user_id)
+                                                    <div class="dropdown">
+                                                        <a class="btn btn-sm btn-outline-light dropdown-toggle"
+                                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <i class="fas fa-ellipsis-v me-2"></i>Actions
+                                                        </a>
+                                                        <ul class="dropdown-menu mb-3" aria-labelledby="dropdownMenuButton">
 
-                                        <div class="d-flex align-items-center">
-                                            <i class="fas fa-lock text-success fs-20 me-2"></i>
-                                            <div class="flex-grow-1 text-truncate">
-                                                <h6 class="m-0 mb-n1 fs-13">Max autorisé</h6>
-                                                <a href="#"
-                                                    class="fs-13 text-primary">{{ number_format($caisse->seuil_maximum, 0, ',', ' ') }}</a>
+                                                            <li><a class="dropdown-item"
+                                                                    href="{{ route('operations', $caisse->id) }}"><i
+                                                                        class="fas fa-plus-circle fa-fw me-2"></i>Opération</a>
+                                                            </li>
+                                                            <li><a class="dropdown-item" href="#"
+                                                                    data-bs-toggle="offcanvas"
+                                                                    data-bs-target="#myOffcanvasEdit"><i
+                                                                        class="fas fa-edit fa-fw me-2"></i>Modifier</a>
+                                                            </li>
+                                                            <li>
+                                                                <hr class="dropdown-divider">
+                                                            </li>
+                                                            <li><a class="dropdown-item text-primary" href="#"><i
+                                                                        class="fas fa-archive fa-fw me-2"></i>Archiver</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
 
-                                    {{-- Barre de progression dynamique --}}
-                                    <div class="progress rounded-0 mt-2 " style="height: 12px">
-                                        <div class="progress-bar fs-12 bg-success" role="progressbar"
-                                            style="width: {{ $caisse->pourcentVersements }}%;"
-                                            aria-valuenow="{{ $caisse->pourcentVersements }}">
-                                            {{ round($caisse->pourcentVersements) }}%
+                                    <!-- ========================================================== -->
+                                    <!--   VOTRE BLOC DE LOGIQUE NON MODIFIÉ COMMENCE ICI        -->
+                                    <!-- ========================================================== -->
+                                    <div class="caisse-card px-3 py-1 rounded {{ $caisse->id === $activeCaisse->id ? 'active' : '' }}"
+                                        data-caisse-id="{{ $caisse->id }}">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h4 class="text-dark mb-0 fw-semibold fs-20">
+                                                    {{ number_format($caisse->seuil_encaissement, 0, ',', ' ') }}
+                                                </h4>
+                                            </div>
+                                            <div class="col-auto align-self-center">
+                                                <ul class="list-inline url-list mb-0">
+                                                    <li class="list-item mb-1">
+                                                        <i class="fas fa-arrow-up text-success fs-10"></i>
+                                                        <span class="fs-13">Versements :
+                                                            {{ number_format($caisse->versements, 0, ',', ' ') }}</span>
+                                                    </li>
+                                                    <li class="list-item mb-1">
+                                                        <i class="fas fa-arrow-down text-danger fs-10"></i>
+                                                        <span class="fs-13">Retraits :
+                                                            {{ number_format($caisse->retraits, 0, ',', ' ') }}</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </div>
 
-                                        <div class="progress-bar fs-12 bg-danger" role="progressbar"
-                                            style="width: {{ $caisse->pourcentRetraits }}%;"
-                                            aria-valuenow="{{ $caisse->pourcentRetraits }}">
-                                            {{ round($caisse->pourcentRetraits) }}%
+                                        <!-- ========================================================== -->
+                                        <!--   VOTRE BLOC DE LOGIQUE NON MODIFIÉ SE TERMINE ICI          -->
+                                        <!-- ========================================================== -->
+
+                                        <!-- Reste de la carte (informations utilisateur, barre de progression) -->
+                                        <div class="d-flex justify-content-between align-items-center pt-3">
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/user.jpg') }}" height="34"
+                                                    class="me-3 align-self-center rounded border bg-white" alt="...">
+                                                <div class="flex-grow-1 text-truncate">
+                                                    <h6 class="m-0 mb-n1 fs-14">
+                                                        {{ Str::limit($caisse->user->name . ' ' . $caisse->user->username, 15, '...') }}
+                                                    </h6>
+                                                    <p class="mb-0 text-truncate fs-14 text-muted">
+                                                        {{ Str::limit($caisse->user->role, 15, '...') }}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-lock text-success fs-20 me-2"></i>
+                                                <div class="flex-grow-1 text-truncate">
+                                                    <h6 class="m-0 mb-n1 fs-13">Max autorisé</h6>
+                                                    <a href="#"
+                                                        class="fs-13 text-primary">{{ number_format($caisse->seuil_maximum, 0, ',', ' ') }}</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="progress rounded-0 mt-2" style="height: 12px">
+                                            <div class="progress-bar fs-12 bg-success" role="progressbar"
+                                                style="width: {{ $caisse->pourcentVersements }}%;"
+                                                aria-valuenow="{{ $caisse->pourcentVersements }}">
+                                                {{ round($caisse->pourcentVersements) }}%
+                                            </div>
+                                            <div class="progress-bar fs-12 bg-danger" role="progressbar"
+                                                style="width: {{ $caisse->pourcentRetraits }}%;"
+                                                aria-valuenow="{{ $caisse->pourcentRetraits }}">
+                                                {{ round($caisse->pourcentRetraits) }}%
+                                            </div>
                                         </div>
                                     </div>
-
-                                </div>
-                            </div>
-                        </div>
+                                </div><!--end card-body-->
+                            </div><!--end card-->
+                        </div><!--end caisse-wrapper-->
                         @include('components.content_application.create_caisseModif_offcanvas', [
                             'caisse' => $caisse,
                             'users' => $users,
@@ -232,15 +243,15 @@
                         <div class="alert alert-info">Aucune caisse n'a été trouvée pour votre compte.</div>
                     @endforelse
                 </div>
+               
 
+            </div>
                 {{-- Conteneur initial avec les mouvements de la première caisse --}}
                 <div id="mouvements-container" class="mt-4">
                     @include('components.content_application._mouvements_table', [
                         'mouvements' => $mouvements,
                     ])
                 </div>
-
-            </div>
 
 
             <!--Start Rightbar-->
