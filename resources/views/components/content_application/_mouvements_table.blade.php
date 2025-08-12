@@ -195,7 +195,7 @@
                 @php $isDebit = $mvt->montant_debit > 0; @endphp
                 
                 {{-- Chaque mouvement est une carte --}}
-                <div class="card mb-2 shadow-sm {{ $isDebit ? 'mouvement-card-mobile.debit' : 'mouvement-card-mobile' }}  {{ $mvt->est_annule ? 'mouvement-annule' : '' }}">
+                <div class="card mb-2 shadow-sm {{ $isDebit ? 'mouvement-card-mobile-debit' : 'mouvement-card-mobile' }}  {{ $mvt->est_annule ? 'mouvement-annule' : '' }}">
                     <div class="card-body p-3">
                         <div class="d-flex justify-content-between">
                             {{-- Section de gauche : Description --}}
@@ -258,7 +258,7 @@
         border-left: 5px solid;
         border-color: #086721; /* Vert par défaut (Crédit) */
     }
-    .mouvement-card-mobile.debit {
+    .mouvement-card-mobile-debit {
         border-color: #ff0000; /* Rouge pour le Débit */
     }
     .mouvement-card-mobile.mouvement-annule {

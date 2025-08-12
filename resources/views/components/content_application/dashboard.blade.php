@@ -183,7 +183,7 @@
                                                 @php $isDebit = $t->montant_debit > 0; @endphp
 
                                                 <div
-                                                    class="card mb-2 shadow-sm  {{ $isDebit ? 'transaction-card-mobile.debit' : 'transaction-card-mobile' }} {{ $isDebit ? 'debit' : 'credit' }} {{ $t->est_annule ? 'mouvement-annule' : '' }}">
+                                                    class="card mb-2 shadow-sm  {{ $isDebit ? 'transaction-card-mobile-debit' : 'transaction-card-mobile' }} {{ $isDebit ? 'debit' : 'credit' }} {{ $t->est_annule ? 'mouvement-annule' : '' }}">
                                                     <div class="card-body p-3">
                                                         <div class="d-flex justify-content-between align-items-start">
                                                             {{-- Section principale : Motif et utilisateur --}}
@@ -241,7 +241,7 @@
                                             /* Vert par défaut (Crédit) */
                                         }
 
-                                        .transaction-card-mobile.debit {
+                                        .transaction-card-mobile-debit {
                                             border-color: #ff0000;
                                             /* Rouge pour le Débit */
                                         }
