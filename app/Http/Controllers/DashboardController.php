@@ -34,11 +34,11 @@ class DashboardController extends Controller
                 ->whereDate('date_mouvement', $date)
                 ->count();
                 // ✅ Liste des caisses de l'utilisateur
-        $caisses = Caisse::with('user')->get();
+        $caisses = Caisse::with('user','societe')->get();
 
         } else {
             // ✅ Liste des caisses de l'utilisateur
-        $caisses = Caisse::with('user')->where('societe_id', $societe_id)->get();
+        $caisses = Caisse::with('user','societe')->where('societe_id', $societe_id)->get();
 
             $sum = fn($column, $date) =>
             Mouvement::whereHas('caisse', fn($q) => $q->where('societe_id', $societe_id))

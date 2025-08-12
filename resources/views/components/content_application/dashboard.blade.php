@@ -280,7 +280,9 @@
                                         <li class="card list-group-item">
                                             <div class=" d-flex justify-content-between align-items-center">
 
-                                                <span>{{ $caisse->libelle_caisse }}</span>
+                                                <span>
+                                                    {{ Str::limit($caisse->libelle_caisse, 15, '...') }}
+                                                </span>
                                                 <span
                                                     class="badge bg-primary">{{ number_format($caisse->seuil_encaissement, 0, ',', ' ') }}
                                                     XAF</span>
@@ -292,11 +294,11 @@
                                                         class="me-3 align-self-center rounded border bg-white"
                                                         alt="...">
                                                     <div class="flex-grow-1 text-truncate">
-                                                        <h6 class="m-0 mb-n1 fs-14">
+                                                        <h6 class="m-0 mb-1 fs-14">
                                                             {{ Str::limit($caisse->user->name . ' ' . $caisse->user->username, 15, '...') }}
                                                         </h6>
                                                         <p class="mb-0 text-truncate fs-14 text-muted">
-                                                            {{ Str::limit($caisse->user->role, 15, '...') }}
+                                                            {{ Str::limit($caisse->societe->nom_societe, 15, '...') }}
                                                         </p>
                                                     </div>
                                                 </div>
