@@ -35,7 +35,13 @@ class DashboardController extends Controller
                 ->count();
                 // ✅ Liste des caisses de l'utilisateur
         $caisses = Caisse::with('user','societe')->get();
-
+  // ✅ Transactions du jour (les dernières 10)
+        $transactions = Mouvement::with(['operateur', 'motifStandard'])
+            ->whereHas('caisse')
+            ->whereDate('date_mouvement', $today)
+            ->latest()
+            ->take(10)
+            ->get();
         } else {
             // ✅ Liste des caisses de l'utilisateur
         $caisses = Caisse::with('user','societe')->where('societe_id', $societe_id)->get();
@@ -51,6 +57,14 @@ class DashboardController extends Controller
                 ->where('operateur_id', $user->id)
                 ->whereDate('date_mouvement', $date)
                 ->count();
+                  // ✅ Transactions du jour (les dernières 10)
+        $transactions = Mouvement::with(['operateur', 'motifStandard'])
+            ->whereHas('caisse', fn($q) => $q->where('societe_id', $societe_id))
+            ->where('operateur_id', $user->id)
+            ->whereDate('date_mouvement', $today)
+            ->latest()
+            ->take(10)
+            ->get();
         }
 
         // ✅ Encaissements
@@ -73,14 +87,7 @@ class DashboardController extends Controller
         $opsYesterday = $count($yesterday);
         $opsPercent = $opsYesterday > 0 ? round((($opsToday - $opsYesterday) / $opsYesterday) * 100, 1) : 100;
 
-        // ✅ Transactions du jour (les dernières 10)
-        $transactions = Mouvement::with(['operateur', 'motifStandard'])
-            ->whereHas('caisse', fn($q) => $q->where('societe_id', $societe_id))
-            ->where('operateur_id', $user->id)
-            ->whereDate('date_mouvement', $today)
-            ->latest()
-            ->take(10)
-            ->get();
+      
 
         
         return view('components.content_application.dashboard', compact(
