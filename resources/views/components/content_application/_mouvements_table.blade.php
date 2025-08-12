@@ -231,7 +231,7 @@
 
                                 @endif
                                @if (Auth::user()->super_admin === 1)
-                                                             <span class="badge rounded-pill bg-transparent border border-primary text-primary fs-12">{{ Str::limit($t->caisse->societe->nom_societe, 12, '...')}}</span>
+                                                             <span class="badge rounded-pill bg-transparent border border-primary text-primary fs-12">{{ Str::limit($mvt->caisse->societe->nom_societe, 12, '...')}}</span>
                                                          @endif
                                 {{-- Le bouton d'impression est caché sur mobile pour plus de clarté --}}
                             </div>
