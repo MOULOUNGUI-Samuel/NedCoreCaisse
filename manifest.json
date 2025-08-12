@@ -1,13 +1,13 @@
 {
-  "name": "YODI EVENTS",
-  "short_name": "YODI EVENTS",
+  "name": "Finacore",
+  "short_name": "Finacore",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#356687",
   "theme_color": "#356687",
   "categories": ["mobile", "pwa"],
   "orientation": "portrait",
-  "description": "YODI EVENTS",
+  "description": "Finacore",
   "icons": [{
       "src": "{{ asset('assets/images/caisse.png') }}",
       "type": "image/png",
