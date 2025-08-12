@@ -275,14 +275,43 @@
                                 </p>
                             </div>
                             <div class="card-body p-0">
-                                <ul class="list-group list-group-flush">
+                                <ul class="list-group list-group-flush mx-2" style="max-height: 300px; overflow-y: auto;">
                                     @forelse ($caisses as $caisse)
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <span>{{ $caisse->libelle_caisse }}</span>
-                                            <span
-                                                class="badge bg-primary">{{ number_format($caisse->seuil_encaissement, 0, ',', ' ') }}
-                                                XAF</span>
+                                        <li class="card list-group-item">
+                                            <div class=" d-flex justify-content-between align-items-center">
+
+                                                <span>{{ $caisse->libelle_caisse }}</span>
+                                                <span
+                                                    class="badge bg-primary">{{ number_format($caisse->seuil_encaissement, 0, ',', ' ') }}
+                                                    XAF</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center pt-3">
+                                                <div class="d-flex align-items-center">
+                                                    <img src="{{ $caisse->user->photo ? asset('storage/' . $caisse->user->photo) : asset('assets/images/user.jpg') }}"
+                                                        height="34"
+                                                        class="me-3 align-self-center rounded border bg-white"
+                                                        alt="...">
+                                                    <div class="flex-grow-1 text-truncate">
+                                                        <h6 class="m-0 mb-n1 fs-14">
+                                                            {{ Str::limit($caisse->user->name . ' ' . $caisse->user->username, 15, '...') }}
+                                                        </h6>
+                                                        <p class="mb-0 text-truncate fs-14 text-muted">
+                                                            {{ Str::limit($caisse->user->role, 15, '...') }}
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-lock text-success fs-20 me-2"></i>
+                                                    <div class="flex-grow-1 text-truncate">
+                                                        <h6 class="m-0 mb-n1 fs-13">Max autorisé</h6>
+                                                        <a href="#"
+                                                            class="fs-13 text-primary">{{ number_format($caisse->seuil_maximum, 0, ',', ' ') }}</a>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </li>
+
                                     @empty
                                         <li class="list-group-item text-center text-muted">Aucune caisse disponible</li>
                                     @endforelse

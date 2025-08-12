@@ -130,7 +130,7 @@
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <p class="text-dark fw-semibold mb-2 fs-18 text-truncate">
                                                     <i class="fas fa-cash-register fs-22"></i>
-                                                    {{ $caisse->libelle_caisse }}
+                                                    {{ Str::limit($caisse->libelle_caisse, 22, '...') }}
                                                 </p>
                                                 @if (Auth::user()->id === $caisse->user_id)
                                                     <div class="dropdown">
@@ -196,7 +196,7 @@
                                         <!-- Reste de la carte (informations utilisateur, barre de progression) -->
                                         <div class="d-flex justify-content-between align-items-center pt-3">
                                             <div class="d-flex align-items-center">
-                                                <img src="{{ asset('assets/images/user.jpg') }}" height="34"
+                                                <img src="{{ $caisse->user->photo ? asset('storage/' . $caisse->user->photo) : asset('assets/images/user.jpg') }}" height="34"
                                                     class="me-3 align-self-center rounded border bg-white" alt="...">
                                                 <div class="flex-grow-1 text-truncate">
                                                     <h6 class="m-0 mb-n1 fs-14">

@@ -33,7 +33,13 @@ class DashboardController extends Controller
                 ->where('caisse_id', $user->caisse_id)
                 ->whereDate('date_mouvement', $date)
                 ->count();
+                // ✅ Liste des caisses de l'utilisateur
+        $caisses = Caisse::with('user')->get();
+
         } else {
+            // ✅ Liste des caisses de l'utilisateur
+        $caisses = Caisse::with('user')->where('societe_id', $societe_id)->get();
+
             $sum = fn($column, $date) =>
             Mouvement::whereHas('caisse', fn($q) => $q->where('societe_id', $societe_id))
                 ->where('operateur_id', $user->id)
@@ -76,9 +82,7 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
-        // ✅ Liste des caisses de l'utilisateur
-        $caisses = Caisse::where('societe_id', $societe_id)->get();
-
+        
         return view('components.content_application.dashboard', compact(
             'encToday',
             'encPercent',
