@@ -56,10 +56,9 @@
     }
 </style>
     <div class="page-wrapper">
-
         <!-- Page Content-->
         <div class="page-content">
-            <div class="container-fluid">
+            <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-md-12 mb-3">
                         <nav class="navbar navbar-expand-lg navbar-light">
@@ -255,9 +254,10 @@
                         'mouvements' => $mouvements,
                     ])
                 </div>
-
-
-            <!--Start Rightbar-->
+        </div>
+        <!-- end page content -->
+    </div>
+      <!--Start Rightbar-->
             <!--Start Endbar-->
             @include('layouts.lateralContent')
 
@@ -269,10 +269,6 @@
 
             @include('layouts.footer')
 
-            <!--end footer-->
-        </div>
-        <!-- end page content -->
-    </div>
     <style>
         .caisse-card {
             border: 2px solid transparent;

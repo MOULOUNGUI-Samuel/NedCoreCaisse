@@ -6,7 +6,6 @@
     <div class="page-wrapper">
         <div class="page-content">
             <div class="container-fluid">
-
                 {{-- PARTIE 1 : LES CARTES DE STATISTIQUES --}}
                 <div class="row">
                     {{-- ✅ Encaissements --}}
@@ -334,7 +333,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

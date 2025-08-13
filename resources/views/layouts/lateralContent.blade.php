@@ -18,7 +18,7 @@
                 </li>
             </ul>
 
-            <div class="ms-0 px-3" style="max-height:230px;" data-simplebar>
+            {{-- <div class="ms-0 px-3" style="max-height:230px;" data-simplebar>
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade show active" id="All2" role="tabpanel" tabindex="0">
                         <!-- item -->
@@ -130,7 +130,7 @@
                         </a>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 </div>
