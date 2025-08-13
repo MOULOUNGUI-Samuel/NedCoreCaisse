@@ -97,7 +97,7 @@ class CaisseController extends Controller
         // } else {
             $caisses = Caisse::with('user')
                 ->where('societe_id', $societe_id)
-                ->where('user_id', Auth::id())
+                // ->where('user_id', Auth::id())
                 ->where('est_supprime', false)
                 ->get()
                 ->map(function ($caisse) {
