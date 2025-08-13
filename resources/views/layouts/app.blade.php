@@ -46,7 +46,7 @@
                         </button>
                     <li class="mx-2">
                         <button class="btn btn-outline-primary"
-                            @if (count($lesSocietes['societes']) > 1 && Auth::user()->super_admin ===0 ) data-bs-toggle="offcanvas"
+                            @if (count($lesSocietes['societes']) > 1) data-bs-toggle="offcanvas"
                             data-bs-target="#offcanvasWithBackdrop"
                             aria-controls="offcanvasWithBackdrop" @endif>{{ $societe_nom }}</button>
                     </li>
@@ -117,20 +117,6 @@
     <!-- Top Bar End -->
     <!-- leftbar-tab-menu -->
     <div class="startbar d-print-none">
-        <!--start brand-->
-        {{-- <div class="brand mt-3" style="margin-left: 60px;">
-            <a href="#" class="logo">
-                <span>
-                    <img src="{{'assets/images/caisse.jpg'}}" alt="logo-small" class="logo-sm  rounded shadow" width="50" >
-                </span>
-                <span class="" >
-                    <img src="{{'assets/images/caisse.jpg'}}" alt="logo-large" class="logo-lg logo-light  rounded shadow" width="100" >
-                    <img src="{{'assets/images/caisse.jpg'}}" alt="logo-large" class="logo-lg logo-dark  rounded shadow" width="100" >
-                </span>
-            </a>
-        </div> --}}
-        <!--end brand-->
-        <!--start startbar-menu-->
         <div class="startbar-menu">
             <div class="startbar-collapse" id="startbarCollapse" data-simplebar>
                 <div class="d-flex align-items-start flex-column w-100">

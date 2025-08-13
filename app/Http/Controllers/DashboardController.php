@@ -20,29 +20,26 @@ class DashboardController extends Controller
         $today = Carbon::today();
         $yesterday = Carbon::yesterday();
         $societe_id = session('societe_id');
-        // ➤ Raccourcis pour les requêtes
-        if ($user->super_admin === 1) {
-            $sum = fn($column, $date) =>
-            Mouvement::whereHas('caisse')
-                // ->where('caisse_id', $user->caisse_id)
-                ->whereDate('date_mouvement', $date)
-                ->sum($column);
+        
+        // if ($user->super_admin === 1) {
+        //     $sum = fn($column, $date) =>
+        //     Mouvement::whereHas('caisse')
+        //         ->whereDate('date_mouvement', $date)
+        //         ->sum($column);
 
-            $count = fn($date) =>
-            Mouvement::whereHas('caisse')
-                // ->where('caisse_id', $user->caisse_id)
-                ->whereDate('date_mouvement', $date)
-                ->count();
-            // ✅ Liste des caisses de l'utilisateur
-            $caisses = Caisse::with('user', 'societe')->get();
-            // ✅ Transactions du jour (les dernières 10)
-            $transactions = Mouvement::with(['operateur', 'motifStandard'])
-                ->whereHas('caisse')
-                ->whereDate('date_mouvement', $today)
-                ->latest()
-                ->take(10)
-                ->get();
-        } else {
+        //     $count = fn($date) =>
+        //     Mouvement::whereHas('caisse')
+        //         ->whereDate('date_mouvement', $date)
+        //         ->count();
+
+        //     $caisses = Caisse::with('user', 'societe')->get();
+        //     $transactions = Mouvement::with(['operateur', 'motifStandard'])
+        //         ->whereHas('caisse')
+        //         ->whereDate('date_mouvement', $today)
+        //         ->latest()
+        //         ->take(10)
+        //         ->get();
+        // } else {
             // ✅ Liste des caisses de l'utilisateur
             $caisses = Caisse::with('user', 'societe')->where('societe_id', $societe_id)->get();
 
@@ -65,7 +62,7 @@ class DashboardController extends Controller
                 ->latest()
                 ->take(10)
                 ->get();
-        }
+        // }
 
         // ✅ Encaissements
         $encToday = $sum('montant_credit', $today);

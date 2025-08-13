@@ -683,17 +683,8 @@
                         </div>
                     </div>
                 </div>
-                <!--Start Rightbar-->
-                <!--Start Endbar-->
-                @include('layouts.lateralContent')
-
                 <!--end Endbar-->
                 <div class="endbar-overlay d-print-none"></div>
-
-                <!--end Rightbar-->
-                <!--Start Footer-->
-
-                @include('layouts.footer')
 
                 <!--end footer-->
             </div>

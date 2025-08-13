@@ -77,10 +77,66 @@
 
                 {{-- PARTIE 2 : TABLEAU DES TRANSACTIONS RÉCENTES --}}
                 <div class="row justify-content-center">
-                    <div class="col-12 col-lg-8">
+                    {{-- PARTIE 3 : LISTE DES CAISSES --}}
+                    <div class="col-12 col-lg-6">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">Transactions du jour</h4>
+                                <h4 class="card-title mb-1">Mes caisses</h4>
+                                <p class="mb-0 text-truncate fs-13 text-muted fw-medium">
+                                    {{ $caisses->count() }} caisse(s) trouvée(s)
+                                </p>
+                            </div>
+                            <div class="card-body p-0">
+                                <ul class="list-group list-group-flush mx-2" style="max-height: 300px; overflow-y: auto;">
+                                    @forelse ($caisses as $caisse)
+                                        <li class="card list-group-item">
+                                            <div class=" d-flex justify-content-between align-items-center">
+
+                                                <span>
+                                                    {{ Str::limit($caisse->libelle_caisse, 15, '...') }}
+                                                </span>
+                                                <span
+                                                    class="badge bg-primary">{{ number_format($caisse->seuil_encaissement, 0, ',', ' ') }}
+                                                    XAF</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center pt-3">
+                                                <div class="d-flex align-items-center">
+                                                    <img src="{{ $caisse->user->photo ? asset('storage/' . $caisse->user->photo) : asset('assets/images/user.jpg') }}"
+                                                        height="34"
+                                                        class="me-3 align-self-center rounded border bg-white"
+                                                        alt="...">
+                                                    <div class="flex-grow-1 text-truncate">
+                                                        <h6 class="m-0 mb-1 fs-14">
+                                                            {{ Str::limit($caisse->user->name . ' ' . $caisse->user->username, 15, '...') }}
+                                                        </h6>
+                                                        <p class="mb-0 text-truncate fs-14 text-muted">
+                                                            {{ Str::limit($caisse->societe->nom_societe, 15, '...') }}
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-lock text-success fs-20 me-2"></i>
+                                                    <div class="flex-grow-1 text-truncate">
+                                                        <h6 class="m-0 mb-n1 fs-13">Max autorisé</h6>
+                                                        <a href="#"
+                                                            class="fs-13 text-primary">{{ number_format($caisse->seuil_maximum, 0, ',', ' ') }}</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+
+                                    @empty
+                                        <li class="list-group-item text-center text-muted">Aucune caisse disponible</li>
+                                    @endforelse
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Activité récente</h4>
                             </div>
                             <div class="card-body pt-0">
                                 <div class="table-responsive">
@@ -99,7 +155,6 @@
                                                         <th class="text-center">Date</th>
                                                         <th>Description</th>
                                                         <th class="text-end">Montant</th>
-                                                        <th class="text-end">Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -144,24 +199,6 @@
                                                                     class="{{ $t->montant_debit > 0 ? 'text-danger' : 'text-success' }} fw-semibold">
                                                                     {{ number_format($t->montant_debit ?: $t->montant_credit, 0, ',', ' ') }}
                                                                 </span>
-                                                            </td>
-                                                            <td class="text-end">
-                                                                <span
-                                                                    class="badge bg-transparent text-primary fs-12 mb-2">Action</span><br>
-                                                                <div class="d-flex justify-content-end">
-                                                                    <button class="btn btn-sm btn-light border"
-                                                                        data-bs-toggle="tooltip" data-bs-title="Imprimer">
-                                                                        <i class="fas fa-print text-secondary fs-18"></i>
-                                                                    </button>
-                                                                    @if ($t->est_annule)
-                                                                        <button
-                                                                            class="btn btn-sm btn-light border ms-1 text-info"
-                                                                            data-bs-toggle="offcanvas"
-                                                                            data-bs-target="#offcanvasMotifAnnulation{{ $t->id }}">
-                                                                            <i class="fas fa-eye"></i>
-                                                                        </button>
-                                                                    @endif
-                                                                </div>
                                                             </td>
                                                         </tr>
                                                     @empty
@@ -276,80 +313,13 @@
                         </div>
                     </div>
 
-                    {{-- PARTIE 3 : LISTE DES CAISSES --}}
-                    <div class="col-12 col-lg-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title mb-1">Vos Caisses</h4>
-                                <p class="mb-0 text-truncate fs-13 text-muted fw-medium">
-                                    {{ $caisses->count() }} caisse(s) trouvée(s)
-                                </p>
-                            </div>
-                            <div class="card-body p-0">
-                                <ul class="list-group list-group-flush mx-2" style="max-height: 300px; overflow-y: auto;">
-                                    @forelse ($caisses as $caisse)
-                                        <li class="card list-group-item">
-                                            <div class=" d-flex justify-content-between align-items-center">
-
-                                                <span>
-                                                    {{ Str::limit($caisse->libelle_caisse, 15, '...') }}
-                                                </span>
-                                                <span
-                                                    class="badge bg-primary">{{ number_format($caisse->seuil_encaissement, 0, ',', ' ') }}
-                                                    XAF</span>
-                                            </div>
-                                            <div class="d-flex justify-content-between align-items-center pt-3">
-                                                <div class="d-flex align-items-center">
-                                                    <img src="{{ $caisse->user->photo ? asset('storage/' . $caisse->user->photo) : asset('assets/images/user.jpg') }}"
-                                                        height="34"
-                                                        class="me-3 align-self-center rounded border bg-white"
-                                                        alt="...">
-                                                    <div class="flex-grow-1 text-truncate">
-                                                        <h6 class="m-0 mb-1 fs-14">
-                                                            {{ Str::limit($caisse->user->name . ' ' . $caisse->user->username, 15, '...') }}
-                                                        </h6>
-                                                        <p class="mb-0 text-truncate fs-14 text-muted">
-                                                            {{ Str::limit($caisse->societe->nom_societe, 15, '...') }}
-                                                        </p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="d-flex align-items-center">
-                                                    <i class="fas fa-lock text-success fs-20 me-2"></i>
-                                                    <div class="flex-grow-1 text-truncate">
-                                                        <h6 class="m-0 mb-n1 fs-13">Max autorisé</h6>
-                                                        <a href="#"
-                                                            class="fs-13 text-primary">{{ number_format($caisse->seuil_maximum, 0, ',', ' ') }}</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-
-                                    @empty
-                                        <li class="list-group-item text-center text-muted">Aucune caisse disponible</li>
-                                    @endforelse
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>
     </div>
 
-
-
-    <!--Start Rightbar-->
-    <!--Start Endbar-->
-    @include('layouts.lateralContent')
-
-
     <!--end Endbar-->
     <div class="endbar-overlay d-print-none"></div>
-
-    <!--end Rightbar-->
-    <!--Start Footer-->
-
-    @include('layouts.footer')
 
 @endsection

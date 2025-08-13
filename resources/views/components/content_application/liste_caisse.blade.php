@@ -58,7 +58,7 @@
     <div class="page-wrapper">
         <!-- Page Content-->
         <div class="page-content">
-            <div class="container">
+            <div class="container-fluid">
                 <div class="row justify-content-center">
                     <div class="col-md-12 mb-3">
                         <nav class="navbar navbar-expand-lg navbar-light">
@@ -175,20 +175,7 @@
                                                     {{ number_format($caisse->seuil_encaissement, 0, ',', ' ') }}
                                                 </h4>
                                             </div>
-                                            <div class="col-auto align-self-center">
-                                                <ul class="list-inline url-list mb-0">
-                                                    <li class="list-item mb-1">
-                                                        <i class="fas fa-arrow-up text-success fs-10"></i>
-                                                        <span class="fs-13">Versements :
-                                                            {{ number_format($caisse->versements, 0, ',', ' ') }}</span>
-                                                    </li>
-                                                    <li class="list-item mb-1">
-                                                        <i class="fas fa-arrow-down text-danger fs-10"></i>
-                                                        <span class="fs-13">Retraits :
-                                                            {{ number_format($caisse->retraits, 0, ',', ' ') }}</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                            
                                         </div>
 
                                         <!-- ========================================================== -->
@@ -220,7 +207,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="progress rounded-0 mt-2" style="height: 12px">
+                                        {{-- <div class="progress rounded-0 mt-2" style="height: 12px">
                                             <div class="progress-bar fs-12 bg-success" role="progressbar"
                                                 style="width: {{ $caisse->pourcentVersements }}%;"
                                                 aria-valuenow="{{ $caisse->pourcentVersements }}">
@@ -231,7 +218,7 @@
                                                 aria-valuenow="{{ $caisse->pourcentRetraits }}">
                                                 {{ round($caisse->pourcentRetraits) }}%
                                             </div>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div><!--end card-body-->
                             </div><!--end card-->
@@ -257,17 +244,8 @@
         </div>
         <!-- end page content -->
     </div>
-      <!--Start Rightbar-->
-            <!--Start Endbar-->
-            @include('layouts.lateralContent')
-
             <!--end Endbar-->
             <div class="endbar-overlay d-print-none"></div>
-
-            <!--end Rightbar-->
-            <!--Start Footer-->
-
-            @include('layouts.footer')
 
     <style>
         .caisse-card {

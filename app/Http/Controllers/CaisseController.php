@@ -70,36 +70,31 @@ class CaisseController extends Controller
             ->where('societe_id', $societe_id)
             ->where('est_actif', true)->get();
 
-        if (Auth::user()->super_admin ===1) {
-            $caisses = Caisse::with('user')
-                // ->where('societe_id', $societe_id)
-                ->where('est_supprime', false)
-                ->get()
-                ->map(function ($caisse) {
+        // if (Auth::user()->super_admin ===1) {
+            // $caisses = Caisse::with('user')
+            //     ->where('est_supprime', false)
+            //     ->get()
+            //     ->map(function ($caisse) {
+            //         $versements = $caisse->mouvements()
+            //             ->where('montant_credit', '>', 0)
+            //             ->where('est_annule', 0)
+            //             ->sum('montant_credit');
 
-                    // 🔹 Compter le nombre de versements et retraits
-                    $versements = $caisse->mouvements()
-                        ->where('montant_credit', '>', 0)
-                        ->where('est_annule', 0)
-                        ->sum('montant_credit');
+            //         $retraits   = $caisse->mouvements()
+            //             ->where('montant_debit', '>', 0)
+            //             ->where('est_annule', 0)
+            //             ->sum('montant_debit');
 
-                    $retraits   = $caisse->mouvements()
-                        ->where('montant_debit', '>', 0)
-                        ->where('est_annule', 0)
-                        ->sum('montant_debit');
+            //         $caisse->versements = $versements;
+            //         $caisse->retraits   = $retraits;
+            //         $totalOps = $versements + $retraits;
 
-                    $caisse->versements = $versements;
-                    $caisse->retraits   = $retraits;
+            //         $caisse->pourcentVersements = $totalOps > 0 ? ($versements * 100) / $totalOps : 0;
+            //         $caisse->pourcentRetraits   = $totalOps > 0 ? ($retraits * 100) / $totalOps : 0;
 
-                    // 🔹 Calculer les pourcentages de la barre de progression
-                    $totalOps = $versements + $retraits;
-
-                    $caisse->pourcentVersements = $totalOps > 0 ? ($versements * 100) / $totalOps : 0;
-                    $caisse->pourcentRetraits   = $totalOps > 0 ? ($retraits * 100) / $totalOps : 0;
-
-                    return $caisse;
-                });
-        } else {
+            //         return $caisse;
+            //     });
+        // } else {
             $caisses = Caisse::with('user')
                 ->where('societe_id', $societe_id)
                 ->where('user_id', Auth::id())
@@ -129,7 +124,7 @@ class CaisseController extends Controller
 
                     return $caisse;
                 });
-        }
+        // }
 
 
         // ✅ Sélectionner la première caisse par défaut
