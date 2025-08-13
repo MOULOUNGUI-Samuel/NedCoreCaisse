@@ -45,19 +45,19 @@ class DashboardController extends Controller
 
             $sum = fn($column, $date) =>
             Mouvement::whereHas('caisse', fn($q) => $q->where('societe_id', $societe_id))
-                ->where('operateur_id', $user->id)
+                // ->where('operateur_id', $user->id)
                 ->whereDate('date_mouvement', $date)
                 ->sum($column);
 
             $count = fn($date) =>
             Mouvement::whereHas('caisse', fn($q) => $q->where('societe_id', $societe_id))
-                ->where('operateur_id', $user->id)
+                // ->where('operateur_id', $user->id)
                 ->whereDate('date_mouvement', $date)
                 ->count();
             // ✅ Transactions du jour (les dernières 10)
             $transactions = Mouvement::with(['operateur', 'motifStandard'])
                 ->whereHas('caisse', fn($q) => $q->where('societe_id', $societe_id))
-                ->where('operateur_id', $user->id)
+                // ->where('operateur_id', $user->id)
                 ->whereDate('date_mouvement', $today)
                 ->latest()
                 ->take(10)
